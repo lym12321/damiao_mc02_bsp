@@ -21,7 +21,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 
-#include "1_Middleware/System/sys_timestamp.h"
+#include "1_Middleware/System/Timestamp/sys_timestamp.h"
 #include "usbd_cdc_if.h"
 #include "stm32h7xx_hal.h"
 #include <string.h>

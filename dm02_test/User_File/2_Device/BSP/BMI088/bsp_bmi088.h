@@ -14,8 +14,8 @@
 
 /* Includes ------------------------------------------------------------------*/
 
-#include "bsp_bmi088_accel/bsp_bmi088_accel.h"
-#include "bsp_bmi088_gyro/bsp_bmi088_gyro.h"
+#include "Accel/bsp_bmi088_accel.h"
+#include "Gyro/bsp_bmi088_gyro.h"
 
 /* Exported macros -----------------------------------------------------------*/
 

@@ -20,7 +20,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 
-#include "1_Middleware/System/sys_timestamp.h"
+#include "1_Middleware/System/Timestamp/sys_timestamp.h"
 #include "fdcan.h"
 #include "stm32h7xx_hal.h"
 #include <string.h>
@@ -75,6 +75,14 @@ extern uint8_t CAN2_0x2fe_Tx_Data[];
 extern uint8_t CAN2_0x2ff_Tx_Data[];
 extern uint8_t CAN2_0x3fe_Tx_Data[];
 extern uint8_t CAN2_0x4fe_Tx_Data[];
+
+extern uint8_t CAN3_0x1fe_Tx_Data[];
+extern uint8_t CAN3_0x1ff_Tx_Data[];
+extern uint8_t CAN3_0x200_Tx_Data[];
+extern uint8_t CAN3_0x2fe_Tx_Data[];
+extern uint8_t CAN3_0x2ff_Tx_Data[];
+extern uint8_t CAN3_0x3fe_Tx_Data[];
+extern uint8_t CAN3_0x4fe_Tx_Data[];
 
 extern uint8_t CAN_Supercap_Tx_Data[];
 

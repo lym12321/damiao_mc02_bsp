@@ -30,6 +30,9 @@ template<int row, int column>
 class Class_Matrix_f32
 {
 public:
+    // 矩阵数据区域
+    float Data[row * column] = {0.0f};
+
     // 构造函数
     Class_Matrix_f32()
     {
@@ -149,7 +152,7 @@ public:
     template<int tmp>
     inline Class_Matrix_f32<row, tmp> operator*(const Class_Matrix_f32<column, tmp> &Matrix)
     {
-        Class_Matrix_f32<row, column> result;
+        Class_Matrix_f32<row, tmp> result;
         for (int i = 0; i < row; i++)
         {
             for (int k = 0; k < column; k++)
@@ -340,9 +343,6 @@ protected:
 
     // 内部变量
 
-    // 矩阵数据区域
-    float Data[row * column] = {0.0f};
-
     // 读变量
 
     // 写变量
@@ -400,7 +400,7 @@ namespace Namespace_Matrix
 template<int row, int column>
 inline Class_Matrix_f32<column, row> Class_Matrix_f32<row, column>::Get_Transpose() const
 {
-    float result[column * row];
+    Class_Matrix_f32<column, row> result;
 
     for (int i = 0; i < row; i++)
     {
@@ -513,7 +513,7 @@ inline std::enable_if_t<tmp_row == tmp_column, Class_Matrix_f32<tmp_row, tmp_row
     for (int i = 0; i < tmp_row; i++)
     {
         // 矩阵A部分
-        memcpy(&extended_matrix.Matrix_Data[i * 2 * tmp_row], &Data[i * tmp_row], sizeof(float) * tmp_row);
+        memcpy(&extended_matrix.Data[i * 2 * tmp_row], &Data[i * tmp_row], sizeof(float) * tmp_row);
         // 单位矩阵部分
         extended_matrix[i][i + tmp_row] = 1.0f;
     }
@@ -541,15 +541,15 @@ inline std::enable_if_t<tmp_row == tmp_column, Class_Matrix_f32<tmp_row, tmp_row
         {
             float tmp_data[2 * tmp_row];
             memcpy(tmp_data, &extended_matrix.Data[i * 2 * tmp_row], sizeof(float) * 2 * tmp_row);
-            memcpy(&extended_matrix.Matrix_Data[i * 2 * tmp_row], &extended_matrix.Matrix_Data[max_index * 2 * tmp_row], sizeof(float) * 2 * tmp_row);
-            memcpy(&extended_matrix.Matrix_Data[max_index * 2 * tmp_row], tmp_data, sizeof(float) * 2 * tmp_row);
+            memcpy(&extended_matrix.Data[i * 2 * tmp_row], &extended_matrix.Data[max_index * 2 * tmp_row], sizeof(float) * 2 * tmp_row);
+            memcpy(&extended_matrix.Data[max_index * 2 * tmp_row], tmp_data, sizeof(float) * 2 * tmp_row);
         }
 
         // 行归一化
         float divisor = 1.0f / extended_matrix[i][i];
         for (int j = 0; j < 2 * tmp_row; j++)
         {
-            extended_matrix.Matrix_Data[i * 2 * tmp_row + j] *= divisor;
+            extended_matrix.Data[i * 2 * tmp_row + j] *= divisor;
         }
 
         // 消元
@@ -563,12 +563,12 @@ inline std::enable_if_t<tmp_row == tmp_column, Class_Matrix_f32<tmp_row, tmp_row
                 // 计算消元行
                 for (int k = 0; k < 2 * tmp_row; k++)
                 {
-                    tmp_data[k] = -factor * extended_matrix.Matrix_Data[i * 2 * tmp_row + k];
+                    tmp_data[k] = -factor * extended_matrix.Data[i * 2 * tmp_row + k];
                 }
                 // 将消元行与当前行相加
                 for (int k = 0; k < 2 * tmp_row; k++)
                 {
-                    extended_matrix.Matrix_Data[j * 2 * tmp_row + k] += tmp_data[k];
+                    extended_matrix.Data[j * 2 * tmp_row + k] += tmp_data[k];
                 }
             }
         }
@@ -579,7 +579,7 @@ inline std::enable_if_t<tmp_row == tmp_column, Class_Matrix_f32<tmp_row, tmp_row
 
     for (int i = 0; i < tmp_row; i++)
     {
-        memcpy(&result.Matrix_Data[i * tmp_row], &extended_matrix.Matrix_Data[i * 2 * tmp_row + tmp_row], sizeof(float) * tmp_row);
+        memcpy(&result.Data[i * tmp_row], &extended_matrix.Data[i * 2 * tmp_row + tmp_row], sizeof(float) * tmp_row);
     }
 
     return (result);
@@ -631,7 +631,7 @@ inline std::enable_if_t<tmp_column == 1, Class_Matrix_f32<tmp_row, 1>> Class_Mat
     norm = 1.0f / sqrtf(norm);
     for (int i = 0; i < tmp_row; i++)
     {
-        result.Matrix_Data[i] = Data[i] * norm;
+        result.Data[i] = Data[i] * norm;
     }
     return (result);
 }
@@ -689,10 +689,6 @@ template<int row, int column>
 Class_Matrix_f32<row, column> Namespace_Matrix::Zero()
 {
     Class_Matrix_f32<row, column> result;
-    for (int i = 0; i < row * column; i++)
-    {
-        result.Matrix_Data[i] = 0.0f;
-    }
     return (result);
 }
 
@@ -707,14 +703,10 @@ template<int row, int column>
 Class_Matrix_f32<row, column> Namespace_Matrix::Identity()
 {
     Class_Matrix_f32<row, column> result;
-    for (int i = 0; i < row * column; i++)
-    {
-        result.Matrix_Data[i] = 0.0f;
-    }
     int min_dimension = (row < column) ? row : column;
     for (int i = 0; i < min_dimension; i++)
     {
-        result.Matrix_Data[i * column + i] = 1.0f;
+        result[i][i] = 1.0f;
     }
     return (result);
 }
@@ -731,9 +723,12 @@ template<int row, int column>
 Class_Matrix_f32<row, column> Namespace_Matrix::Constant(const float &Value)
 {
     Class_Matrix_f32<row, column> result;
-    for (int i = 0; i < row * column; i++)
+    for (int i = 0; i < row; i++)
     {
-        result[i % row][i / row] = Value;
+        for (int j = 0; j < column; j++)
+        {
+            result[i][j] = Value;
+        }
     }
     return (result);
 }

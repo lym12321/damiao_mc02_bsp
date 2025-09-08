@@ -182,8 +182,10 @@ void TIM_1ms_CAN_PeriodElapsedCallback()
         mod2 = 0;
 
         // 发送实例
-        CAN_Send_Data(&hfdcan2, 0x1fe, CAN2_0x1fe_Tx_Data, 8);
+        // CAN_Send_Data(&hfdcan2, 0x1fe, CAN2_0x1fe_Tx_Data, 8);
     }
+
+    CAN_Send_Data(&hfdcan1, 0x1fe, CAN1_0x1fe_Tx_Data, 8);
 }
 
 /**
@@ -196,6 +198,19 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
     // 判断程序初始化完成
     if (!init_finished)
     {
+        // 也得接收, 防止FIFO满
+        if (hfdcan->Instance == FDCAN1)
+        {
+            HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &CAN1_Manage_Object.Rx_Header, CAN1_Manage_Object.Rx_Buffer);
+        }
+        else if (hfdcan->Instance == FDCAN2)
+        {
+            HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &CAN2_Manage_Object.Rx_Header, CAN2_Manage_Object.Rx_Buffer);
+        }
+        else if (hfdcan->Instance == FDCAN3)
+        {
+            HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &CAN3_Manage_Object.Rx_Header, CAN3_Manage_Object.Rx_Buffer);
+        }
         return;
     }
 
@@ -242,6 +257,18 @@ void HAL_FDCAN_RxFifo1Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo1ITs)
     // 判断程序初始化完成
     if (!init_finished)
     {
+        if (hfdcan->Instance == FDCAN1)
+        {
+            HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO1, &CAN1_Manage_Object.Rx_Header, CAN1_Manage_Object.Rx_Buffer);
+        }
+        else if (hfdcan->Instance == FDCAN2)
+        {
+            HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO1, &CAN2_Manage_Object.Rx_Header, CAN2_Manage_Object.Rx_Buffer);
+        }
+        else if (hfdcan->Instance == FDCAN3)
+        {
+            HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO1, &CAN3_Manage_Object.Rx_Header, CAN3_Manage_Object.Rx_Buffer);
+        }
         return;
     }
 

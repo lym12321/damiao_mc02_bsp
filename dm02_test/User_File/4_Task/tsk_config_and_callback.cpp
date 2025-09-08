@@ -14,15 +14,17 @@
 
 #include "tsk_config_and_callback.h"
 
+#include "2_Device/Motor/Motor_DJI/dvc_motor_dji.h"
 #include "2_Device/BSP/BMI088/bsp_bmi088.h"
 #include "2_Device/Serialplot/dvc_serialplot.h"
 #include "2_Device/BSP/WS2812/bsp_ws2812.h"
 #include "2_Device/BSP/Buzzer/bsp_buzzer.h"
 #include "2_Device/BSP/Power/bsp_power.h"
 #include "2_Device/BSP/Key/bsp_key.h"
+#include "1_Middleware/Algorithm/Filter/Kalman/alg_filter_kalman.h"
 #include "1_Middleware/Algorithm/Matrix/alg_matrix.h"
 #include "1_Middleware/Driver/WDG/drv_wdg.h"
-#include "1_Middleware/System/sys_timestamp.h"
+#include "1_Middleware/System/Timestamp/sys_timestamp.h"
 
 /* Private macros ------------------------------------------------------------*/
 
@@ -31,7 +33,12 @@
 /* Private variables ---------------------------------------------------------*/
 
 // 串口绘图
-char Serialplot_Variable_Assignment_List[][SERIALPLOT_RX_VARIABLE_ASSIGNMENT_MAX_LENGTH] = {"flag",};
+char Serialplot_Variable_Assignment_List[][SERIALPLOT_RX_VARIABLE_ASSIGNMENT_MAX_LENGTH] = {
+        "q00",
+        "q11",
+        "r00",
+        "r11",
+        };
 
 // LED灯
 uint8_t red = 0;
@@ -43,6 +50,17 @@ bool blue_minus_flag = true;
 
 // 陀螺仪加速度计
 Class_BMI088 bmi088;
+
+// 大疆电机6020
+Class_Motor_DJI_GM6020 motor;
+// Kalman滤波器
+Class_Filter_Kalman filter_kalman;
+// 相关矩阵
+Class_Matrix_f32<2, 2> A;
+Class_Matrix_f32<2, 1> B;
+Class_Matrix_f32<2, 2> H;
+Class_Matrix_f32<2, 2> Q;
+Class_Matrix_f32<2, 2> R;
 
 // 全局初始化完成标志位
 bool init_finished = false;
@@ -67,6 +85,22 @@ void Serial_USB_Call_Back(uint8_t *Buffer, uint16_t Length)
     {
     case (0):
     {
+        filter_kalman.Matrix_Q[0][0] = Serialplot_USB.Get_Variable_Value();
+        break;
+    }
+    case (1):
+    {
+        filter_kalman.Matrix_Q[1][1] = Serialplot_USB.Get_Variable_Value();
+        break;
+    }
+    case (2):
+    {
+        filter_kalman.Matrix_R[0][0] = Serialplot_USB.Get_Variable_Value();
+        break;
+    }
+    case (3):
+    {
+        filter_kalman.Matrix_R[1][1] = Serialplot_USB.Get_Variable_Value();
         break;
     }
     default:
@@ -83,6 +117,24 @@ void Serial_USB_Call_Back(uint8_t *Buffer, uint16_t Length)
 void BMI088_Callback(uint8_t *Tx_Buffer, uint8_t *Rx_Buffer, uint16_t Tx_Length, uint16_t Rx_Length)
 {
     bmi088.SPI_RxCpltCallback();
+}
+
+/**
+ * @brief CAN1回调函数
+ *
+ *
+ */
+void CAN1_Callback(FDCAN_RxHeaderTypeDef &Header, uint8_t *Buffer)
+{
+    switch (Header.Identifier)
+    {
+    case (0x207):
+    {
+        motor.CAN_RxCpltCallback(Buffer);
+
+        break;
+    }
+    }
 }
 
 /**
@@ -109,8 +161,6 @@ void Task1s_Callback()
  */
 void Task1ms_Callback()
 {
-    uint64_t now_time = SYS_Timestamp.Get_Now_Microsecond();
-
     static int mod10 = 0;
     mod10++;
     if (mod10 == 10)
@@ -176,8 +226,6 @@ void Task1ms_Callback()
 
     BSP_Buzzer.Set_Sound(0.0f, 0.0f);
 
-    float battery_power = BSP_Power.Get_Power_Voltage();
-
     BSP_Key.TIM_1ms_Process_PeriodElapsedCallback();
     static int mod50 = 0;
     mod50++;
@@ -189,6 +237,24 @@ void Task1ms_Callback()
         BSP_Key.TIM_50ms_Read_PeriodElapsedCallback();
     }
 
+    static int mod100 = 0;
+    mod100++;
+    if (mod100 == 100)
+    {
+        mod100 = 0;
+
+        motor.TIM_100ms_Alive_PeriodElapsedCallback();
+    }
+    motor.Set_Target_Current(0.05f);
+    motor.TIM_Calculate_PeriodElapsedCallback();
+
+    uint64_t now_time = SYS_Timestamp.Get_Now_Microsecond();
+
+    filter_kalman.Vector_Z[0][0] = motor.Get_Now_Angle();
+    filter_kalman.Vector_Z[1][0] = motor.Get_Now_Omega();
+    filter_kalman.TIM_Predict_PeriodElapsedCallback();
+    filter_kalman.TIM_Update_PeriodElapsedCallback();
+
     time_diff = (float) (SYS_Timestamp.Get_Now_Microsecond() - now_time);
 
     float accel_x = bmi088.BMI088_Accel.Get_Raw_Accel_X();
@@ -197,9 +263,15 @@ void Task1ms_Callback()
     float gyro_x = bmi088.BMI088_Gyro.Get_Raw_Gyro_X();
     float gyro_y = bmi088.BMI088_Gyro.Get_Raw_Gyro_Y();
     float gyro_z = bmi088.BMI088_Gyro.Get_Raw_Gyro_Z();
-    Serialplot_USB.Set_Data(6, &accel_x, &accel_y, &accel_z, &gyro_x, &gyro_y, &gyro_z);
+    float battery_power = BSP_Power.Get_Power_Voltage();
+    float origin_angle = motor.Get_Now_Angle();
+    float origin_omega = motor.Get_Now_Omega();
+    float kalman_angle = filter_kalman.Vector_X[0][0];
+    float kalman_omega = filter_kalman.Vector_X[1][0];
+    Serialplot_USB.Set_Data(12, &accel_x, &accel_y, &accel_z, &gyro_x, &gyro_y, &gyro_z, &battery_power, &origin_angle, &origin_omega, &kalman_angle, &kalman_omega, &time_diff);
     Serialplot_USB.TIM_1ms_Write_PeriodElapsedCallback();
 
+    TIM_1ms_CAN_PeriodElapsedCallback();
     // 喂狗
     TIM_1ms_IWDG_PeriodElapsedCallback();
 }
@@ -251,6 +323,9 @@ void Task_Init()
     SPI_Init(&hspi2, BMI088_Callback);
     // WS2812的SPI
     SPI_Init(&hspi6, nullptr);
+    // 电机的CAN
+    CAN_Init(&hfdcan1, CAN1_Callback);
+    // 电源的ADC
     ADC_Init(&hadc1, 1);
 
     // 定时器中断初始化
@@ -260,7 +335,7 @@ void Task_Init()
     HAL_TIM_Base_Start_IT(&htim7);
     HAL_TIM_Base_Start_IT(&htim8);
 
-    Serialplot_USB.Init(Serialplot_Checksum_8_DISABLE, 1, reinterpret_cast<const char **>(Serialplot_Variable_Assignment_List));
+    Serialplot_USB.Init(Serialplot_Checksum_8_DISABLE, 4, reinterpret_cast<const char **>(Serialplot_Variable_Assignment_List));
 
     BSP_WS2812.Init(0, 0, 0);
 
@@ -271,6 +346,29 @@ void Task_Init()
     BSP_Key.Init();
 
     bmi088.Init();
+
+    motor.Init(&hfdcan1, Motor_DJI_ID_0x207, Motor_DJI_Control_Method_CURRENT, 0, Motor_DJI_GM6020_Driver_Version_2023);
+    A[0][0] = 1.0f;
+    A[0][1] = 0.001f;
+    A[1][0] = 0.0f;
+    A[1][1] = 1.0f;
+    B[0][0] = 0.0f;
+    B[1][0] = 0.0f;
+    H[0][0] = 1.0f;
+    H[0][1] = 0.0f;
+    H[1][0] = 0.0f;
+    H[1][1] = 1.0f;
+
+    // 调参侠
+    Q[0][0] = 0.001f;
+    Q[0][1] = 0.0f;
+    Q[1][0] = 0.0f;
+    Q[1][1] = 0.1f;
+    R[0][0] = 0.001f;
+    R[0][1] = 0.0f;
+    R[1][0] = 0.0f;
+    R[1][1] = 1.0f;
+    filter_kalman.Init(A, B, H, Q, R);
 
     Namespace_Timestamp::Delay_Millisecond(500);
 
