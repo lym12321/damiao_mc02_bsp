@@ -34,11 +34,8 @@
 
 // 串口绘图
 char Serialplot_Variable_Assignment_List[][SERIALPLOT_RX_VARIABLE_ASSIGNMENT_MAX_LENGTH] = {
-        "q00",
-        "q11",
-        "r00",
-        "r11",
-        };
+    "q00", "q11", "r00", "r11",
+};
 
 // LED灯
 uint8_t red = 0;
@@ -48,11 +45,8 @@ bool red_minus_flag = false;
 bool green_minus_flag = false;
 bool blue_minus_flag = true;
 
-// 陀螺仪加速度计
-Class_BMI088 bmi088;
-
-// 大疆电机6020
-Class_Motor_DJI_GM6020 motor;
+// 大疆电机3508
+Class_Motor_DJI_C620 motor;
 // Kalman滤波器
 Class_Filter_Kalman filter_kalman;
 // 相关矩阵
@@ -64,8 +58,6 @@ Class_Matrix_f32<2, 2> R;
 
 // 全局初始化完成标志位
 bool init_finished = false;
-// 时间
-float time_diff = 0.0f;
 
 /* Private function declarations ---------------------------------------------*/
 
@@ -114,9 +106,12 @@ void Serial_USB_Call_Back(uint8_t *Buffer, uint16_t Length)
  * @brief SPI2任务回调函数
  *
  */
-void BMI088_Callback(uint8_t *Tx_Buffer, uint8_t *Rx_Buffer, uint16_t Tx_Length, uint16_t Rx_Length)
+void SPI2_Callback(uint8_t *Tx_Buffer, uint8_t *Rx_Buffer, uint16_t Tx_Length, uint16_t Rx_Length)
 {
-    bmi088.SPI_RxCpltCallback();
+    if (SPI2_Manage_Object.Activate_GPIOx == BMI088_ACCEL__SPI_CS_GPIO_Port && SPI2_Manage_Object.Activate_GPIO_Pin == BMI088_ACCEL__SPI_CS_Pin || SPI2_Manage_Object.Activate_GPIOx == BMI088_GYRO__SPI_CS_GPIO_Port && SPI2_Manage_Object.Activate_GPIO_Pin == BMI088_GYRO__SPI_CS_Pin)
+    {
+        BSP_BMI088.SPI_RxCpltCallback();
+    }
 }
 
 /**
@@ -128,7 +123,7 @@ void CAN1_Callback(FDCAN_RxHeaderTypeDef &Header, uint8_t *Buffer)
 {
     switch (Header.Identifier)
     {
-    case (0x207):
+    case (0x201):
     {
         motor.CAN_RxCpltCallback(Buffer);
 
@@ -245,30 +240,48 @@ void Task1ms_Callback()
 
         motor.TIM_100ms_Alive_PeriodElapsedCallback();
     }
-    motor.Set_Target_Current(0.05f);
+    motor.Set_Target_Current(0.5f);
     motor.TIM_Calculate_PeriodElapsedCallback();
 
-    uint64_t now_time = SYS_Timestamp.Get_Now_Microsecond();
+    static int mod128 = 0;
+    mod128++;
+    if (mod128 == 128)
+    {
+        mod128 = 0;
+
+        BSP_BMI088.TIM_128ms_Calculate_PeriodElapsedCallback();
+    }
 
     filter_kalman.Vector_Z[0][0] = motor.Get_Now_Angle();
     filter_kalman.Vector_Z[1][0] = motor.Get_Now_Omega();
     filter_kalman.TIM_Predict_PeriodElapsedCallback();
     filter_kalman.TIM_Update_PeriodElapsedCallback();
 
-    time_diff = (float) (SYS_Timestamp.Get_Now_Microsecond() - now_time);
+    float accel_x = BSP_BMI088.BMI088_Accel.Get_Raw_Accel_X();
+    float accel_y = BSP_BMI088.BMI088_Accel.Get_Raw_Accel_Y();
+    float accel_z = BSP_BMI088.BMI088_Accel.Get_Raw_Accel_Z();
+    float gyro_x = BSP_BMI088.BMI088_Gyro.Get_Raw_Gyro_X();
+    float gyro_y = BSP_BMI088.BMI088_Gyro.Get_Raw_Gyro_Y();
+    float gyro_z = BSP_BMI088.BMI088_Gyro.Get_Raw_Gyro_Z();
+    float q0 = BSP_BMI088.EKF_Quaternion.Vector_X[0][0];
+    float q1 = BSP_BMI088.EKF_Quaternion.Vector_X[1][0];
+    float q2 = BSP_BMI088.EKF_Quaternion.Vector_X[2][0];
+    float q3 = BSP_BMI088.EKF_Quaternion.Vector_X[3][0];
+    float accel = sqrtf(accel_x * accel_x + accel_y * accel_y + accel_z * accel_z);
+    float gyro = sqrtf(gyro_x * gyro_x + gyro_y * gyro_y + gyro_z * gyro_z);
+    float yaw = BSP_BMI088.Get_Angle_Yaw() / BASIC_MATH_DEG_TO_RAD;
+    float pitch = BSP_BMI088.Get_Angle_Pitch() / BASIC_MATH_DEG_TO_RAD;
+    float roll = BSP_BMI088.Get_Angle_Roll() / BASIC_MATH_DEG_TO_RAD;
+    float loss = BSP_BMI088.Get_Accel_Chi_Square_Loss();
+    float calculating_time = BSP_BMI088.Get_Calculating_Time();
+    float temperature = BSP_BMI088.BMI088_Accel.Get_Now_Temperature();
+    float i_out = BSP_BMI088.BMI088_Accel.PID_Temperature.Get_Integral_Error() * BSP_BMI088.BMI088_Accel.PID_Temperature.K_I;
+    float out = BSP_BMI088.BMI088_Accel.PID_Temperature.Get_Out();
 
-    float accel_x = bmi088.BMI088_Accel.Get_Raw_Accel_X();
-    float accel_y = bmi088.BMI088_Accel.Get_Raw_Accel_Y();
-    float accel_z = bmi088.BMI088_Accel.Get_Raw_Accel_Z();
-    float gyro_x = bmi088.BMI088_Gyro.Get_Raw_Gyro_X();
-    float gyro_y = bmi088.BMI088_Gyro.Get_Raw_Gyro_Y();
-    float gyro_z = bmi088.BMI088_Gyro.Get_Raw_Gyro_Z();
-    float battery_power = BSP_Power.Get_Power_Voltage();
-    float origin_angle = motor.Get_Now_Angle();
-    float origin_omega = motor.Get_Now_Omega();
-    float kalman_angle = filter_kalman.Vector_X[0][0];
-    float kalman_omega = filter_kalman.Vector_X[1][0];
-    Serialplot_USB.Set_Data(12, &accel_x, &accel_y, &accel_z, &gyro_x, &gyro_y, &gyro_z, &battery_power, &origin_angle, &origin_omega, &kalman_angle, &kalman_omega, &time_diff);
+    // 串口绘图
+    Serialplot_USB.Set_Data(20, &accel_x, &accel_y, &accel_z, &gyro_x, &gyro_y, &gyro_z, &q0, &q1, &q2, &q3, &accel, &gyro, &yaw, &pitch, &roll, &loss, &calculating_time, &temperature, &i_out, &out);
+    // Serialplot_USB.Set_Data(4, &accel_x, &accel_y, &accel_z, &accel);
+    // Serialplot_USB.Set_Data(4, &gyro_x, &gyro_y, &gyro_z, &gyro);
     Serialplot_USB.TIM_1ms_Write_PeriodElapsedCallback();
 
     TIM_1ms_CAN_PeriodElapsedCallback();
@@ -282,7 +295,7 @@ void Task1ms_Callback()
  */
 void Task125us_Callback()
 {
-
+    BSP_BMI088.TIM_125us_Calculate_PeriodElapsedCallback();
 }
 
 /**
@@ -291,23 +304,7 @@ void Task125us_Callback()
  */
 void Task10us_Callback()
 {
-    if (bmi088.Get_Init_Finished() & bmi088.Get_Accel_Data_Ready_Flag() & !bmi088.Get_Accel_Transfering_Flag() & !bmi088.Get_Gyro_Transfering_Flag())
-    {
-        bmi088.Set_Accel_Transfering_Flag(true);
-
-        bmi088.BMI088_Accel.SPI_Request_Accel();
-
-        bmi088.Set_Accel_Data_Ready_Flag(false);
-    }
-
-    if (bmi088.Get_Init_Finished() & bmi088.Get_Gyro_Data_Ready_Flag() & !bmi088.Get_Gyro_Transfering_Flag() & !bmi088.Get_Accel_Transfering_Flag())
-    {
-        bmi088.Set_Gyro_Transfering_Flag(true);
-
-        bmi088.BMI088_Gyro.SPI_Request_Gyro();
-
-        bmi088.Set_Gyro_Data_Ready_Flag(false);
-    }
+    BSP_BMI088.TIM_10us_Calculate_PeriodElapsedCallback();
 }
 
 /**
@@ -320,7 +317,7 @@ void Task_Init()
     // 串口绘图的USB
     USB_Init(Serial_USB_Call_Back);
     // 陀螺仪的SPI
-    SPI_Init(&hspi2, BMI088_Callback);
+    SPI_Init(&hspi2, SPI2_Callback);
     // WS2812的SPI
     SPI_Init(&hspi6, nullptr);
     // 电机的CAN
@@ -335,7 +332,7 @@ void Task_Init()
     HAL_TIM_Base_Start_IT(&htim7);
     HAL_TIM_Base_Start_IT(&htim8);
 
-    Serialplot_USB.Init(Serialplot_Checksum_8_DISABLE, 4, reinterpret_cast<const char **>(Serialplot_Variable_Assignment_List));
+    Serialplot_USB.Init(Serialplot_Checksum_8_ENABLE, 4, reinterpret_cast<const char **>(Serialplot_Variable_Assignment_List));
 
     BSP_WS2812.Init(0, 0, 0);
 
@@ -345,9 +342,9 @@ void Task_Init()
 
     BSP_Key.Init();
 
-    bmi088.Init();
+    BSP_BMI088.Init();
 
-    motor.Init(&hfdcan1, Motor_DJI_ID_0x207, Motor_DJI_Control_Method_CURRENT, 0, Motor_DJI_GM6020_Driver_Version_2023);
+    motor.Init(&hfdcan1, Motor_DJI_ID_0x201, Motor_DJI_Control_Method_CURRENT);
     A[0][0] = 1.0f;
     A[0][1] = 0.001f;
     A[1][0] = 0.0f;
@@ -370,7 +367,7 @@ void Task_Init()
     R[1][1] = 1.0f;
     filter_kalman.Init(A, B, H, Q, R);
 
-    Namespace_Timestamp::Delay_Millisecond(500);
+    Namespace_SYS_Timestamp::Delay_Millisecond(2000);
 
     // 标记初始化完成
     init_finished = true;
@@ -382,7 +379,7 @@ void Task_Init()
  */
 void Task_Loop()
 {
-    Namespace_Timestamp::Delay_Millisecond(1);
+    Namespace_SYS_Timestamp::Delay_Millisecond(1);
 }
 
 /**
@@ -399,7 +396,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
     if (GPIO_Pin == BMI088_ACCEL__INTERRUPT_Pin || GPIO_Pin == BMI088_GYRO__INTERRUPT_Pin)
     {
-        bmi088.EXTI_Flag_Callback(GPIO_Pin);
+        BSP_BMI088.EXTI_Flag_Callback(GPIO_Pin);
     }
 }
 

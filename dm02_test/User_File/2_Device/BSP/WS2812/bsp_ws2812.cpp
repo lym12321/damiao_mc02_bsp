@@ -20,39 +20,23 @@
 /* Private variables ---------------------------------------------------------*/
 
 // 纯黑
-const Struct_WS2812_Color WS2812_COLOR_BLACK = {0,
-                                                0,
-                                                0};
+const Struct_WS2812_Color WS2812_COLOR_BLACK = {0, 0, 0};
 // 纯白
-const Struct_WS2812_Color WS2812_COLOR_WHITE = {255,
-                                                255,
-                                                255};
+const Struct_WS2812_Color WS2812_COLOR_WHITE = {255, 255, 255};
 
 // 纯红
-const Struct_WS2812_Color WS2812_COLOR_RED = {255,
-                                              0,
-                                              0};
+const Struct_WS2812_Color WS2812_COLOR_RED = {255, 0, 0};
 // 纯绿
-const Struct_WS2812_Color WS2812_COLOR_GREEN = {0,
-                                                255,
-                                                0};
+const Struct_WS2812_Color WS2812_COLOR_GREEN = {0, 255, 0};
 // 纯蓝
-const Struct_WS2812_Color WS2812_COLOR_BLUE = {0,
-                                               0,
-                                               255};
+const Struct_WS2812_Color WS2812_COLOR_BLUE = {0, 0, 255};
 
 // 黄色
-const Struct_WS2812_Color WS2812_COLOR_YELLOW = {255,
-                                                 255,
-                                                 0};
+const Struct_WS2812_Color WS2812_COLOR_YELLOW = {255, 255, 0};
 // 青色
-const Struct_WS2812_Color WS2812_COLOR_CYAN = {0,
-                                               255,
-                                               255};
+const Struct_WS2812_Color WS2812_COLOR_CYAN = {0, 255, 255};
 // 品红
-const Struct_WS2812_Color WS2812_COLOR_MAGENTA = {255,
-                                                  0,
-                                                  255};
+const Struct_WS2812_Color WS2812_COLOR_MAGENTA = {255, 0, 255};
 
 Class_WS2812 BSP_WS2812;
 

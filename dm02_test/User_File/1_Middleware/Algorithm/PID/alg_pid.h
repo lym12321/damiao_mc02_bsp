@@ -69,7 +69,7 @@ public:
 
     void TIM_Calculate_PeriodElapsedCallback();
 
-protected:
+// protected:
     // 初始化相关常量
 
     // PID计时器周期, s

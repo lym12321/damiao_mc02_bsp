@@ -26,7 +26,7 @@ float Matrix_Compare_Epsilon = 1e-6f;
  * @brief 获取2D空间的X轴单位向量
  *
  */
-Class_Matrix_f32<2, 1> Namespace_Matrix::Axis_X_2d()
+Class_Matrix_f32<2, 1> Namespace_ALG_Matrix::Axis_X_2d()
 {
     Class_Matrix_f32<2, 1> result;
     result[0][0] = 1.0f;
@@ -38,7 +38,7 @@ Class_Matrix_f32<2, 1> Namespace_Matrix::Axis_X_2d()
  * @brief 获取2D空间的Y轴单位向量
  *
  */
-Class_Matrix_f32<2, 1> Namespace_Matrix::Axis_Y_2d()
+Class_Matrix_f32<2, 1> Namespace_ALG_Matrix::Axis_Y_2d()
 {
     Class_Matrix_f32<2, 1> result;
     result[0][0] = 0.0f;
@@ -50,7 +50,7 @@ Class_Matrix_f32<2, 1> Namespace_Matrix::Axis_Y_2d()
  * @brief 获取X轴单位向量
  *
  */
-Class_Matrix_f32<3, 1> Namespace_Matrix::Axis_X_3d()
+Class_Matrix_f32<3, 1> Namespace_ALG_Matrix::Axis_X_3d()
 {
     Class_Matrix_f32<3, 1> result;
     result[0][0] = 1.0f;
@@ -63,7 +63,7 @@ Class_Matrix_f32<3, 1> Namespace_Matrix::Axis_X_3d()
  * @brief 获取Y轴单位向量
  *
  */
-Class_Matrix_f32<3, 1> Namespace_Matrix::Axis_Y_3d()
+Class_Matrix_f32<3, 1> Namespace_ALG_Matrix::Axis_Y_3d()
 {
     Class_Matrix_f32<3, 1> result;
     result[0][0] = 0.0f;
@@ -76,7 +76,7 @@ Class_Matrix_f32<3, 1> Namespace_Matrix::Axis_Y_3d()
  * @brief 获取Z轴单位向量
  *
  */
-Class_Matrix_f32<3, 1> Namespace_Matrix::Axis_Z_3d()
+Class_Matrix_f32<3, 1> Namespace_ALG_Matrix::Axis_Z_3d()
 {
     Class_Matrix_f32<3, 1> result;
     result[0][0] = 0.0f;
@@ -91,7 +91,7 @@ Class_Matrix_f32<3, 1> Namespace_Matrix::Axis_Z_3d()
  * @param Angle 旋转角度, 单位弧度
  * @return Class_Matrix_f32<2, 2> 旋转矩阵
  */
-Class_Matrix_f32<2, 2> Namespace_Matrix::Rotation_2d(const float &Angle)
+Class_Matrix_f32<2, 2> Namespace_ALG_Matrix::Rotation_2d(const float &Angle)
 {
     Class_Matrix_f32<2, 2> result;
     float tmp_cos, tmp_sin;
@@ -111,7 +111,7 @@ Class_Matrix_f32<2, 2> Namespace_Matrix::Rotation_2d(const float &Angle)
  * @param Axis 旋转轴, 单位向量
  * @return Class_Matrix_f32<3, 3> 旋转矩阵
  */
-Class_Matrix_f32<3, 3> Namespace_Matrix::Rotation_3d(const float &Angle, const Class_Matrix_f32<3, 1> &Axis)
+Class_Matrix_f32<3, 3> Namespace_ALG_Matrix::Rotation_3d(const float &Angle, const Class_Matrix_f32<3, 1> &Axis)
 {
     Class_Matrix_f32<3, 3> result;
     float tmp_cos, tmp_sin;
@@ -136,7 +136,7 @@ Class_Matrix_f32<3, 3> Namespace_Matrix::Rotation_3d(const float &Angle, const C
  * @param Vector_2 向量2
  * @return Class_Matrix_f32<3, 1> 叉乘结果
  */
-Class_Matrix_f32<3, 1> Namespace_Matrix::Operator_Cross_3d(const Class_Matrix_f32<3, 1> &Vector_1, const Class_Matrix_f32<3, 1> &Vector_2)
+Class_Matrix_f32<3, 1> Namespace_ALG_Matrix::Operator_Cross_3d(const Class_Matrix_f32<3, 1> &Vector_1, const Class_Matrix_f32<3, 1> &Vector_2)
 {
     Class_Matrix_f32<3, 1> result;
     result[0][0] = Vector_1[1][0] * Vector_2[2][0] - Vector_1[2][0] * Vector_2[1][0];
@@ -152,7 +152,7 @@ Class_Matrix_f32<3, 1> Namespace_Matrix::Operator_Cross_3d(const Class_Matrix_f3
  * @param Vector_2 向量2
  * @return float 叉乘结果
  */
-float Namespace_Matrix::Operator_Cross_2d(const Class_Matrix_f32<2, 1> &Vector_1, const Class_Matrix_f32<2, 1> &Vector_2)
+float Namespace_ALG_Matrix::Operator_Cross_2d(const Class_Matrix_f32<2, 1> &Vector_1, const Class_Matrix_f32<2, 1> &Vector_2)
 {
     float result;
     result = Vector_1[0][0] * Vector_2[1][0] - Vector_1[1][0] * Vector_2[0][0];

@@ -183,7 +183,7 @@ public:
         return (result);
     }
 
-    inline Class_Matrix_f32<row, column> operator+=(const float &Value)
+    inline Class_Matrix_f32<row, column> &operator+=(const float &Value)
     {
         for (int i = 0; i < row * column; i++)
         {
@@ -192,7 +192,7 @@ public:
         return (*this);
     }
 
-    inline Class_Matrix_f32<row, column> operator+=(const Class_Matrix_f32<row, column> &Matrix)
+    inline Class_Matrix_f32<row, column> &operator+=(const Class_Matrix_f32<row, column> &Matrix)
     {
         for (int i = 0; i < row * column; i++)
         {
@@ -201,7 +201,7 @@ public:
         return (*this);
     }
 
-    inline Class_Matrix_f32<row, column> operator-=(const float &Value)
+    inline Class_Matrix_f32<row, column> &operator-=(const float &Value)
     {
         for (int i = 0; i < row * column; i++)
         {
@@ -210,7 +210,7 @@ public:
         return (*this);
     }
 
-    inline Class_Matrix_f32<row, column> operator-=(const Class_Matrix_f32<row, column> &Matrix)
+    inline Class_Matrix_f32<row, column> &operator-=(const Class_Matrix_f32<row, column> &Matrix)
     {
         for (int i = 0; i < row * column; i++)
         {
@@ -219,7 +219,7 @@ public:
         return (*this);
     }
 
-    inline Class_Matrix_f32<row, column> operator*=(const float &Value)
+    inline Class_Matrix_f32<row, column> &operator*=(const float &Value)
     {
         for (int i = 0; i < row * column; i++)
         {
@@ -228,7 +228,7 @@ public:
         return (*this);
     }
 
-    inline Class_Matrix_f32<row, column> operator/=(float &Value)
+    inline Class_Matrix_f32<row, column> &operator/=(float &Value)
     {
         if (fabs(Value) <= Matrix_Compare_Epsilon)
         {
@@ -295,7 +295,7 @@ public:
     // 方阵特有
 
     template<int tmp_row = row, int tmp_column = column>
-    inline std::enable_if_t<tmp_row == tmp_column, Class_Matrix_f32<tmp_row, tmp_row>> operator*=(const Class_Matrix_f32<tmp_row, tmp_row> &Matrix)
+    inline std::enable_if_t<tmp_row == tmp_column, Class_Matrix_f32<tmp_row, tmp_row>> &operator*=(const Class_Matrix_f32<tmp_row, tmp_row> &Matrix)
     {
         Class_Matrix_f32<tmp_row, tmp_row> result;
         for (int i = 0; i < tmp_row; i++)
@@ -355,7 +355,7 @@ protected:
 
 /* Exported variables --------------------------------------------------------*/
 
-namespace Namespace_Matrix
+namespace Namespace_ALG_Matrix
 {
     Class_Matrix_f32<2, 1> Axis_X_2d();
 
@@ -507,7 +507,7 @@ template<int tmp_row, int tmp_column>
 inline std::enable_if_t<tmp_row == tmp_column, Class_Matrix_f32<tmp_row, tmp_row>> Class_Matrix_f32<row, column>::Get_Inverse() const
 {
     // 扩展矩阵 [A|I]
-    Class_Matrix_f32<tmp_row, 2 * tmp_row> extended_matrix = Namespace_Matrix::Zero<tmp_row, 2 * tmp_row>();
+    Class_Matrix_f32<tmp_row, 2 * tmp_row> extended_matrix = Namespace_ALG_Matrix::Zero<tmp_row, 2 * tmp_row>();
 
     // 扩展矩阵初始化
     for (int i = 0; i < tmp_row; i++)
@@ -534,7 +534,7 @@ inline std::enable_if_t<tmp_row == tmp_column, Class_Matrix_f32<tmp_row, tmp_row
         // 最大元太小, 认为矩阵不可逆
         if (max_value <= Matrix_Compare_Epsilon)
         {
-            return (Namespace_Matrix::Identity<tmp_row, tmp_row>());
+            return (Namespace_ALG_Matrix::Identity<tmp_row, tmp_row>());
         }
         // 交换行, 将第i行与主元所在行交换
         if (max_index != i)
@@ -686,7 +686,7 @@ inline std::enable_if_t<tmp_row == 1 && tmp_column == 1, float> Class_Matrix_f32
  * @return Class_Matrix_f32<row, column> 零矩阵
  */
 template<int row, int column>
-Class_Matrix_f32<row, column> Namespace_Matrix::Zero()
+Class_Matrix_f32<row, column> Namespace_ALG_Matrix::Zero()
 {
     Class_Matrix_f32<row, column> result;
     return (result);
@@ -700,7 +700,7 @@ Class_Matrix_f32<row, column> Namespace_Matrix::Zero()
  * @return Class_Matrix_f32<row, column> 单位矩阵
  */
 template<int row, int column>
-Class_Matrix_f32<row, column> Namespace_Matrix::Identity()
+Class_Matrix_f32<row, column> Namespace_ALG_Matrix::Identity()
 {
     Class_Matrix_f32<row, column> result;
     int min_dimension = (row < column) ? row : column;
@@ -720,7 +720,7 @@ Class_Matrix_f32<row, column> Namespace_Matrix::Identity()
  * @return Class_Matrix_f32<row, column> 常量矩阵
  */
 template<int row, int column>
-Class_Matrix_f32<row, column> Namespace_Matrix::Constant(const float &Value)
+Class_Matrix_f32<row, column> Namespace_ALG_Matrix::Constant(const float &Value)
 {
     Class_Matrix_f32<row, column> result;
     for (int i = 0; i < row; i++)
@@ -742,7 +742,7 @@ Class_Matrix_f32<row, column> Namespace_Matrix::Constant(const float &Value)
  * @return Class_Matrix_f32<1, 1> 点乘结果
  */
 template<int row>
-float Namespace_Matrix::Operator_Dot(const Class_Matrix_f32<row, 1> &Vector_1, const Class_Matrix_f32<row, 1> &Vector_2)
+float Namespace_ALG_Matrix::Operator_Dot(const Class_Matrix_f32<row, 1> &Vector_1, const Class_Matrix_f32<row, 1> &Vector_2)
 {
     float result = 0.0f;
     for (int i = 0; i < row; i++)

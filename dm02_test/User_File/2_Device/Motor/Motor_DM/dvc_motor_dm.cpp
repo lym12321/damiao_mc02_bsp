@@ -20,41 +20,13 @@
 /* Private variables ---------------------------------------------------------*/
 
 // 清除电机错误信息, 传统模式有效
-uint8_t DM_Motor_CAN_Message_Clear_Error[8] = {0xff,
-                                               0xff,
-                                               0xff,
-                                               0xff,
-                                               0xff,
-                                               0xff,
-                                               0xff,
-                                               0xfb};
+uint8_t DM_Motor_CAN_Message_Clear_Error[8] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xfb};
 // 使能电机, 传统模式有效
-uint8_t DM_Motor_CAN_Message_Enter[8] = {0xff,
-                                         0xff,
-                                         0xff,
-                                         0xff,
-                                         0xff,
-                                         0xff,
-                                         0xff,
-                                         0xfc};
+uint8_t DM_Motor_CAN_Message_Enter[8] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xfc};
 // 失能电机, 传统模式有效
-uint8_t DM_Motor_CAN_Message_Exit[8] = {0xff,
-                                        0xff,
-                                        0xff,
-                                        0xff,
-                                        0xff,
-                                        0xff,
-                                        0xff,
-                                        0xfd};
+uint8_t DM_Motor_CAN_Message_Exit[8] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xfd};
 // 保存当前电机位置为零点, 传统模式有效
-uint8_t DM_Motor_CAN_Message_Save_Zero[8] = {0xff,
-                                             0xff,
-                                             0xff,
-                                             0xff,
-                                             0xff,
-                                             0xff,
-                                             0xff,
-                                             0xfe};
+uint8_t DM_Motor_CAN_Message_Save_Zero[8] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xfe};
 
 /* Private function declarations ---------------------------------------------*/
 
@@ -365,7 +337,7 @@ void Class_Motor_DM_Normal::TIM_Alive_PeriodElapsedCallback()
 
     Pre_Flag = Flag;
 
-    if(Motor_DM_Status == Motor_DM_Status_DISABLE)
+    if (Motor_DM_Status == Motor_DM_Status_DISABLE)
     {
         CAN_Send_Enter();
     }
@@ -410,16 +382,16 @@ void Class_Motor_DM_Normal::Data_Process()
     // 数据处理过程
     int32_t delta_encoder;
     uint16_t tmp_encoder, tmp_omega, tmp_torque;
-    Struct_Motor_DM_CAN_Rx_Data_Normal *tmp_buffer = (Struct_Motor_DM_CAN_Rx_Data_Normal *)CAN_Manage_Object->Rx_Buffer;
+    Struct_Motor_DM_CAN_Rx_Data_Normal *tmp_buffer = (Struct_Motor_DM_CAN_Rx_Data_Normal *) CAN_Manage_Object->Rx_Buffer;
 
     // 电机ID不匹配, 则不进行处理
-    if(tmp_buffer->CAN_ID != (CAN_Tx_ID & 0x0f))
+    if (tmp_buffer->CAN_ID != (CAN_Tx_ID & 0x0f))
     {
         return;
     }
 
     // 处理大小端
-    Math_Endian_Reverse_16((void *)&tmp_buffer->Angle_Reverse, &tmp_encoder);
+    Math_Endian_Reverse_16((void *) &tmp_buffer->Angle_Reverse, &tmp_encoder);
     tmp_omega = (tmp_buffer->Omega_11_4 << 4) | (tmp_buffer->Omega_3_0_Torque_11_8 >> 4);
     tmp_torque = ((tmp_buffer->Omega_3_0_Torque_11_8 & 0x0f) << 8) | (tmp_buffer->Torque_7_0);
 
@@ -440,7 +412,7 @@ void Class_Motor_DM_Normal::Data_Process()
     Rx_Data.Total_Encoder = Rx_Data.Total_Round * (1 << 16) + tmp_encoder - ((1 << 15) - 1);
 
     // 计算电机本身信息
-    Rx_Data.Now_Angle = (float)(Rx_Data.Total_Encoder) / (float)((1 << 16) - 1) * Angle_Max * 2.0f;
+    Rx_Data.Now_Angle = (float) (Rx_Data.Total_Encoder) / (float) ((1 << 16) - 1) * Angle_Max * 2.0f;
     Rx_Data.Now_Omega = Math_Int_To_Float(tmp_omega, 0x7ff, (1 << 12) - 1, 0, Omega_Max);
     Rx_Data.Now_Torque = Math_Int_To_Float(tmp_torque, 0x7ff, (1 << 12) - 1, 0, Torque_Max);
     Rx_Data.Now_MOS_Temperature = tmp_buffer->MOS_Temperature + BASIC_MATH_CELSIUS_TO_KELVIN;
@@ -461,7 +433,7 @@ void Class_Motor_DM_Normal::Output()
     {
     case (Motor_DM_Control_Method_NORMAL_MIT):
     {
-        Struct_Motor_DM_CAN_Tx_Data_Normal_MIT *tmp_buffer = (Struct_Motor_DM_CAN_Tx_Data_Normal_MIT *)Tx_Data;
+        Struct_Motor_DM_CAN_Tx_Data_Normal_MIT *tmp_buffer = (Struct_Motor_DM_CAN_Tx_Data_Normal_MIT *) Tx_Data;
 
         uint16_t tmp_angle, tmp_omega, tmp_torque, tmp_k_p, tmp_k_d;
 
@@ -485,7 +457,7 @@ void Class_Motor_DM_Normal::Output()
     }
     case (Motor_DM_Control_Method_NORMAL_ANGLE_OMEGA):
     {
-        Struct_Motor_DM_CAN_Tx_Data_Normal_Angle_Omega *tmp_buffer = (Struct_Motor_DM_CAN_Tx_Data_Normal_Angle_Omega *)Tx_Data;
+        Struct_Motor_DM_CAN_Tx_Data_Normal_Angle_Omega *tmp_buffer = (Struct_Motor_DM_CAN_Tx_Data_Normal_Angle_Omega *) Tx_Data;
 
         tmp_buffer->Control_Angle = Control_Angle;
         tmp_buffer->Control_Omega = Control_Omega;
@@ -496,7 +468,7 @@ void Class_Motor_DM_Normal::Output()
     }
     case (Motor_DM_Control_Method_NORMAL_OMEGA):
     {
-        Struct_Motor_DM_CAN_Tx_Data_Normal_Omega *tmp_buffer = (Struct_Motor_DM_CAN_Tx_Data_Normal_Omega *)Tx_Data;
+        Struct_Motor_DM_CAN_Tx_Data_Normal_Omega *tmp_buffer = (Struct_Motor_DM_CAN_Tx_Data_Normal_Omega *) Tx_Data;
 
         tmp_buffer->Control_Omega = Control_Omega;
 
@@ -506,11 +478,11 @@ void Class_Motor_DM_Normal::Output()
     }
     case (Motor_DM_Control_Method_NORMAL_EMIT):
     {
-        Struct_Motor_DM_CAN_Tx_Data_Normal_EMIT *tmp_buffer = (Struct_Motor_DM_CAN_Tx_Data_Normal_EMIT *)Tx_Data;
+        Struct_Motor_DM_CAN_Tx_Data_Normal_EMIT *tmp_buffer = (Struct_Motor_DM_CAN_Tx_Data_Normal_EMIT *) Tx_Data;
 
         tmp_buffer->Control_Angle = Control_Angle;
-        tmp_buffer->Control_Omega = (uint16_t)(Control_Omega * 100.0f);
-        tmp_buffer->Control_Current = (uint16_t)(Control_Current / Current_Max * 10000.0f);
+        tmp_buffer->Control_Omega = (uint16_t) (Control_Omega * 100.0f);
+        tmp_buffer->Control_Current = (uint16_t) (Control_Current / Current_Max * 10000.0f);
 
         CAN_Send_Data(CAN_Manage_Object->CAN_Handler, CAN_Tx_ID, Tx_Data, 8);
 
@@ -697,7 +669,7 @@ void Class_Motor_DM_1_To_4::PID_Calculate()
  */
 void Class_Motor_DM_1_To_4::Output()
 {
-    *(int16_t *) Tx_Data = (int16_t)(Out);
+    *(int16_t *) Tx_Data = (int16_t) (Out);
 }
 
 /************************ COPYRIGHT(C) USTC-ROBOWALKER **************************/

@@ -23,6 +23,16 @@
 /**
  * @brief Reusable, Kalman滤波器算法
  *
+ * 系统模型
+ * x_k = A * x_{k-1} + B * u_k + w_k
+ * z_k = H * x_k + v_k
+ * 其中, w_k ~ N(0, Q), v_k ~ N(0, R)
+ *
+ * 每轮调用预测和更新函数前, 需要先更新输入向量Vector_U和测量向量Vector_Z
+ *
+ * @tparam State_Dimension 状态维度
+ * @tparam Input_Dimension 输入维度
+ * @tparam Measurement_Dimension 测量维度
  */
 template<uint32_t State_Dimension = 2, uint32_t Input_Dimension = 1, uint32_t Measurement_Dimension = 2>
 class Class_Filter_Kalman
@@ -31,15 +41,14 @@ public:
     // 随着系统确定的
     // 系统状态矩阵
     Class_Matrix_f32<State_Dimension, State_Dimension> Matrix_A;
-    // 控制矩阵
     Class_Matrix_f32<State_Dimension, Input_Dimension> Matrix_B;
-    // 观测矩阵
+    // 测量矩阵
     Class_Matrix_f32<Measurement_Dimension, State_Dimension> Matrix_H;
 
     // 需要自己调参的
     // 过程噪声协方差矩阵
     Class_Matrix_f32<State_Dimension, State_Dimension> Matrix_Q;
-    // 观测噪声协方差矩阵
+    // 测量噪声协方差矩阵
     Class_Matrix_f32<Measurement_Dimension, Measurement_Dimension> Matrix_R;
 
     // 内部运算需要的
@@ -49,12 +58,18 @@ public:
     Class_Matrix_f32<State_Dimension, 1> Vector_X;
     // 输入向量
     Class_Matrix_f32<Input_Dimension, 1> Vector_U;
+    // 先验估计状态向量
+    Class_Matrix_f32<State_Dimension, 1> Vector_X_Prior;
+    // 先验误差协方差矩阵
+    Class_Matrix_f32<State_Dimension, State_Dimension> Matrix_P_Prior;
+    // Kalman增益矩阵
+    Class_Matrix_f32<State_Dimension, Measurement_Dimension> Matrix_K;
 
-    // 系统最终输出的
-    // 观测向量
+    // 传感器拿到的
+    // 测量向量
     Class_Matrix_f32<Measurement_Dimension, 1> Vector_Z;
 
-    void Init(const Class_Matrix_f32<State_Dimension, State_Dimension> &__Matrix_A, const Class_Matrix_f32<State_Dimension, Input_Dimension> &__Matrix_B, const Class_Matrix_f32<Measurement_Dimension, State_Dimension> &__Matrix_H, const Class_Matrix_f32<State_Dimension, State_Dimension> &__Matrix_Q, const Class_Matrix_f32<Measurement_Dimension, Measurement_Dimension> &__Matrix_R, const Class_Matrix_f32<State_Dimension, 1> &__Vector_X = Namespace_Matrix::Zero<State_Dimension, 1>(), const Class_Matrix_f32<Input_Dimension, 1> &__Matrix_U = Namespace_Matrix::Zero<Input_Dimension, 1>());
+    void Init(const Class_Matrix_f32<State_Dimension, State_Dimension> &__Matrix_A, const Class_Matrix_f32<State_Dimension, Input_Dimension> &__Matrix_B, const Class_Matrix_f32<Measurement_Dimension, State_Dimension> &__Matrix_H, const Class_Matrix_f32<State_Dimension, State_Dimension> &__Matrix_Q, const Class_Matrix_f32<Measurement_Dimension, Measurement_Dimension> &__Matrix_R, const Class_Matrix_f32<State_Dimension, 1> &__Vector_X = Namespace_ALG_Matrix::Zero<State_Dimension, 1>(), const Class_Matrix_f32<Input_Dimension, 1> &__Matrix_U = Namespace_ALG_Matrix::Zero<Input_Dimension, 1>());
 
     void TIM_Predict_PeriodElapsedCallback();
 
@@ -65,14 +80,10 @@ protected:
 
     // 常量
 
-    // 内部变量
+    // 单位矩阵
+    const Class_Matrix_f32<State_Dimension, State_Dimension> MATRIX_I_STATE = Namespace_ALG_Matrix::Identity<State_Dimension, State_Dimension>();
 
-    // 先验估计状态向量
-    Class_Matrix_f32<State_Dimension, 1> Vector_X_Prior;
-    // 先验误差协方差矩阵
-    Class_Matrix_f32<State_Dimension, State_Dimension> Matrix_P_Prior;
-    // Kalman增益矩阵
-    Class_Matrix_f32<State_Dimension, Measurement_Dimension> Matrix_K;
+    // 内部变量
 
     // 读变量
 
@@ -92,12 +103,12 @@ protected:
  *
  * @tparam State_Dimension 状态维度
  * @tparam Input_Dimension 输入维度
- * @tparam Measurement_Dimension 观测维度
+ * @tparam Measurement_Dimension 测量维度
  * @param __Matrix_A 系统状态矩阵
  * @param __Matrix_B 控制矩阵
- * @param __Matrix_H 观测矩阵
+ * @param __Matrix_H 测量矩阵
  * @param __Matrix_Q 过程噪声协方差矩阵
- * @param __Matrix_R 观测噪声协方差矩阵
+ * @param __Matrix_R 测量噪声协方差矩阵
  * @param __Vector_X 初始状态向量
  * @param __Matrix_U 初始输入向量
  */
@@ -111,7 +122,7 @@ void Class_Filter_Kalman<State_Dimension, Input_Dimension, Measurement_Dimension
     Matrix_Q = __Matrix_Q;
     Matrix_R = __Matrix_R;
 
-    Matrix_P = Namespace_Matrix::Identity<State_Dimension, State_Dimension>();
+    Matrix_P = MATRIX_I_STATE;
     Vector_X = __Vector_X;
     Vector_U = __Matrix_U;
 }
@@ -121,7 +132,7 @@ void Class_Filter_Kalman<State_Dimension, Input_Dimension, Measurement_Dimension
  *
  * @tparam State_Dimension 状态维度
  * @tparam Input_Dimension 输入维度
- * @tparam Measurement_Dimension 观测维度
+ * @tparam Measurement_Dimension 测量维度
  */
 template<uint32_t State_Dimension, uint32_t Input_Dimension, uint32_t Measurement_Dimension>
 void Class_Filter_Kalman<State_Dimension, Input_Dimension, Measurement_Dimension>::TIM_Predict_PeriodElapsedCallback()
@@ -138,7 +149,7 @@ void Class_Filter_Kalman<State_Dimension, Input_Dimension, Measurement_Dimension
  *
  * @tparam State_Dimension 状态维度
  * @tparam Input_Dimension 输入维度
- * @tparam Measurement_Dimension 观测维度
+ * @tparam Measurement_Dimension 测量维度
  */
 template<uint32_t State_Dimension, uint32_t Input_Dimension, uint32_t Measurement_Dimension>
 void Class_Filter_Kalman<State_Dimension, Input_Dimension, Measurement_Dimension>::TIM_Update_PeriodElapsedCallback()
@@ -149,8 +160,10 @@ void Class_Filter_Kalman<State_Dimension, Input_Dimension, Measurement_Dimension
     // 更新状态向量
     Vector_X = Vector_X_Prior + Matrix_K * (Vector_Z - Matrix_H * Vector_X_Prior);
 
-    // 更新误差协方差矩阵
-    Matrix_P = (Namespace_Matrix::Identity<State_Dimension, State_Dimension>() - Matrix_K * Matrix_H) * Matrix_P_Prior;
+    // 更新误差协方差矩阵, 为获得更好的数值稳定性, 采用约瑟夫形式
+    Class_Matrix_f32<State_Dimension, State_Dimension> matrix_tmp = MATRIX_I_STATE - Matrix_K * Matrix_H;
+    // Matrix_P = matrix_tmp * Matrix_P_Prior;
+    Matrix_P = matrix_tmp * Matrix_P_Prior * matrix_tmp.Get_Transpose() + Matrix_K * Matrix_R * Matrix_K.Get_Transpose();
 }
 
 #endif

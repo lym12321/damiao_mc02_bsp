@@ -15,6 +15,7 @@
 /* Includes ------------------------------------------------------------------*/
 
 #include "bsp_bmi088_accel_register.h"
+#include "2_Device/BSP/Power/bsp_power.h"
 #include "1_Middleware/Algorithm/PID/alg_pid.h"
 #include "1_Middleware/Driver/SPI/drv_spi.h"
 #include "tim.h"
@@ -23,6 +24,18 @@
 /* Exported macros -----------------------------------------------------------*/
 
 /* Exported types ------------------------------------------------------------*/
+
+/**
+ * @brief 加速度计量程枚举类型
+ *
+ */
+enum Enum_BSP_BMI088_Accel_Range : uint8_t
+{
+    BMI088_ACCEL_RANGE_3G = 0x00,
+    BMI088_ACCEL_RANGE_6G,
+    BMI088_ACCEL_RANGE_12G,
+    BMI088_ACCEL_RANGE_24G,
+};
 
 /**
  * @brief Specialized, 加速度计
@@ -50,11 +63,13 @@ public:
 
     void SPI_RxCpltCallback();
 
-    void SPI_Request_Accel() const;
+    void SPI_Request_Accel();
 
-    void TIM_100ms_Process_PeriodElapsedCallback();
+    void SPI_Request_Temperature();
 
-protected:
+    void TIM_128ms_Heater_PID_PeriodElapsedCallback();
+
+// protected:
     // 初始化相关常量
 
     // 绑定的SPI
@@ -75,43 +90,55 @@ protected:
     const uint8_t BMI088_GYRO_SPI_RX_RESERVED = 1;
     // 初始化指令数
     const uint8_t BMI088_ACCEL_INIT_INSTRUCTION_NUM = 6;
+    // 加速度计量程, 默认±24g
+    const Enum_BSP_BMI088_Accel_Range BMI088_ACCEL_RANGE = BMI088_ACCEL_RANGE_24G;
     // 寄存器配置相关
-    const uint8_t BMI088_GYRO_REGISTER_CONFIG[6][2] = {{
-                                                               // 开启加速度计电源
-                                                               offsetof(Struct_BMI088_Accel_Register, ACC_PWR_CTRL_RW),
-                                                               0x04,},
-                                                       {
-                                                               // 将加速度计从默认挂起状态0x03改为工作状态0x00
-                                                               offsetof(Struct_BMI088_Accel_Register, ACC_PWR_CONF_RW),
-                                                               0x00,},
-                                                       {
-                                                               // 加速度计无滤波器, 频率1600Hz
-                                                               offsetof(Struct_BMI088_Accel_Register, ACC_CONF_RW),
-                                                               (0x0a << 4) | 0x0c,},
-                                                       {
-                                                               // 加速度计量程±24g
-                                                               offsetof(Struct_BMI088_Accel_Register, ACC_RANGE_RW),
-                                                               0x03,},
-                                                       {
-                                                               // 中断1号引脚配置推挽输出模式
-                                                               offsetof(Struct_BMI088_Accel_Register, INT1_IO_CTRL_RW),
-                                                               0x01 << 3,},
-                                                       {
-                                                               // 配置为如果数据准备好就中断
-                                                               offsetof(Struct_BMI088_Accel_Register, INT_MAP_DATA_RW),
-                                                               0x01 << 2,},};
+    const uint8_t BMI088_GYRO_REGISTER_CONFIG[6][2] = {
+        // 开启加速度计电源
+        {
+            offsetof(Struct_BMI088_Accel_Register, ACC_PWR_CTRL_RW), 0x04
+        },
+        // 将加速度计从默认挂起状态0x03改为工作状态0x00
+        {
+            offsetof(Struct_BMI088_Accel_Register, ACC_PWR_CONF_RW), 0x00
+        },
+        // 加速度计无滤波器, 频率1600Hz
+        {
+            offsetof(Struct_BMI088_Accel_Register, ACC_CONF_RW), (0x0a << 4) | 0x0c
+        },
+        // 加速度计量程
+        {
+            offsetof(Struct_BMI088_Accel_Register, ACC_RANGE_RW), BMI088_ACCEL_RANGE
+        },
+        // 中断1号引脚配置推挽输出模式
+        {
+            offsetof(Struct_BMI088_Accel_Register, INT1_IO_CTRL_RW), 0x01 << 3
+        },
+        // 配置为如果数据准备好就中断
+        {
+            offsetof(Struct_BMI088_Accel_Register, INT_MAP_DATA_RW), 0x01 << 2
+        },
+    };
+
+    // 加热电阻标称电压
+    float HEATER_NOMINAL_VOLTAGE = 25.2f;
+    // 加热电阻预热功率, 单位与PID等同
+    float HEATER_PREHEAT_POWER = 2000.0f;
 
     // 内部变量
 
     // 寄存器结构体
     Struct_BMI088_Accel_Register Register;
 
+    // 加热电阻预热时间戳
+    bool Heater_Preheat_Finished_Flag = false;
+
     // 读变量
 
     // 当前温度
     float Now_Temperature = 0.0f;
 
-    // 当前加速度
+    // 当前加速度, 单位是一个重力加速度, 即如若z轴向上静置则Raw_Accel_Z=1, 其余为0
     float Raw_Accel_X = 0.0f;
     float Raw_Accel_Y = 0.0f;
     float Raw_Accel_Z = 0.0f;
@@ -137,6 +164,8 @@ protected:
 };
 
 /* Exported variables --------------------------------------------------------*/
+
+extern Class_Power BSP_Power;
 
 /* Exported function declarations --------------------------------------------*/
 

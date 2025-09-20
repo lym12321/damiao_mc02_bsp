@@ -29,7 +29,7 @@ struct Struct_BMI088_Gyro_Register
     uint8_t GYRO_CHIP_ID_RO;
     uint8_t Reserved_0[1];
 
-    //
+    // 陀螺仪数据
     int16_t RATE_X_RO;
     int16_t RATE_Y_RO;
     int16_t RATE_Z_RO;

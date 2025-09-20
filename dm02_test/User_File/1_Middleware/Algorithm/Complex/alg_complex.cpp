@@ -23,7 +23,7 @@
  * @brief 获取零复数
  *
  */
-Class_Complex_f32 Namespace_Complex::Zero()
+Class_Complex_f32 Namespace_ALG_Complex::Zero()
 {
     Class_Complex_f32 result;
     result[0] = 0.0f;
@@ -35,7 +35,7 @@ Class_Complex_f32 Namespace_Complex::Zero()
  * @brief 获取单位实复数
  *
  */
-Class_Complex_f32 Namespace_Complex::Unit_Real()
+Class_Complex_f32 Namespace_ALG_Complex::Unit_Real()
 {
     Class_Complex_f32 result;
     result[0] = 1.0f;
@@ -47,7 +47,7 @@ Class_Complex_f32 Namespace_Complex::Unit_Real()
  * @brief 获取单位虚复数
  *
  */
-Class_Complex_f32 Namespace_Complex::Unit_Imaginary()
+Class_Complex_f32 Namespace_ALG_Complex::Unit_Imaginary()
 {
     Class_Complex_f32 result;
     result[0] = 0.0f;
@@ -60,7 +60,7 @@ Class_Complex_f32 Namespace_Complex::Unit_Imaginary()
  *
  * @param Angle 旋转角度, 单位: 弧度
  */
-Class_Complex_f32 Namespace_Complex::Angle_Unit(const float &Angle)
+Class_Complex_f32 Namespace_ALG_Complex::Angle_Unit(const float &Angle)
 {
     Class_Complex_f32 result;
     result[0] = arm_cos_f32(Angle);
@@ -74,7 +74,7 @@ Class_Complex_f32 Namespace_Complex::Angle_Unit(const float &Angle)
  * @param Modulus 复数模长
  * @param Angle 复数幅角
  */
-Class_Complex_f32 Namespace_Complex::Polar(const float &Modulus, const float &Angle)
+Class_Complex_f32 Namespace_ALG_Complex::Polar(const float &Modulus, const float &Angle)
 {
     Class_Complex_f32 result;
     result[0] = Modulus * arm_cos_f32(Angle);

@@ -34,7 +34,7 @@ struct Struct_BMI088_Accel_Register
     uint8_t ACC_STATUS_RO;
     uint8_t Reserved_1[0x11 - 0x03];
 
-    //
+    // 加速度数据
     int16_t ACC_X_RO;
     int16_t ACC_Y_RO;
     int16_t ACC_Z_RO;
@@ -47,8 +47,9 @@ struct Struct_BMI088_Accel_Register
     uint8_t ACC_INT_STAT_1_RO;
     uint8_t Reserved_3[0x21 - 0x1d];
 
-    //
-    int16_t TEMP_RO;
+    // 温度数据
+    uint8_t TEMP_MSB_RO;
+    uint8_t TEMP_LSB_RO;
 
     uint8_t FIFO_LENGTH_0_RO;
     uint8_t FIFO_LENGTH_1_RO;

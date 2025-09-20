@@ -211,10 +211,10 @@ inline void Class_Buzzer::Set_Frequency(const float &__Frequency)
     Frequency = Math_Constrain(__Frequency, 0.0f, 20000.0f);
 
     float arr = 1000000.0f / Frequency;
-            __HAL_TIM_SetAutoreload(htim, arr);
+        __HAL_TIM_SetAutoreload(htim, arr);
 
     float ccr = arr * Loudness * 0.5f;
-            __HAL_TIM_SetCompare(htim, TIM_Channel, ccr);
+        __HAL_TIM_SetCompare(htim, TIM_Channel, ccr);
 }
 
 /**
@@ -229,10 +229,10 @@ void Class_Buzzer::Set_Sound(const float &__Frequency, const float &__Loudness)
     Loudness = Math_Constrain(__Loudness, 0.0f, 1.0f);
 
     float arr = 1000000.0f / Frequency;
-            __HAL_TIM_SetAutoreload(htim, arr);
+        __HAL_TIM_SetAutoreload(htim, arr);
 
     float ccr = arr * Loudness * 0.5f;
-            __HAL_TIM_SetCompare(htim, TIM_Channel, ccr);
+        __HAL_TIM_SetCompare(htim, TIM_Channel, ccr);
 }
 
 #endif

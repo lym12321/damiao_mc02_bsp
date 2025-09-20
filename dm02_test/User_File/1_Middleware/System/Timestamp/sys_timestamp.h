@@ -148,25 +148,25 @@ public:
         return (Class_Time((int64_t) ((float) (Microsecond) / value)));
     }
 
-    inline Class_Time operator+=(const Class_Time &Time)
+    inline Class_Time &operator+=(const Class_Time &Time)
     {
         Microsecond += Time.Get_Microsecond();
         return (*this);
     }
 
-    inline Class_Time operator-=(const Class_Time &Time)
+    inline Class_Time &operator-=(const Class_Time &Time)
     {
         Microsecond -= Time.Get_Microsecond();
         return (*this);
     }
 
-    inline Class_Time operator*=(const float &value)
+    inline Class_Time &operator*=(const float &value)
     {
         Microsecond = (int64_t) ((float) (Microsecond) * value);
         return (*this);
     }
 
-    inline Class_Time operator/=(const float &value)
+    inline Class_Time &operator/=(const float &value)
     {
         Microsecond = (int64_t) ((float) (Microsecond) / value);
         return (*this);
@@ -232,7 +232,7 @@ protected:
 
 extern Class_Timestamp SYS_Timestamp;
 
-namespace Namespace_Timestamp
+namespace Namespace_SYS_Timestamp
 {
     void Delay_Second(const uint32_t &Second);
 

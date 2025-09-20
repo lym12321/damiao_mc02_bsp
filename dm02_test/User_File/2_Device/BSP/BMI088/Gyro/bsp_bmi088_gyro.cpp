@@ -45,20 +45,20 @@ void Class_BMI088_Gyro::Init(bool __Heater_Enable)
     while (Register.GYRO_CHIP_ID_RO != 0x0f)
     {
         Read_Single_Register(offsetof(Struct_BMI088_Gyro_Register, GYRO_CHIP_ID_RO));
-        Namespace_Timestamp::Delay_Millisecond(100);
+        Namespace_SYS_Timestamp::Delay_Millisecond(100);
     }
 
     // 软重启
     res = 0xb6;
     Write_Single_Register(offsetof(Struct_BMI088_Gyro_Register, GYRO_SOFTRESET_WO), &res);
-    Namespace_Timestamp::Delay_Millisecond(100);
+    Namespace_SYS_Timestamp::Delay_Millisecond(100);
 
     // 检测通信是否正常
     Register.GYRO_CHIP_ID_RO = 0x00;
     while (Register.GYRO_CHIP_ID_RO != 0x0f)
     {
         Read_Single_Register(offsetof(Struct_BMI088_Gyro_Register, GYRO_CHIP_ID_RO));
-        Namespace_Timestamp::Delay_Millisecond(100);
+        Namespace_SYS_Timestamp::Delay_Millisecond(100);
     }
 
     for (uint8_t i = 0; i < BMI088_GYRO_INIT_INSTRUCTION_NUM; i++)
@@ -68,17 +68,17 @@ void Class_BMI088_Gyro::Init(bool __Heater_Enable)
         {
             // 写入寄存器
             Write_Single_Register(BMI088_GYRO_REGISTER_CONFIG[i][0], &BMI088_GYRO_REGISTER_CONFIG[i][1]);
-            Namespace_Timestamp::Delay_Millisecond(100);
+            Namespace_SYS_Timestamp::Delay_Millisecond(100);
 
             // 读取寄存器
             Read_Single_Register(BMI088_GYRO_REGISTER_CONFIG[i][0]);
-            Namespace_Timestamp::Delay_Millisecond(100);
+            Namespace_SYS_Timestamp::Delay_Millisecond(100);
         }
     }
 
     // 预读取一次陀螺仪数据
     Read_Multi_Register(offsetof(Struct_BMI088_Gyro_Register, RATE_X_RO), 6);
-    Namespace_Timestamp::Delay_Millisecond(100);
+    Namespace_SYS_Timestamp::Delay_Millisecond(100);
 }
 
 /**
@@ -95,9 +95,9 @@ void Class_BMI088_Gyro::SPI_RxCallback()
     if (spi_init_address == offsetof(Struct_BMI088_Gyro_Register, RATE_X_RO))
     {
         // 读取加速度计数据完成
-        Raw_Gyro_X = (float) (Register.RATE_X_RO);
-        Raw_Gyro_Y = (float) (Register.RATE_Y_RO);
-        Raw_Gyro_Z = (float) (Register.RATE_Z_RO);
+        Raw_Gyro_X = (float) (Register.RATE_X_RO) / 32768.0f * (1 << (4 - BMI088_GYRO_RANGE)) * 125.0f * BASIC_MATH_DEG_TO_RAD + GYRO_X_ZERO_OFFSET;
+        Raw_Gyro_Y = (float) (Register.RATE_Y_RO) / 32768.0f * (1 << (4 - BMI088_GYRO_RANGE)) * 125.0f * BASIC_MATH_DEG_TO_RAD + GYRO_Y_ZERO_OFFSET;
+        Raw_Gyro_Z = (float) (Register.RATE_Z_RO) / 32768.0f * (1 << (4 - BMI088_GYRO_RANGE)) * 125.0f * BASIC_MATH_DEG_TO_RAD + GYRO_Z_ZERO_OFFSET;
     }
 }
 
@@ -105,7 +105,7 @@ void Class_BMI088_Gyro::SPI_RxCallback()
  * @brief TIM定时器中断回调函数, 100us周期
  *
  */
-void Class_BMI088_Gyro::SPI_Request_Gyro() const
+void Class_BMI088_Gyro::SPI_Request_Gyro()
 {
     // 读取陀螺仪数据
     Read_Multi_Register(offsetof(Struct_BMI088_Gyro_Register, RATE_X_RO), 6);

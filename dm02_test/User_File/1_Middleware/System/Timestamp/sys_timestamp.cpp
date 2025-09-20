@@ -71,7 +71,7 @@ uint64_t Class_Timestamp::Calculate_Timestamp() const
  *
  * @param Second 延迟秒数
  */
-void Namespace_Timestamp::Delay_Second(const uint32_t &Second)
+void Namespace_SYS_Timestamp::Delay_Second(const uint32_t &Second)
 {
     volatile uint64_t start_time = SYS_Timestamp.Get_Current_Timestamp();
 
@@ -85,7 +85,7 @@ void Namespace_Timestamp::Delay_Second(const uint32_t &Second)
  *
  * @param Millisecond 延迟毫秒数
  */
-void Namespace_Timestamp::Delay_Millisecond(const uint32_t &Millisecond)
+void Namespace_SYS_Timestamp::Delay_Millisecond(const uint32_t &Millisecond)
 {
     volatile uint64_t start_time = SYS_Timestamp.Get_Current_Timestamp();
 
@@ -99,7 +99,7 @@ void Namespace_Timestamp::Delay_Millisecond(const uint32_t &Millisecond)
  *
  * @param Microsecond 延迟微秒数
  */
-void Namespace_Timestamp::Delay_Microsecond(const uint32_t &Microsecond)
+void Namespace_SYS_Timestamp::Delay_Microsecond(const uint32_t &Microsecond)
 {
     volatile uint64_t start_time = SYS_Timestamp.Get_Current_Timestamp();
 

@@ -24,7 +24,7 @@
  * @brief Reusable, 四元数运算
  *
  */
-class Class_Quaternion_f32 : private Class_Matrix_f32<4, 1>
+class Class_Quaternion_f32 : public Class_Matrix_f32<4, 1>
 {
 public:
     // 构造函数
@@ -146,7 +146,7 @@ public:
 
     using Class_Matrix_f32<4, 1>::operator-=;
 
-    inline Class_Quaternion_f32 operator*=(const float &Value)
+    inline Class_Quaternion_f32 &operator*=(const float &Value)
     {
         Data[0] *= Value;
         Data[1] *= Value;
@@ -155,7 +155,7 @@ public:
         return (*this);
     }
 
-    inline Class_Quaternion_f32 operator*=(const Class_Quaternion_f32 &Quaternion)
+    inline Class_Quaternion_f32 &operator*=(const Class_Quaternion_f32 &Quaternion)
     {
         float q0q0 = Data[0] * Quaternion.Data[0];
         float q0q1 = Data[0] * Quaternion.Data[1];
@@ -180,7 +180,7 @@ public:
         return (*this);
     }
 
-    inline Class_Quaternion_f32 operator/=(const Class_Quaternion_f32 &Quaternion)
+    inline Class_Quaternion_f32 &operator/=(const Class_Quaternion_f32 &Quaternion)
     {
         Class_Quaternion_f32 divisor = Quaternion;
         float modulus_square = divisor.Data[0] * divisor.Data[0] + divisor.Data[1] * divisor.Data[1] + divisor.Data[2] * divisor.Data[2] + divisor.Data[3] * divisor.Data[3];
@@ -230,6 +230,8 @@ public:
 
     inline Class_Matrix_f32<4, 4> Get_Self_Matrix() const;
 
+    inline Class_Matrix_f32<3, 1> Get_Euler_Angle() const;
+
 protected:
     // 初始化相关常量
 
@@ -249,7 +251,7 @@ protected:
 
 /* Exported variables --------------------------------------------------------*/
 
-namespace Namespace_Quaternion
+namespace Namespace_ALG_Quaternion
 {
     Class_Quaternion_f32 Zero();
 
@@ -261,7 +263,11 @@ namespace Namespace_Quaternion
 
     Class_Quaternion_f32 Unit_Imaginary_Z();
 
-    Class_Quaternion_f32 Axis_Angle_Unit(const Class_Matrix_f32<3, 1> &Axis, const float &Angle);
+    Class_Quaternion_f32 From_Vector(const Class_Matrix_f32<3, 1> &Vector);
+
+    Class_Quaternion_f32 From_Rotation_Matrix(const Class_Matrix_f32<3, 3> &Rotation_Matrix);
+
+    Class_Quaternion_f32 From_Axis_Angle(const Class_Matrix_f32<3, 1> &Axis, const float &Angle);
 
     Class_Quaternion_f32 From_Euler_Angle(const Class_Matrix_f32<3, 1> &Euler_Angle);
 }
@@ -348,6 +354,40 @@ inline Class_Matrix_f32<4, 4> Class_Quaternion_f32::Get_Self_Matrix() const
     result[3][1] = -Data[2];
     result[3][2] = Data[1];
     result[3][3] = Data[0];
+    return (result);
+}
+
+/**
+ * @brief 获取四元数对应的欧拉角, Z-Y-X顺序
+ *
+ * @return Class_Matrix_f32<3, 1> 欧拉角, Yaw-Pitch-Roll顺序
+ * 注意, 这只是用矩阵形式存储, 不可参与矩阵计算
+ */
+inline Class_Matrix_f32<3, 1> Class_Quaternion_f32::Get_Euler_Angle() const
+{
+    Class_Matrix_f32<3, 1> result;
+
+    result[0][0] = atan2f(2.0f * (Data[0] * Data[3] + Data[1] * Data[2]), 1.0f - 2.0f * (Data[2] * Data[2] + Data[3] * Data[3]));
+
+    float sin_pitch = 2.0f * (Data[0] * Data[2] - Data[3] * Data[1]);
+    if (fabs(sin_pitch) >= 1.0f)
+    {
+        if (sin_pitch > 0.0f)
+        {
+            result[1][0] = PI / 2.0f;
+        }
+        else
+        {
+            result[1][0] = -PI / 2.0f;
+        }
+    }
+    else
+    {
+        result[1][0] = asinf(sin_pitch);
+    }
+
+    result[2][0] = atan2f(2.0f * (Data[0] * Data[1] + Data[2] * Data[3]), 1.0f - 2.0f * (Data[1] * Data[1] + Data[2] * Data[2]));
+
     return (result);
 }
 

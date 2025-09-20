@@ -24,7 +24,7 @@
  * @brief Reusable, 复数运算, 由于不涉及批处理因此用硬算版本即可
  *
  */
-class Class_Complex_f32 : private Class_Matrix_f32<2, 1>
+class Class_Complex_f32 : public Class_Matrix_f32<2, 1>
 {
 public:
     // 构造函数
@@ -110,14 +110,14 @@ public:
 
     using Class_Matrix_f32<2, 1>::operator-=;
 
-    inline Class_Complex_f32 operator*=(const float &Value)
+    inline Class_Complex_f32 &operator*=(const float &Value)
     {
         Data[0] *= Value;
         Data[1] *= Value;
         return (*this);
     }
 
-    inline Class_Complex_f32 operator*=(const Class_Complex_f32 &Complex)
+    inline Class_Complex_f32 &operator*=(const Class_Complex_f32 &Complex)
     {
         float c0c0 = Data[0] * Complex.Data[0];
         float c0c1 = Data[0] * Complex.Data[1];
@@ -130,7 +130,7 @@ public:
 
     using Class_Matrix_f32<2, 1>::operator/=;
 
-    inline Class_Complex_f32 operator/=(const Class_Complex_f32 &Complex)
+    inline Class_Complex_f32 &operator/=(const Class_Complex_f32 &Complex)
     {
         Class_Complex_f32 divisor = Complex;
         float modulus_square = divisor.Data[0] * divisor.Data[0] + divisor.Data[1] * divisor.Data[1];
@@ -187,7 +187,7 @@ protected:
 
 /* Exported variables --------------------------------------------------------*/
 
-namespace Namespace_Complex
+namespace Namespace_ALG_Complex
 {
     Class_Complex_f32 Zero();
 
