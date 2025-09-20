@@ -132,16 +132,16 @@ void Class_BMI088::TIM_125us_Calculate_PeriodElapsedCallback()
 
         // 过程噪声协方差矩阵
         float array_q[16] = {
-            1.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 0.0f, 1.0f
+            0.865f, 0.0f, 0.0f,
+            0.0f, 0.975f, 0.0f,
+            0.0f, 0.0f, 1.077f
         };
         Class_Matrix_f32<3, 3> matrix_q(array_q);
         // 测量噪声协方差矩阵
         float array_r[9] = {
-            0.1f, 0.0f, 0.0f,
-            0.0f, 0.1f, 0.0f,
-            0.0f, 0.0f, 0.1f
+            0.446f, 0.0f, 0.0f,
+            0.0f, 0.476f, 0.0f,
+            0.0f, 0.0f, 0.537f
         };
         Class_Matrix_f32<3, 3> matrix_r(array_r);
 
@@ -185,7 +185,8 @@ void Class_BMI088::TIM_125us_Calculate_PeriodElapsedCallback()
             }
         }
 
-        // x归一化
+        // x归一化, 按理来说这也算模型的一部分, 应当放到系统函数F中, 且需要更新Jacobi矩阵
+        // 然而实测发现是否更新对性能影响不算太大, 更新反而占用了计算时间
         EKF_Quaternion.Vector_X = EKF_Quaternion.Vector_X.Get_Normalization();
 
         EKF_Last_Timestamp = EKF_Now_Timestamp;

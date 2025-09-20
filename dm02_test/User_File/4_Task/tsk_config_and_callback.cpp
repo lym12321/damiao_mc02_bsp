@@ -275,13 +275,10 @@ void Task1ms_Callback()
     float loss = BSP_BMI088.Get_Accel_Chi_Square_Loss();
     float calculating_time = BSP_BMI088.Get_Calculating_Time();
     float temperature = BSP_BMI088.BMI088_Accel.Get_Now_Temperature();
-    float i_out = BSP_BMI088.BMI088_Accel.PID_Temperature.Get_Integral_Error() * BSP_BMI088.BMI088_Accel.PID_Temperature.K_I;
-    float out = BSP_BMI088.BMI088_Accel.PID_Temperature.Get_Out();
 
     // 串口绘图
-    Serialplot_USB.Set_Data(20, &accel_x, &accel_y, &accel_z, &gyro_x, &gyro_y, &gyro_z, &q0, &q1, &q2, &q3, &accel, &gyro, &yaw, &pitch, &roll, &loss, &calculating_time, &temperature, &i_out, &out);
-    // Serialplot_USB.Set_Data(4, &accel_x, &accel_y, &accel_z, &accel);
-    // Serialplot_USB.Set_Data(4, &gyro_x, &gyro_y, &gyro_z, &gyro);
+    Serialplot_USB.Set_Data(6, &yaw, &pitch, &roll, &loss, &calculating_time, &temperature);
+    // Serialplot_USB.Set_Data(6, &accel_x, &accel_y, &accel_z, &gyro_x, &gyro_y, &gyro_z);
     Serialplot_USB.TIM_1ms_Write_PeriodElapsedCallback();
 
     TIM_1ms_CAN_PeriodElapsedCallback();

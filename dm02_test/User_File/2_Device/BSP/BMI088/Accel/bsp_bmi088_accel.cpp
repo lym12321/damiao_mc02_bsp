@@ -45,7 +45,7 @@ void Class_BMI088_Accel::Init(const bool &__Heater_Enable)
     Heater_Enable = __Heater_Enable;
 
     // 初始化PID
-    PID_Temperature.Init(100.0f, 500.0f, 0.0f, 0.0f, 250.0f, 250.0f, 0.128f);
+    PID_Temperature.Init(100.0f, 10.0f, 0.0f, 0.0f, 300.0f, 500.0f, 0.128f);
 
     // 启动PWM
     if (Heater_Enable)
