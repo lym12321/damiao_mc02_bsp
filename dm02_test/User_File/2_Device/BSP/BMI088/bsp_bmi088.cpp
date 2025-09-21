@@ -111,8 +111,6 @@ void Class_BMI088::TIM_128ms_Calculate_PeriodElapsedCallback()
  */
 void Class_BMI088::TIM_125us_Calculate_PeriodElapsedCallback()
 {
-    uint64_t begin_time = SYS_Timestamp.Get_Now_Microsecond();
-
     EKF_Now_Timestamp = SYS_Timestamp.Get_Now_Microsecond();
 
     Vector_Original_Accel[0][0] = BMI088_Accel.Get_Raw_Accel_X();
@@ -194,7 +192,7 @@ void Class_BMI088::TIM_125us_Calculate_PeriodElapsedCallback()
         Class_Quaternion_f32 tmp(EKF_Quaternion.Vector_X);
         Vector_Euler_Angle_YPR = tmp.Get_Euler_Angle();
 
-        Calculating_Time = SYS_Timestamp.Get_Now_Microsecond() - begin_time;
+        Calculating_Time = SYS_Timestamp.Get_Now_Microsecond() - EKF_Now_Timestamp;
 
         return;
     }
