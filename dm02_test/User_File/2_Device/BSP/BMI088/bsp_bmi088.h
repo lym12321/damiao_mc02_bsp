@@ -70,7 +70,7 @@ protected:
     uint64_t TRANSFERING_TIMEOUT = 20;
 
     // 卡方检验残差阈值
-    float ACCEL_CHI_SQUARE_TEST_THRESHOLD = 5.991f;
+    float ACCEL_CHI_SQUARE_TEST_THRESHOLD = 6.0f;
 
     // 内部变量
 
@@ -116,7 +116,8 @@ protected:
 
     // 读变量
 
-    // 欧拉角
+    // 欧拉角, Yaw-Pitch-Roll顺序
+    // 注意, 这只是用矩阵形式存储, 不可参与矩阵计算
     Class_Matrix_f32<3, 1> Vector_Euler_Angle_YPR;
     // 卡方检验值
     float Accel_Chi_Square_Loss = 0.0f;

@@ -39,17 +39,12 @@ class Class_Filter_EKF
 {
 public:
     // 随着系统确定的
-    // 系统状态矩阵
-    Class_Matrix_f32<State_Dimension, State_Dimension> Matrix_A;
-    Class_Matrix_f32<State_Dimension, Input_Dimension> Matrix_B;
     // 系统状态函数
     Class_Matrix_f32<State_Dimension, 1> (*Function_F) (const Class_Matrix_f32<State_Dimension, 1> &Vector_X, const Class_Matrix_f32<Input_Dimension, 1> &Vector_U, const float &D_T);
     // 系统状态函数对状态的雅可比矩阵
     Class_Matrix_f32<State_Dimension, State_Dimension> (*Function_Jacobian_F_X) (const Class_Matrix_f32<State_Dimension, 1> &Vector_X, const Class_Matrix_f32<Input_Dimension, 1> &Vector_U, const float &D_T);
     // 系统状态函数对过程噪声的雅可比矩阵
     Class_Matrix_f32<State_Dimension, Input_Dimension> (*Function_Jacobian_F_W) (const Class_Matrix_f32<State_Dimension, 1> &Vector_X, const Class_Matrix_f32<Input_Dimension, 1> &Vector_U, const float &D_T);
-    // 测量矩阵
-    Class_Matrix_f32<Measurement_Dimension, State_Dimension> Matrix_H;
     // 系统测量函数
     Class_Matrix_f32<Measurement_Dimension, 1> (*Function_H) (const Class_Matrix_f32<State_Dimension, 1> &Vector_X, const float &D_T);
     // 系统测量函数对状态的雅可比矩阵

@@ -122,10 +122,13 @@ void Class_BMI088::TIM_125us_Calculate_PeriodElapsedCallback()
     Vector_Original_Gyro[1][0] = BMI088_Gyro.Get_Raw_Gyro_Y();
     Vector_Original_Gyro[2][0] = BMI088_Gyro.Get_Raw_Gyro_Z();
 
+    if (isnan(EKF_Quaternion.Vector_X[0][0]) || isnan(EKF_Quaternion.Vector_X[1][0]) || isnan(EKF_Quaternion.Vector_X[2][0]) || isnan(EKF_Quaternion.Vector_X[3][0]))
+    {
+        EKF_Init_Finished_Flag = false;
+    }
+
     if (!EKF_Init_Finished_Flag && Accel_Update_Flag)
     {
-        Class_Matrix_f32<3, 1> vector_normalized_accel = Vector_Original_Accel.Get_Normalization();
-
         // EKF相关变量与函数
 
         // 过程噪声协方差矩阵
@@ -143,7 +146,9 @@ void Class_BMI088::TIM_125us_Calculate_PeriodElapsedCallback()
         };
         Class_Matrix_f32<3, 3> matrix_r(array_r);
 
-        EKF_Quaternion.Init(matrix_q, matrix_r, Namespace_ALG_Quaternion::From_Vector(vector_normalized_accel));
+        EKF_Quaternion.Init(matrix_q, matrix_r, Namespace_ALG_Quaternion::Unit_Real());
+
+        EKF_Quaternion.Vector_Z = Vector_Normalized_Accel;
 
         EKF_Quaternion.Config_Nonlinear_State_Model(EKF_Function_F, EKF_Function_Jacobian_F_X, EKF_Function_Jacobian_F_W);
         EKF_Quaternion.Config_Nonlinear_Measurement_Model(EKF_Function_H, EKF_Function_Jacobian_H_X, EKF_Function_Jacobian_H_V);
@@ -292,6 +297,7 @@ Class_Matrix_f32<4, 1> Class_BMI088::EKF_Function_F(const Class_Matrix_f32<4, 1>
     matrix_omega[3][0] = Vector_U[2][0];
     matrix_omega[3][1] = Vector_U[1][0];
     matrix_omega[3][2] = -Vector_U[0][0];
+    matrix_omega[3][3] = 0.0f;
 
     matrix_result = Vector_X + 0.5f * D_T * matrix_omega * Vector_X;
 

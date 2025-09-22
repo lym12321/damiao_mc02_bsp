@@ -269,15 +269,15 @@ void Task1ms_Callback()
     float q3 = BSP_BMI088.EKF_Quaternion.Vector_X[3][0];
     float accel = sqrtf(accel_x * accel_x + accel_y * accel_y + accel_z * accel_z);
     float gyro = sqrtf(gyro_x * gyro_x + gyro_y * gyro_y + gyro_z * gyro_z);
-    float yaw = BSP_BMI088.Get_Angle_Yaw();
-    float pitch = BSP_BMI088.Get_Angle_Pitch();
-    float roll = BSP_BMI088.Get_Angle_Roll();
+    float yaw = BSP_BMI088.Get_Angle_Yaw() / BASIC_MATH_DEG_TO_RAD;
+    float pitch = BSP_BMI088.Get_Angle_Pitch() / BASIC_MATH_DEG_TO_RAD;
+    float roll = BSP_BMI088.Get_Angle_Roll() / BASIC_MATH_DEG_TO_RAD;
     float loss = BSP_BMI088.Get_Accel_Chi_Square_Loss();
     float calculating_time = BSP_BMI088.Get_Calculating_Time();
     float temperature = BSP_BMI088.BMI088_Accel.Get_Now_Temperature();
 
     // 串口绘图
-    Vofa_USB.Set_Data(6, &yaw, &pitch, &roll, &loss, &calculating_time, &temperature);
+    Vofa_USB.Set_Data(9, &yaw, &pitch, &roll, &q0, &q1, &q2, &q3, &temperature, &calculating_time);
     // Serialplot_USB.Set_Data(6, &accel_x, &accel_y, &accel_z, &gyro_x, &gyro_y, &gyro_z);
     Vofa_USB.TIM_1ms_Write_PeriodElapsedCallback();
 

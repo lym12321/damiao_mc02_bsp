@@ -89,6 +89,11 @@ public:
         return (&Data[Index * column]);
     }
 
+    inline Class_Matrix_f32<row, column> operator+() const
+    {
+        return (*this);
+    }
+
     inline Class_Matrix_f32<row, column> operator+(const float &Value) const
     {
         Class_Matrix_f32<row, column> result;
@@ -105,6 +110,16 @@ public:
         for (int i = 0; i < row * column; i++)
         {
             result.Data[i] = Data[i] + Matrix.Data[i];
+        }
+        return (result);
+    }
+
+    inline Class_Matrix_f32<row, column> operator-() const
+    {
+        Class_Matrix_f32<row, column> result;
+        for (int i = 0; i < row * column; i++)
+        {
+            result.Data[i] = -Data[i];
         }
         return (result);
     }
