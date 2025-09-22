@@ -201,7 +201,7 @@ class Class_Motor_DM_Normal
 {
 public:
 
-    void Init(FDCAN_HandleTypeDef *hcan, uint8_t __CAN_Rx_ID, uint8_t __CAN_Tx_ID, Enum_Motor_DM_Control_Method __Motor_DM_Control_Method = Motor_DM_Control_Method_NORMAL_MIT, float __Angle_Max = 12.5f, float __Omega_Max = 25.0f, float __Torque_Max = 10.0f, float __Current_Max = 10.261194f);
+    void Init(const FDCAN_HandleTypeDef *hcan, const uint8_t &__CAN_Rx_ID, const uint8_t &__CAN_Tx_ID, const Enum_Motor_DM_Control_Method &__Motor_DM_Control_Method = Motor_DM_Control_Method_NORMAL_MIT, const float &__Angle_Max = 12.5f, const float &__Omega_Max = 25.0f, const float &__Torque_Max = 10.0f, const float &__Current_Max = 10.261194f);
 
     inline float Get_Angle_Max();
 
@@ -239,19 +239,19 @@ public:
 
     inline float Get_K_D();
 
-    inline void Set_Control_Angle(float __Control_Angle);
+    inline void Set_Control_Angle(const float &__Control_Angle);
 
-    inline void Set_Control_Omega(float __Control_Omega);
+    inline void Set_Control_Omega(const float &__Control_Omega);
 
-    inline void Set_Control_Torque(float __Control_Torque);
+    inline void Set_Control_Torque(const float &__Control_Torque);
 
-    inline void Set_Control_Current(float __Control_Current);
+    inline void Set_Control_Current(const float &__Control_Current);
 
-    inline void Set_K_P(float __K_P);
+    inline void Set_K_P(const float &__K_P);
 
-    inline void Set_K_D(float __K_D);
+    inline void Set_K_D(const float &__K_D);
 
-    void CAN_RxCpltCallback(uint8_t *Rx_Data);
+    void CAN_RxCpltCallback();
 
     void CAN_Send_Clear_Error();
 
@@ -343,7 +343,7 @@ public:
     // PID角速度环控制
     Class_PID PID_Omega;
 
-    void Init(FDCAN_HandleTypeDef *hcan, Enum_Motor_DM_Motor_ID_1_To_4 __CAN_Rx_ID, Enum_Motor_DM_Control_Method __Motor_DM_Control_Method = Motor_DM_Control_Method_1_TO_4_ANGLE, int32_t __Encoder_Offset = 0, float __Current_Max = 10.261194f);
+    void Init(const FDCAN_HandleTypeDef *hcan, const Enum_Motor_DM_Motor_ID_1_To_4 &__CAN_Rx_ID, const Enum_Motor_DM_Control_Method &__Motor_DM_Control_Method = Motor_DM_Control_Method_1_TO_4_ANGLE, const int32_t &__Encoder_Offset = 0, const float &__Current_Max = 10.261194f);
 
     inline float Get_Current_Max();
 
@@ -373,19 +373,19 @@ public:
 
     inline float Get_Feedforward_Current();
 
-    inline void Set_Control_Method(Enum_Motor_DM_Control_Method __DM_Motor_Control_Method);
+    inline void Set_Control_Method(const Enum_Motor_DM_Control_Method &__DM_Motor_Control_Method);
 
-    inline void Set_Target_Angle(float __Target_Angle);
+    inline void Set_Target_Angle(const float &__Target_Angle);
 
-    inline void Set_Target_Omega(float __Target_Omega);
+    inline void Set_Target_Omega(const float &__Target_Omega);
 
-    inline void Set_Target_Current(float __Target_Current);
+    inline void Set_Target_Current(const float &__Target_Current);
 
-    inline void Set_Feedforward_Omega(float __Feedforward_Omega);
+    inline void Set_Feedforward_Omega(const float &__Feedforward_Omega);
 
-    inline void Set_Feedforward_Current(float __Feedforward_Current);
+    inline void Set_Feedforward_Current(const float &__Feedforward_Current);
 
-    void CAN_RxCpltCallback(uint8_t *Rx_Data);
+    void CAN_RxCpltCallback();
 
     void TIM_100ms_Alive_PeriodElapsedCallback();
 
@@ -646,7 +646,7 @@ inline float Class_Motor_DM_Normal::Get_K_D()
  *
  * @param __Control_Angle 角度, rad, 目标角度
  */
-inline void Class_Motor_DM_Normal::Set_Control_Angle(float __Control_Angle)
+inline void Class_Motor_DM_Normal::Set_Control_Angle(const float &__Control_Angle)
 {
     Control_Angle = __Control_Angle;
 }
@@ -656,7 +656,7 @@ inline void Class_Motor_DM_Normal::Set_Control_Angle(float __Control_Angle)
  *
  * @param __Control_Omega 角速度, rad/s, MIT模式和速度模式是目标角速度, 其余模式是限幅
  */
-inline void Class_Motor_DM_Normal::Set_Control_Omega(float __Control_Omega)
+inline void Class_Motor_DM_Normal::Set_Control_Omega(const float &__Control_Omega)
 {
     Control_Omega = __Control_Omega;
 }
@@ -666,7 +666,7 @@ inline void Class_Motor_DM_Normal::Set_Control_Omega(float __Control_Omega)
  *
  * @param __Control_Torque 扭矩, Nm, MIT模式是目标扭矩, EMIT模式无效, 其余模式是限幅
  */
-inline void Class_Motor_DM_Normal::Set_Control_Torque(float __Control_Torque)
+inline void Class_Motor_DM_Normal::Set_Control_Torque(const float &__Control_Torque)
 {
     Control_Torque = __Control_Torque;
 }
@@ -676,7 +676,7 @@ inline void Class_Motor_DM_Normal::Set_Control_Torque(float __Control_Torque)
  *
  * @param __Control_Current 电流, A, EMIT模式是限幅, 其余模式无效
  */
-inline void Class_Motor_DM_Normal::Set_Control_Current(float __Control_Current)
+inline void Class_Motor_DM_Normal::Set_Control_Current(const float &__Control_Current)
 {
     Control_Current = __Control_Current;
 }
@@ -686,7 +686,7 @@ inline void Class_Motor_DM_Normal::Set_Control_Current(float __Control_Current)
  *
  * @param __K_P K_P, 0~500, MIT模式有效
  */
-inline void Class_Motor_DM_Normal::Set_K_P(float __K_P)
+inline void Class_Motor_DM_Normal::Set_K_P(const float &__K_P)
 {
     K_P = __K_P;
 }
@@ -696,7 +696,7 @@ inline void Class_Motor_DM_Normal::Set_K_P(float __K_P)
  *
  * @param __K_D K_D, 0~5, MIT模式有效
  */
-inline void Class_Motor_DM_Normal::Set_K_D(float __K_D)
+inline void Class_Motor_DM_Normal::Set_K_D(const float &__K_D)
 {
     K_D = __K_D;
 }
@@ -846,7 +846,7 @@ inline float Class_Motor_DM_1_To_4::Get_Feedforward_Current()
  *
  * @param __DM_Motor_Control_Method 电机控制方式
  */
-inline void Class_Motor_DM_1_To_4::Set_Control_Method(Enum_Motor_DM_Control_Method __DM_Motor_Control_Method)
+inline void Class_Motor_DM_1_To_4::Set_Control_Method(const Enum_Motor_DM_Control_Method &__DM_Motor_Control_Method)
 {
     Motor_DM_Control_Method = __DM_Motor_Control_Method;
 }
@@ -856,7 +856,7 @@ inline void Class_Motor_DM_1_To_4::Set_Control_Method(Enum_Motor_DM_Control_Meth
  *
  * @param __Target_Angle 目标的角度
  */
-inline void Class_Motor_DM_1_To_4::Set_Target_Angle(float __Target_Angle)
+inline void Class_Motor_DM_1_To_4::Set_Target_Angle(const float &__Target_Angle)
 {
     Target_Angle = __Target_Angle;
 }
@@ -866,7 +866,7 @@ inline void Class_Motor_DM_1_To_4::Set_Target_Angle(float __Target_Angle)
  *
  * @param __Target_Omega 目标的速度, rad/s
  */
-inline void Class_Motor_DM_1_To_4::Set_Target_Omega(float __Target_Omega)
+inline void Class_Motor_DM_1_To_4::Set_Target_Omega(const float &__Target_Omega)
 {
     Target_Omega = __Target_Omega;
 }
@@ -876,7 +876,7 @@ inline void Class_Motor_DM_1_To_4::Set_Target_Omega(float __Target_Omega)
  *
  * @param __Target_Current 目标的电流, A
  */
-inline void Class_Motor_DM_1_To_4::Set_Target_Current(float __Target_Current)
+inline void Class_Motor_DM_1_To_4::Set_Target_Current(const float &__Target_Current)
 {
     Target_Current = __Target_Current;
 }
@@ -886,7 +886,7 @@ inline void Class_Motor_DM_1_To_4::Set_Target_Current(float __Target_Current)
  *
  * @param __Feedforward_Omega 前馈的速度, rad/s
  */
-inline void Class_Motor_DM_1_To_4::Set_Feedforward_Omega(float __Feedforward_Omega)
+inline void Class_Motor_DM_1_To_4::Set_Feedforward_Omega(const float &__Feedforward_Omega)
 {
     Feedforward_Omega = __Feedforward_Omega;
 }
@@ -896,7 +896,7 @@ inline void Class_Motor_DM_1_To_4::Set_Feedforward_Omega(float __Feedforward_Ome
  *
  * @param __Feedforward_Current 前馈的电流, A
  */
-inline void Class_Motor_DM_1_To_4::Set_Feedforward_Current(float __Feedforward_Current)
+inline void Class_Motor_DM_1_To_4::Set_Feedforward_Current(const float &__Feedforward_Current)
 {
     Feedforward_Current = __Feedforward_Current;
 }

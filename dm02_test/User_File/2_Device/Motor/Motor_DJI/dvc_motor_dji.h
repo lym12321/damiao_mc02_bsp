@@ -129,7 +129,7 @@ public:
     // PID电流环控制
     Class_PID PID_Current;
 
-    void Init(FDCAN_HandleTypeDef *hcan, Enum_Motor_DJI_ID __CAN_Rx_ID, Enum_Motor_DJI_Control_Method __Motor_DJI_Control_Method = Motor_DJI_Control_Method_ANGLE, int32_t __Encoder_Offset = 0, Enum_Motor_DJI_GM6020_Driver_Version __Drive_Version = Motor_DJI_GM6020_Driver_Version_DEFAULT, Enum_Motor_DJI_Power_Limit_Status __Power_Limit_Status = Motor_DJI_Power_Limit_Status_DISABLE, float __Voltage_Max = 24.0f, float __Current_Max = 3.0f);
+    void Init(const FDCAN_HandleTypeDef *hcan, const Enum_Motor_DJI_ID &__CAN_Rx_ID, const Enum_Motor_DJI_Control_Method &__Motor_DJI_Control_Method = Motor_DJI_Control_Method_ANGLE, const int32_t &__Encoder_Offset = 0, const Enum_Motor_DJI_GM6020_Driver_Version &__Drive_Version = Motor_DJI_GM6020_Driver_Version_DEFAULT, const Enum_Motor_DJI_Power_Limit_Status &__Power_Limit_Status = Motor_DJI_Power_Limit_Status_DISABLE, const float &__Voltage_Max = 24.0f, const float &__Current_Max = 3.0f);
 
     inline float Get_Voltage_Max();
 
@@ -179,25 +179,25 @@ public:
 
     inline float Get_Power_Factor();
 
-    inline void Set_Control_Method(Enum_Motor_DJI_Control_Method __Motor_DJI_Control_Method);
+    inline void Set_Control_Method(const Enum_Motor_DJI_Control_Method &__Motor_DJI_Control_Method);
 
-    inline void Set_Target_Angle(float __Target_Angle);
+    inline void Set_Target_Angle(const float &__Target_Angle);
 
-    inline void Set_Target_Omega(float __Target_Omega);
+    inline void Set_Target_Omega(const float &__Target_Omega);
 
-    inline void Set_Target_Current(float __Target_Current);
+    inline void Set_Target_Current(const float &__Target_Current);
 
-    inline void Set_Target_Voltage(float __Voltage);
+    inline void Set_Target_Voltage(const float &__Voltage);
 
-    inline void Set_Feedforward_Omega(float __Feedforward_Omega);
+    inline void Set_Feedforward_Omega(const float &__Feedforward_Omega);
 
-    inline void Set_Feedforward_Current(float __Feedforward_Current);
+    inline void Set_Feedforward_Current(const float &__Feedforward_Current);
 
-    inline void Set_Feedforward_Voltage(float __Feedforward_Voltage);
+    inline void Set_Feedforward_Voltage(const float &__Feedforward_Voltage);
 
-    inline void Set_Power_Factor(float __Power_Factor);
+    inline void Set_Power_Factor(const float &__Power_Factor);
 
-    void CAN_RxCpltCallback(uint8_t *Rx_Data);
+    void CAN_RxCpltCallback();
 
     void TIM_100ms_Alive_PeriodElapsedCallback();
 
@@ -310,7 +310,7 @@ public:
     // PID角速度环控制
     Class_PID PID_Omega;
 
-    void Init(FDCAN_HandleTypeDef *hcan, Enum_Motor_DJI_ID __CAN_Rx_ID, Enum_Motor_DJI_Control_Method __Motor_DJI_Control_Method = Motor_DJI_Control_Method_OMEGA, float __Gearbox_Rate = 36.0f, float __Current_Max = 10.0f);
+    void Init(const FDCAN_HandleTypeDef *hcan, const Enum_Motor_DJI_ID &__CAN_Rx_ID, const Enum_Motor_DJI_Control_Method &__Motor_DJI_Control_Method = Motor_DJI_Control_Method_OMEGA, const float &__Gearbox_Rate = 36.0f, const float &__Current_Max = 10.0f);
 
     inline float Get_Current_Max();
 
@@ -338,19 +338,19 @@ public:
 
     inline float Get_Feedforward_Current();
 
-    inline void Set_Control_Method(Enum_Motor_DJI_Control_Method __Motor_DJI_Control_Method);
+    inline void Set_Control_Method(const Enum_Motor_DJI_Control_Method &__Motor_DJI_Control_Method);
 
-    inline void Set_Target_Angle(float __Target_Angle);
+    inline void Set_Target_Angle(const float &__Target_Angle);
 
-    inline void Set_Target_Omega(float __Target_Omega);
+    inline void Set_Target_Omega(const float &__Target_Omega);
 
-    inline void Set_Target_Current(float __Target_Current);
+    inline void Set_Target_Current(const float &__Target_Current);
 
-    inline void Set_Feedforward_Omega(float __Feedforward_Omega);
+    inline void Set_Feedforward_Omega(const float &__Feedforward_Omega);
 
-    inline void Set_Feedforward_Current(float __Feedforward_Current);
+    inline void Set_Feedforward_Current(const float &__Feedforward_Current);
 
-    void CAN_RxCpltCallback(uint8_t *Rx_Data);
+    void CAN_RxCpltCallback();
 
     void TIM_100ms_Alive_PeriodElapsedCallback();
 
@@ -434,7 +434,7 @@ public:
     // PID角速度环控制
     Class_PID PID_Omega;
 
-    void Init(FDCAN_HandleTypeDef *hcan, Enum_Motor_DJI_ID __CAN_Rx_ID, Enum_Motor_DJI_Control_Method __Motor_DJI_Control_Method = Motor_DJI_Control_Method_OMEGA, float __Gearbox_Rate = 3591.0f / 187.0f, Enum_Motor_DJI_Power_Limit_Status __Power_Limit_Status = Motor_DJI_Power_Limit_Status_DISABLE, float __Current_Max = 20.0f);
+    void Init(const FDCAN_HandleTypeDef *hcan, const Enum_Motor_DJI_ID &__CAN_Rx_ID, const Enum_Motor_DJI_Control_Method &__Motor_DJI_Control_Method = Motor_DJI_Control_Method_OMEGA, const float &__Gearbox_Rate = 3591.0f / 187.0f, const Enum_Motor_DJI_Power_Limit_Status &__Power_Limit_Status = Motor_DJI_Power_Limit_Status_DISABLE, const float &__Current_Max = 20.0f);
 
     inline float Get_Current_Max();
 
@@ -474,21 +474,21 @@ public:
 
     inline float Get_Feedforward_Current();
 
-    inline void Set_Control_Method(Enum_Motor_DJI_Control_Method __Motor_DJI_Control_Method);
+    inline void Set_Control_Method(const Enum_Motor_DJI_Control_Method __Motor_DJI_Control_Method);
 
-    inline void Set_Target_Angle(float __Target_Angle);
+    inline void Set_Target_Angle(const float &__Target_Angle);
 
-    inline void Set_Target_Omega(float __Target_Omega);
+    inline void Set_Target_Omega(const float &__Target_Omega);
 
-    inline void Set_Target_Current(float __Target_Current);
+    inline void Set_Target_Current(const float &__Target_Current);
 
-    inline void Set_Feedforward_Omega(float __Feedforward_Omega);
+    inline void Set_Feedforward_Omega(const float &__Feedforward_Omega);
 
-    inline void Set_Feedforward_Current(float __Feedforward_Current);
+    inline void Set_Feedforward_Current(const float &__Feedforward_Current);
 
-    inline void Set_Power_Factor(float __Power_Factor);
+    inline void Set_Power_Factor(const float &__Power_Factor);
 
-    void CAN_RxCpltCallback(uint8_t *Rx_Data);
+    void CAN_RxCpltCallback();
 
     void TIM_100ms_Alive_PeriodElapsedCallback();
 
@@ -825,7 +825,7 @@ inline float Class_Motor_DJI_GM6020::Get_Power_Factor()
  *
  * @param __Motor_DJI_Control_Method 电机控制方式
  */
-inline void Class_Motor_DJI_GM6020::Set_Control_Method(Enum_Motor_DJI_Control_Method __Motor_DJI_Control_Method)
+inline void Class_Motor_DJI_GM6020::Set_Control_Method(const Enum_Motor_DJI_Control_Method &__Motor_DJI_Control_Method)
 {
     Motor_DJI_Control_Method = __Motor_DJI_Control_Method;
 }
@@ -835,7 +835,7 @@ inline void Class_Motor_DJI_GM6020::Set_Control_Method(Enum_Motor_DJI_Control_Me
  *
  * @param __Target_Angle 目标的角度, rad
  */
-inline void Class_Motor_DJI_GM6020::Set_Target_Angle(float __Target_Angle)
+inline void Class_Motor_DJI_GM6020::Set_Target_Angle(const float &__Target_Angle)
 {
     Target_Angle = __Target_Angle;
 }
@@ -845,7 +845,7 @@ inline void Class_Motor_DJI_GM6020::Set_Target_Angle(float __Target_Angle)
  *
  * @param __Target_Omega 目标的速度, rad/s
  */
-inline void Class_Motor_DJI_GM6020::Set_Target_Omega(float __Target_Omega)
+inline void Class_Motor_DJI_GM6020::Set_Target_Omega(const float &__Target_Omega)
 {
     Target_Omega = __Target_Omega;
 }
@@ -855,7 +855,7 @@ inline void Class_Motor_DJI_GM6020::Set_Target_Omega(float __Target_Omega)
  *
  * @param __Target_Current 目标的电流
  */
-inline void Class_Motor_DJI_GM6020::Set_Target_Current(float __Target_Current)
+inline void Class_Motor_DJI_GM6020::Set_Target_Current(const float &__Target_Current)
 {
     Target_Current = __Target_Current;
 }
@@ -865,7 +865,7 @@ inline void Class_Motor_DJI_GM6020::Set_Target_Current(float __Target_Current)
  *
  * @param __Out 输出量
  */
-inline void Class_Motor_DJI_GM6020::Set_Target_Voltage(float __Voltage)
+inline void Class_Motor_DJI_GM6020::Set_Target_Voltage(const float &__Voltage)
 {
     Target_Voltage = __Voltage;
 }
@@ -875,7 +875,7 @@ inline void Class_Motor_DJI_GM6020::Set_Target_Voltage(float __Voltage)
  *
  * @param __Feedforward_Omega 前馈的速度, rad/s
  */
-inline void Class_Motor_DJI_GM6020::Set_Feedforward_Omega(float __Feedforward_Omega)
+inline void Class_Motor_DJI_GM6020::Set_Feedforward_Omega(const float &__Feedforward_Omega)
 {
     Feedforward_Omega = __Feedforward_Omega;
 }
@@ -885,7 +885,7 @@ inline void Class_Motor_DJI_GM6020::Set_Feedforward_Omega(float __Feedforward_Om
  *
  * @param __Feedforward_Current 前馈的电流, A
  */
-inline void Class_Motor_DJI_GM6020::Set_Feedforward_Current(float __Feedforward_Current)
+inline void Class_Motor_DJI_GM6020::Set_Feedforward_Current(const float &__Feedforward_Current)
 {
     Feedforward_Current = __Feedforward_Current;
 }
@@ -895,7 +895,7 @@ inline void Class_Motor_DJI_GM6020::Set_Feedforward_Current(float __Feedforward_
  *
  * @param __Feedforward_Voltage 前馈的电压, V
  */
-inline void Class_Motor_DJI_GM6020::Set_Feedforward_Voltage(float __Feedforward_Voltage)
+inline void Class_Motor_DJI_GM6020::Set_Feedforward_Voltage(const float &__Feedforward_Voltage)
 {
     Feedforward_Voltage = __Feedforward_Voltage;
 }
@@ -905,7 +905,7 @@ inline void Class_Motor_DJI_GM6020::Set_Feedforward_Voltage(float __Feedforward_
  *
  * @param __Power_Factor 功率衰减因数
  */
-inline void Class_Motor_DJI_GM6020::Set_Power_Factor(float __Power_Factor)
+inline void Class_Motor_DJI_GM6020::Set_Power_Factor(const float &__Power_Factor)
 {
     Power_Factor = __Power_Factor;
 }
@@ -1045,7 +1045,7 @@ inline float Class_Motor_DJI_C610::Get_Feedforward_Current()
  *
  * @param __Motor_DJI_Control_Method 电机控制方式
  */
-inline void Class_Motor_DJI_C610::Set_Control_Method(Enum_Motor_DJI_Control_Method __Motor_DJI_Control_Method)
+inline void Class_Motor_DJI_C610::Set_Control_Method(const Enum_Motor_DJI_Control_Method &__Motor_DJI_Control_Method)
 {
     Motor_DJI_Control_Method = __Motor_DJI_Control_Method;
 }
@@ -1055,7 +1055,7 @@ inline void Class_Motor_DJI_C610::Set_Control_Method(Enum_Motor_DJI_Control_Meth
  *
  * @param __Target_Angle 目标的角度, rad
  */
-inline void Class_Motor_DJI_C610::Set_Target_Angle(float __Target_Angle)
+inline void Class_Motor_DJI_C610::Set_Target_Angle(const float &__Target_Angle)
 {
     Target_Angle = __Target_Angle;
 }
@@ -1065,7 +1065,7 @@ inline void Class_Motor_DJI_C610::Set_Target_Angle(float __Target_Angle)
  *
  * @param __Target_Omega 目标的速度, rad/s
  */
-inline void Class_Motor_DJI_C610::Set_Target_Omega(float __Target_Omega)
+inline void Class_Motor_DJI_C610::Set_Target_Omega(const float &__Target_Omega)
 {
     Target_Omega = __Target_Omega;
 }
@@ -1075,7 +1075,7 @@ inline void Class_Motor_DJI_C610::Set_Target_Omega(float __Target_Omega)
  *
  * @param __Target_Current 目标的电流, A
  */
-inline void Class_Motor_DJI_C610::Set_Target_Current(float __Target_Current)
+inline void Class_Motor_DJI_C610::Set_Target_Current(const float &__Target_Current)
 {
     Target_Current = __Target_Current;
 }
@@ -1085,7 +1085,7 @@ inline void Class_Motor_DJI_C610::Set_Target_Current(float __Target_Current)
  *
  * @param __Feedforward_Omega 前馈的速度, rad/s
  */
-inline void Class_Motor_DJI_C610::Set_Feedforward_Omega(float __Feedforward_Omega)
+inline void Class_Motor_DJI_C610::Set_Feedforward_Omega(const float &__Feedforward_Omega)
 {
     Feedforward_Omega = __Feedforward_Omega;
 }
@@ -1095,7 +1095,7 @@ inline void Class_Motor_DJI_C610::Set_Feedforward_Omega(float __Feedforward_Omeg
  *
  * @param __Feedforward_Current 前馈的电流, A
  */
-inline void Class_Motor_DJI_C610::Set_Feedforward_Current(float __Feedforward_Current)
+inline void Class_Motor_DJI_C610::Set_Feedforward_Current(const float &__Feedforward_Current)
 {
     Feedforward_Current = __Feedforward_Current;
 }
@@ -1305,7 +1305,7 @@ inline void Class_Motor_DJI_C620::Set_Control_Method(Enum_Motor_DJI_Control_Meth
  *
  * @param __Target_Angle 目标的角度, rad
  */
-inline void Class_Motor_DJI_C620::Set_Target_Angle(float __Target_Angle)
+inline void Class_Motor_DJI_C620::Set_Target_Angle(const float &__Target_Angle)
 {
     Target_Angle = __Target_Angle;
 }
@@ -1315,7 +1315,7 @@ inline void Class_Motor_DJI_C620::Set_Target_Angle(float __Target_Angle)
  *
  * @param __Target_Omega 目标的速度, rad/s
  */
-inline void Class_Motor_DJI_C620::Set_Target_Omega(float __Target_Omega)
+inline void Class_Motor_DJI_C620::Set_Target_Omega(const float &__Target_Omega)
 {
     Target_Omega = __Target_Omega;
 }
@@ -1325,7 +1325,7 @@ inline void Class_Motor_DJI_C620::Set_Target_Omega(float __Target_Omega)
  *
  * @param __Target_Current 目标的电流
  */
-inline void Class_Motor_DJI_C620::Set_Target_Current(float __Target_Current)
+inline void Class_Motor_DJI_C620::Set_Target_Current(const float &__Target_Current)
 {
     Target_Current = __Target_Current;
 }
@@ -1335,7 +1335,7 @@ inline void Class_Motor_DJI_C620::Set_Target_Current(float __Target_Current)
  *
  * @param __Feedforward_Omega 前馈的速度, rad/s
  */
-inline void Class_Motor_DJI_C620::Set_Feedforward_Omega(float __Feedforward_Omega)
+inline void Class_Motor_DJI_C620::Set_Feedforward_Omega(const float &__Feedforward_Omega)
 {
     Feedforward_Omega = __Feedforward_Omega;
 }
@@ -1345,7 +1345,7 @@ inline void Class_Motor_DJI_C620::Set_Feedforward_Omega(float __Feedforward_Omeg
  *
  * @param __Feedforward_Current 前馈的电流, A
  */
-inline void Class_Motor_DJI_C620::Set_Feedforward_Current(float __Feedforward_Current)
+inline void Class_Motor_DJI_C620::Set_Feedforward_Current(const float &__Feedforward_Current)
 {
     Feedforward_Current = __Feedforward_Current;
 }
@@ -1355,7 +1355,7 @@ inline void Class_Motor_DJI_C620::Set_Feedforward_Current(float __Feedforward_Cu
  *
  * @param __Power_Factor 功率衰减因数
  */
-inline void Class_Motor_DJI_C620::Set_Power_Factor(float __Power_Factor)
+inline void Class_Motor_DJI_C620::Set_Power_Factor(const float &__Power_Factor)
 {
     Power_Factor = __Power_Factor;
 }

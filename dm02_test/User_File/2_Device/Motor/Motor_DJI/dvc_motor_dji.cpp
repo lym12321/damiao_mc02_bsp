@@ -33,7 +33,7 @@
  * @param __DJI_Motor_Driver_Version 大疆驱动版本, 当且仅当当前被分配电机为6020, 且是电流驱动新版本时选2023, 否则都是default
  * @return uint8_t* 缓冲区指针
  */
-uint8_t *allocate_tx_data(FDCAN_HandleTypeDef *hcan, Enum_Motor_DJI_ID __CAN_ID, Enum_Motor_DJI_GM6020_Driver_Version __DJI_Motor_Driver_Version = Motor_DJI_GM6020_Driver_Version_DEFAULT)
+uint8_t *allocate_tx_data(const FDCAN_HandleTypeDef *hcan, const Enum_Motor_DJI_ID &__CAN_ID, const Enum_Motor_DJI_GM6020_Driver_Version &__DJI_Motor_Driver_Version = Motor_DJI_GM6020_Driver_Version_DEFAULT)
 {
     uint8_t *tmp_tx_data_ptr;
     if (hcan == &hfdcan1)
@@ -429,7 +429,7 @@ float power_calculate(float K_0, float K_1, float K_2, float A, float Current, f
  * @param __Voltage_Max 最大速度, 需根据不同负载测量后赋值, 也就开环输出用得到, 不过我感觉应该没有奇葩喜欢开环输出这玩意
  * @param __Current_Max 最大电流
  */
-void Class_Motor_DJI_GM6020::Init(FDCAN_HandleTypeDef *hcan, Enum_Motor_DJI_ID __CAN_Rx_ID, Enum_Motor_DJI_Control_Method __Motor_DJI_Control_Method, int32_t __Encoder_Offset, Enum_Motor_DJI_GM6020_Driver_Version __Driver_Version, Enum_Motor_DJI_Power_Limit_Status __Power_Limit_Status, float __Voltage_Max, float __Current_Max)
+void Class_Motor_DJI_GM6020::Init(const FDCAN_HandleTypeDef *hcan, const Enum_Motor_DJI_ID &__CAN_Rx_ID, const Enum_Motor_DJI_Control_Method &__Motor_DJI_Control_Method, const int32_t &__Encoder_Offset, const Enum_Motor_DJI_GM6020_Driver_Version &__Driver_Version, const Enum_Motor_DJI_Power_Limit_Status &__Power_Limit_Status, const float &__Voltage_Max, const float &__Current_Max)
 {
     if (hcan->Instance == FDCAN1)
     {
@@ -456,9 +456,8 @@ void Class_Motor_DJI_GM6020::Init(FDCAN_HandleTypeDef *hcan, Enum_Motor_DJI_ID _
 /**
  * @brief CAN通信接收回调函数
  *
- * @param Rx_Data 接收的数据
  */
-void Class_Motor_DJI_GM6020::CAN_RxCpltCallback(uint8_t *Rx_Data)
+void Class_Motor_DJI_GM6020::CAN_RxCpltCallback()
 {
     // 滑动窗口, 判断电机是否在线
     Flag += 1;
@@ -799,7 +798,7 @@ void Class_Motor_DJI_GM6020::Output()
  * @param __Gearbox_Rate 减速箱减速比, 默认为原装减速箱, 如拆去减速箱则该值设为1
  * @param __Current_Max 最大电流
  */
-void Class_Motor_DJI_C610::Init(FDCAN_HandleTypeDef *hcan, Enum_Motor_DJI_ID __CAN_Rx_ID, Enum_Motor_DJI_Control_Method __Motor_DJI_Control_Method, float __Gearbox_Rate, float __Current_Max)
+void Class_Motor_DJI_C610::Init(const FDCAN_HandleTypeDef *hcan, const Enum_Motor_DJI_ID &__CAN_Rx_ID, const Enum_Motor_DJI_Control_Method &__Motor_DJI_Control_Method, const float &__Gearbox_Rate, const float &__Current_Max)
 {
     if (hcan->Instance == FDCAN1)
     {
@@ -823,9 +822,8 @@ void Class_Motor_DJI_C610::Init(FDCAN_HandleTypeDef *hcan, Enum_Motor_DJI_ID __C
 /**
  * @brief CAN通信接收回调函数
  *
- * @param Rx_Data 接收的数据
  */
-void Class_Motor_DJI_C610::CAN_RxCpltCallback(uint8_t *Rx_Data)
+void Class_Motor_DJI_C610::CAN_RxCpltCallback()
 {
     // 滑动窗口, 判断电机是否在线
     Flag += 1;
@@ -981,7 +979,7 @@ void Class_Motor_DJI_C610::Output()
  * @param __Power_Limit_Status 是否开启功率控制
  * @param __Current_Max 最大电流
  */
-void Class_Motor_DJI_C620::Init(FDCAN_HandleTypeDef *hcan, Enum_Motor_DJI_ID __CAN_Rx_ID, Enum_Motor_DJI_Control_Method __Motor_DJI_Control_Method, float __Gearbox_Rate, Enum_Motor_DJI_Power_Limit_Status __Power_Limit_Status, float __Current_Max)
+void Class_Motor_DJI_C620::Init(const FDCAN_HandleTypeDef *hcan, const Enum_Motor_DJI_ID &__CAN_Rx_ID, const Enum_Motor_DJI_Control_Method &__Motor_DJI_Control_Method, const float &__Gearbox_Rate, const Enum_Motor_DJI_Power_Limit_Status &__Power_Limit_Status, const float &__Current_Max)
 {
     if (hcan->Instance == FDCAN1)
     {
@@ -1006,9 +1004,8 @@ void Class_Motor_DJI_C620::Init(FDCAN_HandleTypeDef *hcan, Enum_Motor_DJI_ID __C
 /**
  * @brief CAN通信接收回调函数
  *
- * @param Rx_Data 接收的数据
  */
-void Class_Motor_DJI_C620::CAN_RxCpltCallback(uint8_t *Rx_Data)
+void Class_Motor_DJI_C620::CAN_RxCpltCallback()
 {
     // 滑动窗口, 判断电机是否在线
     Flag += 1;

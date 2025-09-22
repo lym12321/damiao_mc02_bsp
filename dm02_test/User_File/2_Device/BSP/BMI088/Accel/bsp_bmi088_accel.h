@@ -69,7 +69,7 @@ public:
 
     void TIM_128ms_Heater_PID_PeriodElapsedCallback();
 
-// protected:
+protected:
     // 初始化相关常量
 
     // 绑定的SPI

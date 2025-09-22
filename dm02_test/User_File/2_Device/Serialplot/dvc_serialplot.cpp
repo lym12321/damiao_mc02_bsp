@@ -512,14 +512,14 @@ void Class_Serialplot_USB::_Judge_Variable_Value(const uint16_t &Length, int fla
 }
 
 /**
- * @brief 串口绘图数据输出到UART发送缓冲区
+ * @brief 串口绘图数据输出到USB发送缓冲区
  *
  */
 void Class_Serialplot_USB::Output()
 {
     uint8_t *tmp_buffer = Tx_Buffer;
 
-    memset(tmp_buffer, 0, UART_BUFFER_SIZE);
+    bzero(tmp_buffer, USB_BUFFER_SIZE);
 
     // 放置帧头
     tmp_buffer[0] = Frame_Header;

@@ -16,7 +16,7 @@
 
 #include "2_Device/Motor/Motor_DJI/dvc_motor_dji.h"
 #include "2_Device/BSP/BMI088/bsp_bmi088.h"
-#include "2_Device/Serialplot/dvc_serialplot.h"
+#include "2_Device/Vofa/dvc_vofa.h"
 #include "2_Device/BSP/WS2812/bsp_ws2812.h"
 #include "2_Device/BSP/Buzzer/bsp_buzzer.h"
 #include "2_Device/BSP/Power/bsp_power.h"
@@ -33,7 +33,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 // 串口绘图
-char Serialplot_Variable_Assignment_List[][SERIALPLOT_RX_VARIABLE_ASSIGNMENT_MAX_LENGTH] = {
+char Vofa_Variable_Assignment_List[][VOFA_RX_VARIABLE_ASSIGNMENT_MAX_LENGTH] = {
     "q00", "q11", "r00", "r11",
 };
 
@@ -71,28 +71,28 @@ bool init_finished = false;
  */
 void Serial_USB_Call_Back(uint8_t *Buffer, uint16_t Length)
 {
-    Serialplot_USB.USB_RxCallback(Buffer, Length);
-    int32_t index = Serialplot_USB.Get_Variable_Index();
+    Vofa_USB.USB_RxCallback(Buffer, Length);
+    int32_t index = Vofa_USB.Get_Variable_Index();
     switch (index)
     {
     case (0):
     {
-        filter_kalman.Matrix_Q[0][0] = Serialplot_USB.Get_Variable_Value();
+        filter_kalman.Matrix_Q[0][0] = Vofa_USB.Get_Variable_Value();
         break;
     }
     case (1):
     {
-        filter_kalman.Matrix_Q[1][1] = Serialplot_USB.Get_Variable_Value();
+        filter_kalman.Matrix_Q[1][1] = Vofa_USB.Get_Variable_Value();
         break;
     }
     case (2):
     {
-        filter_kalman.Matrix_R[0][0] = Serialplot_USB.Get_Variable_Value();
+        filter_kalman.Matrix_R[0][0] = Vofa_USB.Get_Variable_Value();
         break;
     }
     case (3):
     {
-        filter_kalman.Matrix_R[1][1] = Serialplot_USB.Get_Variable_Value();
+        filter_kalman.Matrix_R[1][1] = Vofa_USB.Get_Variable_Value();
         break;
     }
     default:
@@ -125,7 +125,7 @@ void CAN1_Callback(FDCAN_RxHeaderTypeDef &Header, uint8_t *Buffer)
     {
     case (0x201):
     {
-        motor.CAN_RxCpltCallback(Buffer);
+        motor.CAN_RxCpltCallback();
 
         break;
     }
@@ -269,17 +269,17 @@ void Task1ms_Callback()
     float q3 = BSP_BMI088.EKF_Quaternion.Vector_X[3][0];
     float accel = sqrtf(accel_x * accel_x + accel_y * accel_y + accel_z * accel_z);
     float gyro = sqrtf(gyro_x * gyro_x + gyro_y * gyro_y + gyro_z * gyro_z);
-    float yaw = BSP_BMI088.Get_Angle_Yaw() / BASIC_MATH_DEG_TO_RAD;
-    float pitch = BSP_BMI088.Get_Angle_Pitch() / BASIC_MATH_DEG_TO_RAD;
-    float roll = BSP_BMI088.Get_Angle_Roll() / BASIC_MATH_DEG_TO_RAD;
+    float yaw = BSP_BMI088.Get_Angle_Yaw();
+    float pitch = BSP_BMI088.Get_Angle_Pitch();
+    float roll = BSP_BMI088.Get_Angle_Roll();
     float loss = BSP_BMI088.Get_Accel_Chi_Square_Loss();
     float calculating_time = BSP_BMI088.Get_Calculating_Time();
     float temperature = BSP_BMI088.BMI088_Accel.Get_Now_Temperature();
 
     // 串口绘图
-    Serialplot_USB.Set_Data(6, &yaw, &pitch, &roll, &loss, &calculating_time, &temperature);
+    Vofa_USB.Set_Data(6, &yaw, &pitch, &roll, &loss, &calculating_time, &temperature);
     // Serialplot_USB.Set_Data(6, &accel_x, &accel_y, &accel_z, &gyro_x, &gyro_y, &gyro_z);
-    Serialplot_USB.TIM_1ms_Write_PeriodElapsedCallback();
+    Vofa_USB.TIM_1ms_Write_PeriodElapsedCallback();
 
     TIM_1ms_CAN_PeriodElapsedCallback();
     // 喂狗
@@ -329,7 +329,7 @@ void Task_Init()
     HAL_TIM_Base_Start_IT(&htim7);
     HAL_TIM_Base_Start_IT(&htim8);
 
-    Serialplot_USB.Init(Serialplot_Checksum_8_ENABLE, 4, reinterpret_cast<const char **>(Serialplot_Variable_Assignment_List));
+    Vofa_USB.Init(4, reinterpret_cast<const char **>(Vofa_Variable_Assignment_List));
 
     BSP_WS2812.Init(0, 0, 0);
 

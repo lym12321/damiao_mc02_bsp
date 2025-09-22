@@ -1,17 +1,16 @@
 /**
- * @file dvc_serialplot.h
+ * @file dvc_vofa.h
  * @author yssickjgd (1345578933@qq.com)
- * @brief 串口绘图
- * @version 1.1
- * @date 2023-08-29 0.1 23赛季定稿
- * @date 2025-08-14 1.1 适配达妙MC02板, 并引入USB虚拟串口的串口绘图
+ * @brief vofa
+ * @version 0.1
+ * @date 2025-09-22 0.1 新建
  *
- * @copyright USTC-RoboWalker (c) 2023-2025
+ * @copyright USTC-RoboWalker (c) 2025
  *
  */
 
-#ifndef DVC_SERIALPLOT_H
-#define DVC_SERIALPLOT_H
+#ifndef DVC_VOFA_H
+#define DVC_VOFA_H
 
 /* Includes ------------------------------------------------------------------*/
 
@@ -22,44 +21,18 @@
 
 /* Exported macros -----------------------------------------------------------*/
 
-#define SERIALPLOT_RX_VARIABLE_ASSIGNMENT_MAX_LENGTH (100)
+#define VOFA_RX_VARIABLE_ASSIGNMENT_MAX_LENGTH (100)
 
 /* Exported types ------------------------------------------------------------*/
 
 /**
- * @brief 是否开启校验和
+ * @brief Specialized, vofa工具, justfloat模式
  *
  */
-enum Enum_Serialplot_Checksum_8
-{
-    Serialplot_Checksum_8_DISABLE = 0,
-    Serialplot_Checksum_8_ENABLE,
-};
-
-/**
- * @brief 串口绘图传输数据类型
- *
- */
-enum Enum_Serialplot_Data_Type
-{
-    Serialplot_Data_Type_UINT8 = 0,
-    Serialplot_Data_Type_UINT16,
-    Serialplot_Data_Type_UINT32,
-    Serialplot_Data_Type_INT8,
-    Serialplot_Data_Type_INT16,
-    Serialplot_Data_Type_INT32,
-    Serialplot_Data_Type_FLOAT,
-    Serialplot_Data_Type_DOUBLE,
-};
-
-/**
- * @brief Specialized, 串口绘图工具, 最多支持25个通道
- *
- */
-class Class_Serialplot
+class Class_Vofa
 {
 public:
-    void Init(const UART_HandleTypeDef *huart, const Enum_Serialplot_Checksum_8 &__Checksum_8 = Serialplot_Checksum_8_ENABLE, const uint8_t &__Rx_Variable_Assignment_Num = 0, const char **__Rx_Variable_Assignment_List = NULL, const Enum_Serialplot_Data_Type &__Data_Type = Serialplot_Data_Type_FLOAT, const uint8_t &__Frame_Header = 0xab);
+    void Init(const UART_HandleTypeDef *huart, const uint8_t &__Rx_Variable_Assignment_Num = 0, const char **__Rx_Variable_Assignment_List = NULL, const uint32_t &__Frame_Tail = 0x7f800000);
 
     inline int32_t Get_Variable_Index() const;
 
@@ -76,16 +49,12 @@ protected:
 
     // 绑定的UART
     Struct_UART_Manage_Object *UART_Manage_Object;
-    // 是否开启校验和
-    Enum_Serialplot_Checksum_8 Checksum_8;
     // 接收指令字典的数量
     uint8_t Rx_Variable_Num;
     // 接收指令字典列表指针
     char **Rx_Variable_List;
-    // 串口绘图数据类型
-    Enum_Serialplot_Data_Type Tx_Data_Type;
-    // 数据包头标
-    uint8_t Frame_Header;
+    // 数据包尾标
+    uint32_t Frame_Tail;
 
     // 常量
 
@@ -121,13 +90,13 @@ protected:
 };
 
 /**
- * @brief Specialized, 串口绘图工具, 最多支持25个通道
+ * @brief Specialized, vofa工具, justfloat模式
  *
  */
-class Class_Serialplot_USB
+class Class_Vofa_USB
 {
 public:
-    void Init(const Enum_Serialplot_Checksum_8 &__Checksum_8 = Serialplot_Checksum_8_ENABLE, const uint8_t &__Rx_Variable_Assignment_Num = 0, const char **__Rx_Variable_Assignment_List = NULL, const Enum_Serialplot_Data_Type &__Data_Type = Serialplot_Data_Type_FLOAT, const uint8_t &__Frame_Header = 0xab);
+    void Init(const uint8_t &__Rx_Variable_Assignment_Num = 0, const char **__Rx_Variable_Assignment_List = NULL, const uint32_t &__Frame_Tail = 0x7f800000);
 
     inline int32_t Get_Variable_Index() const;
 
@@ -144,16 +113,12 @@ protected:
 
     // 绑定的USB
     Struct_USB_Manage_Object *USB_Manage_Object;
-    // 是否开启校验和
-    Enum_Serialplot_Checksum_8 Checksum_8;
     // 接收指令字典的数量
     uint8_t Rx_Variable_Num;
     // 接收指令字典列表指针
     char **Rx_Variable_List;
-    // 串口绘图数据类型
-    Enum_Serialplot_Data_Type Tx_Data_Type;
-    // 数据包头标
-    uint8_t Frame_Header;
+    // 数据包尾标
+    uint32_t Frame_Tail;
 
     // 常量
 
@@ -190,8 +155,8 @@ protected:
 
 /* Exported variables --------------------------------------------------------*/
 
-extern Class_Serialplot Serialplot;
-extern Class_Serialplot_USB Serialplot_USB;
+extern Class_Vofa Vofa;
+extern Class_Vofa_USB Vofa_USB;
 
 /* Exported function declarations --------------------------------------------*/
 
@@ -200,7 +165,7 @@ extern Class_Serialplot_USB Serialplot_USB;
  *
  * @return int32_t 当前接收的指令在指令字典中的编号
  */
-inline int32_t Class_Serialplot::Get_Variable_Index() const
+inline int32_t Class_Vofa::Get_Variable_Index() const
 {
     return (Variable_Index);
 }
@@ -210,7 +175,7 @@ inline int32_t Class_Serialplot::Get_Variable_Index() const
  *
  * @return float 当前接收的指令在指令字典中的值
  */
-inline float Class_Serialplot::Get_Variable_Value() const
+inline float Class_Vofa::Get_Variable_Value() const
 {
     return (Variable_Value);
 }
@@ -221,7 +186,7 @@ inline float Class_Serialplot::Get_Variable_Value() const
  * @param Number 添加的数据数量
  * @param ... 每个数据的指针
  */
-inline void Class_Serialplot::Set_Data(const int &Number, ...)
+inline void Class_Vofa::Set_Data(const int &Number, ...)
 {
     va_list data_ptr;
     va_start(data_ptr, Number);
@@ -238,7 +203,7 @@ inline void Class_Serialplot::Set_Data(const int &Number, ...)
  *
  * @return int32_t 当前接收的指令在指令字典中的编号
  */
-inline int32_t Class_Serialplot_USB::Get_Variable_Index() const
+inline int32_t Class_Vofa_USB::Get_Variable_Index() const
 {
     return (Variable_Index);
 }
@@ -248,7 +213,7 @@ inline int32_t Class_Serialplot_USB::Get_Variable_Index() const
  *
  * @return float 当前接收的指令在指令字典中的值
  */
-inline float Class_Serialplot_USB::Get_Variable_Value() const
+inline float Class_Vofa_USB::Get_Variable_Value() const
 {
     return (Variable_Value);
 }
@@ -259,7 +224,7 @@ inline float Class_Serialplot_USB::Get_Variable_Value() const
  * @param Number 添加的数据数量
  * @param ... 每个数据的指针
  */
-inline void Class_Serialplot_USB::Set_Data(const int &Number, ...)
+inline void Class_Vofa_USB::Set_Data(const int &Number, ...)
 {
     va_list data_ptr;
     va_start(data_ptr, Number);

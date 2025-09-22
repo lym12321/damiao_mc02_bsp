@@ -40,7 +40,7 @@ uint8_t DM_Motor_CAN_Message_Save_Zero[8] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
  * @param __DJI_Motor_Driver_Version 大疆驱动版本, 当且仅当当前被分配电机为6020, 且是电流驱动新版本时选2023, 否则都是default
  * @return uint8_t* 缓冲区指针
  */
-uint8_t *allocate_tx_data(FDCAN_HandleTypeDef *hcan, Enum_Motor_DM_Motor_ID_1_To_4 __CAN_Rx_ID_1_To_4)
+uint8_t *allocate_tx_data(const FDCAN_HandleTypeDef *hcan, const Enum_Motor_DM_Motor_ID_1_To_4 &__CAN_Rx_ID_1_To_4)
 {
     uint8_t *tmp_tx_data_ptr;
     if (hcan == &hfdcan1)
@@ -223,7 +223,7 @@ uint8_t *allocate_tx_data(FDCAN_HandleTypeDef *hcan, Enum_Motor_DM_Motor_ID_1_To
  * @param __Omega_Max 最大速度, 与上位机控制幅值VMAX保持一致, 传统模式有效
  * @param __Torque_Max 最大扭矩, 与上位机控制幅值TMAX保持一致, 传统模式有效
  */
-void Class_Motor_DM_Normal::Init(FDCAN_HandleTypeDef *hcan, uint8_t __CAN_Rx_ID, uint8_t __CAN_Tx_ID, Enum_Motor_DM_Control_Method __Motor_DM_Control_Method, float __Angle_Max, float __Omega_Max, float __Torque_Max, float __Current_Max)
+void Class_Motor_DM_Normal::Init(const FDCAN_HandleTypeDef *hcan, const uint8_t &__CAN_Rx_ID, const uint8_t &__CAN_Tx_ID, const Enum_Motor_DM_Control_Method &__Motor_DM_Control_Method, const float &__Angle_Max, const float &__Omega_Max, const float &__Torque_Max, const float &__Current_Max)
 {
     if (hcan->Instance == FDCAN1)
     {
@@ -271,9 +271,8 @@ void Class_Motor_DM_Normal::Init(FDCAN_HandleTypeDef *hcan, uint8_t __CAN_Rx_ID,
 /**
  * @brief CAN通信接收回调函数
  *
- * @param Rx_Data 接收的数据
  */
-void Class_Motor_DM_Normal::CAN_RxCpltCallback(uint8_t *Rx_Data)
+void Class_Motor_DM_Normal::CAN_RxCpltCallback()
 {
     // 滑动窗口, 判断电机是否在线
     Flag += 1;
@@ -500,7 +499,7 @@ void Class_Motor_DM_Normal::Output()
  * @param __Encoder_Offset 编码器偏移, 默认0
  * @param __Current_Max 最大电流
  */
-void Class_Motor_DM_1_To_4::Init(FDCAN_HandleTypeDef *hcan, Enum_Motor_DM_Motor_ID_1_To_4 __CAN_Rx_ID, Enum_Motor_DM_Control_Method __Motor_DM_Control_Method, int32_t __Encoder_Offset, float __Current_Max)
+void Class_Motor_DM_1_To_4::Init(const FDCAN_HandleTypeDef *hcan, const Enum_Motor_DM_Motor_ID_1_To_4 &__CAN_Rx_ID, const Enum_Motor_DM_Control_Method &__Motor_DM_Control_Method, const int32_t &__Encoder_Offset, const float &__Current_Max)
 {
     if (hcan->Instance == FDCAN1)
     {
@@ -524,9 +523,8 @@ void Class_Motor_DM_1_To_4::Init(FDCAN_HandleTypeDef *hcan, Enum_Motor_DM_Motor_
 /**
  * @brief CAN通信接收回调函数
  *
- * @param Rx_Data 接收的数据
  */
-void Class_Motor_DM_1_To_4::CAN_RxCpltCallback(uint8_t *Rx_Data)
+void Class_Motor_DM_1_To_4::CAN_RxCpltCallback()
 {
     // 滑动窗口, 判断电机是否在线
     Flag += 1;
