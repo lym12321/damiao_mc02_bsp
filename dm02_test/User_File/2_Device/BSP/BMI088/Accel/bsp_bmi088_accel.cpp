@@ -155,24 +155,39 @@ void Class_BMI088_Accel::TIM_128ms_Heater_PID_PeriodElapsedCallback()
 {
     if (Heater_Enable)
     {
+        // 防止NaN烧板
+        if (Basic_Math_Is_Invalid_Float(Now_Temperature))
+        {
+            __HAL_TIM_SET_COMPARE(htim, TIM_Channel, 0);
+            return;
+        }
+
+        // 是否开启预热
+        if (Now_Temperature < HEATER_PREHEAT_BASE_TEMPERATURE)
+        {
+            // 需要预热
+            Heater_Preheat_Finished_Flag = false;
+        }
+        else
+        {
+            // 不需要预热
+            Heater_Preheat_Finished_Flag = true;
+        }
+
         float tmp;
         if (!Heater_Preheat_Finished_Flag)
         {
             tmp = HEATER_PREHEAT_POWER;
-            if (Now_Temperature >= Target_Temperature)
-            {
-                Heater_Preheat_Finished_Flag = true;
-            }
         }
         else
         {
             PID_Temperature.Set_Now(Now_Temperature);
-            PID_Temperature.Set_Target(50.0f);
+            PID_Temperature.Set_Target(HEATER_TARGET_TEMPERATURE);
             PID_Temperature.TIM_Calculate_PeriodElapsedCallback();
             tmp = PID_Temperature.Get_Out();
         }
         float output = tmp / (BSP_Power.Get_Power_Voltage() * BSP_Power.Get_Power_Voltage()) * HEATER_NOMINAL_VOLTAGE * HEATER_NOMINAL_VOLTAGE;
-        Math_Constrain(&output, 0.0f, 10000.0f);
+        Basic_Math_Constrain(&output, 0.0f, 10000.0f);
         __HAL_TIM_SET_COMPARE(htim, TIM_Channel, (uint32_t) (output));
     }
     else

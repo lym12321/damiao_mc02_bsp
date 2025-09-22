@@ -208,7 +208,7 @@ extern Class_Buzzer BSP_Buzzer;
  */
 inline void Class_Buzzer::Set_Frequency(const float &__Frequency)
 {
-    Frequency = Math_Constrain(__Frequency, 0.0f, 20000.0f);
+    Frequency = Basic_Math_Constrain(__Frequency, 0.0f, 20000.0f);
 
     float arr = 1000000.0f / Frequency;
         __HAL_TIM_SetAutoreload(htim, arr);
@@ -225,8 +225,8 @@ inline void Class_Buzzer::Set_Frequency(const float &__Frequency)
  */
 void Class_Buzzer::Set_Sound(const float &__Frequency, const float &__Loudness)
 {
-    Frequency = Math_Constrain(__Frequency, 0.0f, 20000.0f);
-    Loudness = Math_Constrain(__Loudness, 0.0f, 1.0f);
+    Frequency = Basic_Math_Constrain(__Frequency, 0.0f, 20000.0f);
+    Loudness = Basic_Math_Constrain(__Loudness, 0.0f, 1.0f);
 
     float arr = 1000000.0f / Frequency;
         __HAL_TIM_SetAutoreload(htim, arr);

@@ -58,7 +58,7 @@ void Class_Slope::TIM_Calculate_PeriodElapsedCallback()
         if (Target > Now_Planning)
         {
             // 正值加速
-            if (Math_Abs(Now_Planning - Target) > Increase_Value)
+            if (Basic_Math_Abs(Now_Planning - Target) > Increase_Value)
             {
                 Out += Increase_Value;
             }
@@ -70,7 +70,7 @@ void Class_Slope::TIM_Calculate_PeriodElapsedCallback()
         else if (Target < Now_Planning)
         {
             // 正值减速
-            if (Math_Abs(Now_Planning - Target) > Decrease_Value)
+            if (Basic_Math_Abs(Now_Planning - Target) > Decrease_Value)
             {
                 Out -= Decrease_Value;
             }
@@ -85,7 +85,7 @@ void Class_Slope::TIM_Calculate_PeriodElapsedCallback()
         if (Target < Now_Planning)
         {
             // 负值加速
-            if (Math_Abs(Now_Planning - Target) > Increase_Value)
+            if (Basic_Math_Abs(Now_Planning - Target) > Increase_Value)
             {
                 Out -= Increase_Value;
             }
@@ -97,7 +97,7 @@ void Class_Slope::TIM_Calculate_PeriodElapsedCallback()
         else if (Target > Now_Planning)
         {
             // 负值减速
-            if (Math_Abs(Now_Planning - Target) > Decrease_Value)
+            if (Basic_Math_Abs(Now_Planning - Target) > Decrease_Value)
             {
                 Out += Decrease_Value;
             }
@@ -112,7 +112,7 @@ void Class_Slope::TIM_Calculate_PeriodElapsedCallback()
         if (Target > Now_Planning)
         {
             // 0值正加速
-            if (Math_Abs(Now_Planning - Target) > Increase_Value)
+            if (Basic_Math_Abs(Now_Planning - Target) > Increase_Value)
             {
                 Out += Increase_Value;
             }
@@ -124,7 +124,7 @@ void Class_Slope::TIM_Calculate_PeriodElapsedCallback()
         else if (Target < Now_Planning)
         {
             // 0值负加速
-            if (Math_Abs(Now_Planning - Target) > Increase_Value)
+            if (Basic_Math_Abs(Now_Planning - Target) > Increase_Value)
             {
                 Out -= Increase_Value;
             }

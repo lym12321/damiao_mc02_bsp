@@ -116,16 +116,18 @@ void Class_BMI088::TIM_125us_Calculate_PeriodElapsedCallback()
     Vector_Original_Accel[0][0] = BMI088_Accel.Get_Raw_Accel_X();
     Vector_Original_Accel[1][0] = BMI088_Accel.Get_Raw_Accel_Y();
     Vector_Original_Accel[2][0] = BMI088_Accel.Get_Raw_Accel_Z();
-    Vector_Normalized_Accel = Vector_Original_Accel.Get_Normalization();
 
     Vector_Original_Gyro[0][0] = BMI088_Gyro.Get_Raw_Gyro_X();
     Vector_Original_Gyro[1][0] = BMI088_Gyro.Get_Raw_Gyro_Y();
     Vector_Original_Gyro[2][0] = BMI088_Gyro.Get_Raw_Gyro_Z();
 
-    if (isnan(EKF_Quaternion.Vector_X[0][0]) || isnan(EKF_Quaternion.Vector_X[1][0]) || isnan(EKF_Quaternion.Vector_X[2][0]) || isnan(EKF_Quaternion.Vector_X[3][0]))
+    // 防止NaN流入算法
+    if (Basic_Math_Is_Invalid_Float(Vector_Original_Accel[0][0]) || Basic_Math_Is_Invalid_Float(Vector_Original_Accel[1][0]) || Basic_Math_Is_Invalid_Float(Vector_Original_Accel[2][0]) || Basic_Math_Is_Invalid_Float(Vector_Original_Gyro[0][0]) || Basic_Math_Is_Invalid_Float(Vector_Original_Gyro[1][0]) || Basic_Math_Is_Invalid_Float(Vector_Original_Gyro[2][0]))
     {
-        EKF_Init_Finished_Flag = false;
+        return;
     }
+
+    Vector_Normalized_Accel = Vector_Original_Accel.Get_Normalization();
 
     if (!EKF_Init_Finished_Flag && Accel_Update_Flag)
     {

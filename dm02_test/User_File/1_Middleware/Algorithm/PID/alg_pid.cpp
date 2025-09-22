@@ -77,7 +77,7 @@ void Class_PID::TIM_Calculate_PeriodElapsedCallback()
     float speed_ratio;
 
     error = Target - Now;
-    abs_error = Math_Abs(error);
+    abs_error = Basic_Math_Abs(error);
 
     // 判断死区
     if (abs_error < Dead_Zone)
@@ -125,7 +125,7 @@ void Class_PID::TIM_Calculate_PeriodElapsedCallback()
     // 积分限幅
     if (I_Out_Max != 0.0f)
     {
-        Math_Constrain(&Integral_Error, -I_Out_Max / K_I, I_Out_Max / K_I);
+        Basic_Math_Constrain(&Integral_Error, -I_Out_Max / K_I, I_Out_Max / K_I);
     }
     if (I_Separate_Threshold == 0.0f)
     {
@@ -174,7 +174,7 @@ void Class_PID::TIM_Calculate_PeriodElapsedCallback()
     // 输出限幅
     if (Out_Max != 0.0f)
     {
-        Math_Constrain(&Out, -Out_Max, Out_Max);
+        Basic_Math_Constrain(&Out, -Out_Max, Out_Max);
     }
 
     // 善后工作

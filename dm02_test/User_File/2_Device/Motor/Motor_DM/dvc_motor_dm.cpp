@@ -351,12 +351,12 @@ void Class_Motor_DM_Normal::TIM_Send_PeriodElapsedCallback()
     if (Rx_Data.Control_Status == Motor_DM_Control_Status_ENABLE)
     {
         // 电机在线, 正常控制
-        Math_Constrain(&Control_Angle, -Angle_Max, Angle_Max);
-        Math_Constrain(&Control_Omega, -Omega_Max, Omega_Max);
-        Math_Constrain(&Control_Torque, -Torque_Max, Torque_Max);
-        Math_Constrain(&Control_Current, -Current_Max, Current_Max);
-        Math_Constrain(&K_P, 0.0f, 500.0f);
-        Math_Constrain(&K_D, 0.0f, 5.0f);
+        Basic_Math_Constrain(&Control_Angle, -Angle_Max, Angle_Max);
+        Basic_Math_Constrain(&Control_Omega, -Omega_Max, Omega_Max);
+        Basic_Math_Constrain(&Control_Torque, -Torque_Max, Torque_Max);
+        Basic_Math_Constrain(&Control_Current, -Current_Max, Current_Max);
+        Basic_Math_Constrain(&K_P, 0.0f, 500.0f);
+        Basic_Math_Constrain(&K_D, 0.0f, 5.0f);
 
         Output();
     }
@@ -390,7 +390,7 @@ void Class_Motor_DM_Normal::Data_Process()
     }
 
     // 处理大小端
-    Math_Endian_Reverse_16((void *) &tmp_buffer->Angle_Reverse, &tmp_encoder);
+    Basic_Math_Endian_Reverse_16((void *) &tmp_buffer->Angle_Reverse, &tmp_encoder);
     tmp_omega = (tmp_buffer->Omega_11_4 << 4) | (tmp_buffer->Omega_3_0_Torque_11_8 >> 4);
     tmp_torque = ((tmp_buffer->Omega_3_0_Torque_11_8 & 0x0f) << 8) | (tmp_buffer->Torque_7_0);
 
@@ -412,8 +412,8 @@ void Class_Motor_DM_Normal::Data_Process()
 
     // 计算电机本身信息
     Rx_Data.Now_Angle = (float) (Rx_Data.Total_Encoder) / (float) ((1 << 16) - 1) * Angle_Max * 2.0f;
-    Rx_Data.Now_Omega = Math_Int_To_Float(tmp_omega, 0x7ff, (1 << 12) - 1, 0, Omega_Max);
-    Rx_Data.Now_Torque = Math_Int_To_Float(tmp_torque, 0x7ff, (1 << 12) - 1, 0, Torque_Max);
+    Rx_Data.Now_Omega = Basic_Math_Int_To_Float(tmp_omega, 0x7ff, (1 << 12) - 1, 0, Omega_Max);
+    Rx_Data.Now_Torque = Basic_Math_Int_To_Float(tmp_torque, 0x7ff, (1 << 12) - 1, 0, Torque_Max);
     Rx_Data.Now_MOS_Temperature = tmp_buffer->MOS_Temperature + BASIC_MATH_CELSIUS_TO_KELVIN;
     Rx_Data.Now_Rotor_Temperature = tmp_buffer->Rotor_Temperature + BASIC_MATH_CELSIUS_TO_KELVIN;
 
@@ -436,13 +436,13 @@ void Class_Motor_DM_Normal::Output()
 
         uint16_t tmp_angle, tmp_omega, tmp_torque, tmp_k_p, tmp_k_d;
 
-        tmp_angle = Math_Float_To_Int(Control_Angle, 0, Angle_Max, 0x7fff, (1 << 16) - 1);
-        tmp_omega = Math_Float_To_Int(Control_Omega, 0, Omega_Max, 0x7ff, (1 << 12) - 1);
-        tmp_torque = Math_Float_To_Int(Control_Torque, 0, Torque_Max, 0x7ff, (1 << 12) - 1);
-        tmp_k_p = Math_Float_To_Int(K_P, 0, 500.0f, 0, (1 << 12) - 1);
-        tmp_k_d = Math_Float_To_Int(K_D, 0, 5.0f, 0, (1 << 12) - 1);
+        tmp_angle = Basic_Math_Float_To_Int(Control_Angle, 0, Angle_Max, 0x7fff, (1 << 16) - 1);
+        tmp_omega = Basic_Math_Float_To_Int(Control_Omega, 0, Omega_Max, 0x7ff, (1 << 12) - 1);
+        tmp_torque = Basic_Math_Float_To_Int(Control_Torque, 0, Torque_Max, 0x7ff, (1 << 12) - 1);
+        tmp_k_p = Basic_Math_Float_To_Int(K_P, 0, 500.0f, 0, (1 << 12) - 1);
+        tmp_k_d = Basic_Math_Float_To_Int(K_D, 0, 5.0f, 0, (1 << 12) - 1);
 
-        tmp_buffer->Control_Angle_Reverse = Math_Endian_Reverse_16(&tmp_angle, nullptr);
+        tmp_buffer->Control_Angle_Reverse = Basic_Math_Endian_Reverse_16(&tmp_angle, nullptr);
         tmp_buffer->Control_Omega_11_4 = tmp_omega >> 4;
         tmp_buffer->Control_Omega_3_0_K_P_11_8 = ((tmp_omega & 0x0f) << 4) | (tmp_k_p >> 8);
         tmp_buffer->K_P_7_0 = tmp_k_p & 0xff;
@@ -563,7 +563,7 @@ void Class_Motor_DM_1_To_4::TIM_1ms_Calculate_PeriodElapsedCallback()
     PID_Calculate();
 
     float tmp_value = Target_Current + Feedforward_Current;
-    Math_Constrain(&tmp_value, -Current_Max, Current_Max);
+    Basic_Math_Constrain(&tmp_value, -Current_Max, Current_Max);
     Out = tmp_value * Current_To_Out;
 
     Output();
@@ -585,9 +585,9 @@ void Class_Motor_DM_1_To_4::Data_Process()
     Struct_Motor_DM_CAN_Rx_Data_1_To_4 *tmp_buffer = (Struct_Motor_DM_CAN_Rx_Data_1_To_4 *) CAN_Manage_Object->Rx_Buffer;
 
     // 处理大小端
-    Math_Endian_Reverse_16((void *) &tmp_buffer->Encoder_Reverse, (void *) &tmp_encoder);
-    Math_Endian_Reverse_16((void *) &tmp_buffer->Omega_Reverse, (void *) &tmp_omega);
-    Math_Endian_Reverse_16((void *) &tmp_buffer->Current_Reverse, (void *) &tmp_current);
+    Basic_Math_Endian_Reverse_16((void *) &tmp_buffer->Encoder_Reverse, (void *) &tmp_encoder);
+    Basic_Math_Endian_Reverse_16((void *) &tmp_buffer->Omega_Reverse, (void *) &tmp_omega);
+    Basic_Math_Endian_Reverse_16((void *) &tmp_buffer->Current_Reverse, (void *) &tmp_current);
 
     // 计算圈数与总编码器值
     delta_encoder = tmp_encoder - Rx_Data.Pre_Encoder;

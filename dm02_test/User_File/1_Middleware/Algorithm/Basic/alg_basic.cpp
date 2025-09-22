@@ -1,12 +1,13 @@
 /**
- * @file drv_basic.cpp
+ * @file alg_basic.cpp
  * @author yssickjgd 1345578933@qq.com
  * @brief 一些极其简易的数学
- * @version 1.1
+ * @version 0.1
  * @date 2023-08-29 0.1 23赛季定稿
  * @date 2023-11-10 1.1 修改成cpp
+ * @date 2025-09-23 2.1 引入NaN判断
  *
- * @copyright Copyright (c) 2023
+ * @copyright Copyright (c) 2023-2025
  *
  */
 
@@ -36,7 +37,7 @@ const float BASIC_MATH_CELSIUS_TO_KELVIN = 273.15f;
  *
  * @param Value 布尔值地址
  */
-void Math_Boolean_Logical_Not(bool *Value)
+void Basic_Math_Boolean_Logical_Not(bool *Value)
 {
     if (!*Value)
     {
@@ -53,7 +54,7 @@ void Math_Boolean_Logical_Not(bool *Value)
  *
  * @param Address 地址
  */
-void Math_Endian_Reverse_16(void *Address)
+void Basic_Math_Endian_Reverse_16(void *Address)
 {
     uint8_t *tmp_address_8;
     uint16_t *tmp_address_16;
@@ -69,7 +70,7 @@ void Math_Endian_Reverse_16(void *Address)
  * @param Destination 目标存储地址
  * @return uint16_t 结果
  */
-uint16_t Math_Endian_Reverse_16(void *Source, void *Destination)
+uint16_t Basic_Math_Endian_Reverse_16(void *Source, void *Destination)
 {
     uint8_t *tmp_address_8;
     uint16_t tmp_value_16;
@@ -93,7 +94,7 @@ uint16_t Math_Endian_Reverse_16(void *Source, void *Destination)
  *
  * @param Address 地址
  */
-void Math_Endian_Reverse_32(void *Address)
+void Basic_Math_Endian_Reverse_32(void *Address)
 {
     uint8_t *tmp_address_8;
     uint32_t *tmp_address_32;
@@ -109,7 +110,7 @@ void Math_Endian_Reverse_32(void *Address)
  * @param Destination 目标存储地址
  * @return uint32_t 结果
  */
-uint32_t Math_Endian_Reverse_32(void *Source, void *Destination)
+uint32_t Basic_Math_Endian_Reverse_32(void *Source, void *Destination)
 {
     uint8_t *tmp_address_8;
     uint32_t tmp_value_32;
@@ -137,7 +138,7 @@ uint32_t Math_Endian_Reverse_32(void *Source, void *Destination)
  * @param Length 被加的数据的数量, 注意不是字节数
  * @return uint8_t 结果
  */
-uint8_t Math_Sum_8(const uint8_t *Address, uint32_t Length)
+uint8_t Basic_Math_Sum_8(const uint8_t *Address, uint32_t Length)
 {
     uint8_t sum = 0;
     for (int i = 0; i < Length; i++)
@@ -154,7 +155,7 @@ uint8_t Math_Sum_8(const uint8_t *Address, uint32_t Length)
  * @param Length 被加的数据的数量, 注意不是字节数
  * @return uint16_t 结果
  */
-uint16_t Math_Sum_16(const uint16_t *Address, uint32_t Length)
+uint16_t Basic_Math_Sum_16(const uint16_t *Address, uint32_t Length)
 {
     uint16_t sum = 0;
     for (int i = 0; i < Length; i++)
@@ -171,7 +172,7 @@ uint16_t Math_Sum_16(const uint16_t *Address, uint32_t Length)
  * @param Length 被加的数据的数量, 注意不是字节数
  * @return uint32_t 结果
  */
-uint32_t Math_Sum_32(const uint32_t *Address, uint32_t Length)
+uint32_t Basic_Math_Sum_32(const uint32_t *Address, uint32_t Length)
 {
     uint32_t sum = 0;
     for (int i = 0; i < Length; i++)
@@ -187,10 +188,10 @@ uint32_t Math_Sum_32(const uint32_t *Address, uint32_t Length)
  * @param x 输入
  * @return float 输出
  */
-float Math_Sinc(float x)
+float Basic_Math_Sinc(float x)
 {
     // 分母为0则按极限求法
-    if (Math_Abs(x) <= 2.0f * FLT_EPSILON)
+    if (Basic_Math_Abs(x) <= 2.0f * FLT_EPSILON)
     {
         return (1.0f);
     }
@@ -208,7 +209,7 @@ float Math_Sinc(float x)
  * @param Int_2 整型2
  * @return int32_t 整型
  */
-int32_t Math_Float_To_Int(float x, float Float_1, float Float_2, int32_t Int_1, int32_t Int_2)
+int32_t Basic_Math_Float_To_Int(float x, float Float_1, float Float_2, int32_t Int_1, int32_t Int_2)
 {
     float tmp = (x - Float_1) / (Float_2 - Float_1);
     auto out = (int32_t) (tmp * (float) (Int_2 - Int_1) + (float) (Int_1));
@@ -225,11 +226,23 @@ int32_t Math_Float_To_Int(float x, float Float_1, float Float_2, int32_t Int_1, 
  * @param Float_2 浮点数2
  * @return float 浮点数
  */
-float Math_Int_To_Float(int32_t x, int32_t Int_1, int32_t Int_2, float Float_1, float Float_2)
+float Basic_Math_Int_To_Float(int32_t x, int32_t Int_1, int32_t Int_2, float Float_1, float Float_2)
 {
     float tmp = (float) (x - Int_1) / (float) (Int_2 - Int_1);
     float out = tmp * (Float_2 - Float_1) + Float_1;
     return (out);
+}
+
+/**
+ * @brief 判断浮点数是否为无效浮点数
+ *
+ * @param x 浮点数
+ * @return 是否为NaN
+ */
+bool Basic_Math_Is_Invalid_Float(float x)
+{
+    uint32_t exp = (*(uint32_t *)(&x) >> 23) & 0xff;
+    return (exp == 0xff || exp == 0x00);
 }
 
 /************************ COPYRIGHT(C) USTC-ROBOWALKER **************************/

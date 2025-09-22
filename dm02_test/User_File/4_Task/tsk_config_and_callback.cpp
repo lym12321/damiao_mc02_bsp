@@ -364,7 +364,7 @@ void Task_Init()
     R[1][1] = 1.0f;
     filter_kalman.Init(A, B, H, Q, R);
 
-    Namespace_SYS_Timestamp::Delay_Millisecond(2000);
+    Namespace_SYS_Timestamp::Delay_Second(2);
 
     // 标记初始化完成
     init_finished = true;

@@ -499,13 +499,13 @@ void Class_Motor_DJI_GM6020::TIM_Calculate_PeriodElapsedCallback()
     if (Driver_Version == Motor_DJI_GM6020_Driver_Version_DEFAULT)
     {
         float tmp_value = Target_Voltage + Feedforward_Voltage;
-        Math_Constrain(&tmp_value, -Voltage_Max, Voltage_Max);
+        Basic_Math_Constrain(&tmp_value, -Voltage_Max, Voltage_Max);
         Out = tmp_value * Voltage_To_Out;
     }
     else if (Driver_Version == Motor_DJI_GM6020_Driver_Version_2023)
     {
         float tmp_value = Target_Current + Feedforward_Current;
-        Math_Constrain(&tmp_value, -Current_Max, Current_Max);
+        Basic_Math_Constrain(&tmp_value, -Current_Max, Current_Max);
         Out = tmp_value * Current_To_Out;
     }
 
@@ -536,13 +536,13 @@ void Class_Motor_DJI_GM6020::TIM_Power_Limit_After_Calculate_PeriodElapsedCallba
     if (Driver_Version == Motor_DJI_GM6020_Driver_Version_DEFAULT)
     {
         float tmp_value = Target_Voltage + Feedforward_Voltage;
-        Math_Constrain(&tmp_value, -Voltage_Max, Voltage_Max);
+        Basic_Math_Constrain(&tmp_value, -Voltage_Max, Voltage_Max);
         Out = tmp_value * Voltage_To_Out;
     }
     else if (Driver_Version == Motor_DJI_GM6020_Driver_Version_2023)
     {
         float tmp_value = Target_Current + Feedforward_Current;
-        Math_Constrain(&tmp_value, -Current_Max, Current_Max);
+        Basic_Math_Constrain(&tmp_value, -Current_Max, Current_Max);
         Out = tmp_value * Current_To_Out;
     }
 
@@ -566,9 +566,9 @@ void Class_Motor_DJI_GM6020::Data_Process()
     Struct_Motor_DJI_CAN_Rx_Data *tmp_buffer = (Struct_Motor_DJI_CAN_Rx_Data *) CAN_Manage_Object->Rx_Buffer;
 
     // 处理大小端
-    Math_Endian_Reverse_16((void *) &tmp_buffer->Encoder_Reverse, (void *) &tmp_encoder);
-    Math_Endian_Reverse_16((void *) &tmp_buffer->Omega_Reverse, (void *) &tmp_omega);
-    Math_Endian_Reverse_16((void *) &tmp_buffer->Current_Reverse, (void *) &tmp_current);
+    Basic_Math_Endian_Reverse_16((void *) &tmp_buffer->Encoder_Reverse, (void *) &tmp_encoder);
+    Basic_Math_Endian_Reverse_16((void *) &tmp_buffer->Omega_Reverse, (void *) &tmp_omega);
+    Basic_Math_Endian_Reverse_16((void *) &tmp_buffer->Current_Reverse, (void *) &tmp_current);
 
     // 计算圈数与总编码器值
     delta_encoder = tmp_encoder - Rx_Data.Pre_Encoder;
@@ -765,7 +765,7 @@ void Class_Motor_DJI_GM6020::Power_Limit_Control()
                 }
                 else
                 {
-                    if (Math_Abs(result_1) < Math_Abs(result_2))
+                    if (Basic_Math_Abs(result_1) < Basic_Math_Abs(result_2))
                     {
                         Target_Current = result_1;
                     }
@@ -862,7 +862,7 @@ void Class_Motor_DJI_C610::TIM_Calculate_PeriodElapsedCallback()
     PID_Calculate();
 
     float tmp_value = Target_Current + Feedforward_Current;
-    Math_Constrain(&tmp_value, -Current_Max, Current_Max);
+    Basic_Math_Constrain(&tmp_value, -Current_Max, Current_Max);
     Out = tmp_value * Current_To_Out;
 
     Output();
@@ -884,9 +884,9 @@ void Class_Motor_DJI_C610::Data_Process()
     Struct_Motor_DJI_CAN_Rx_Data *tmp_buffer = (Struct_Motor_DJI_CAN_Rx_Data *) CAN_Manage_Object->Rx_Buffer;
 
     // 处理大小端
-    Math_Endian_Reverse_16((void *) &tmp_buffer->Encoder_Reverse, (void *) &tmp_encoder);
-    Math_Endian_Reverse_16((void *) &tmp_buffer->Omega_Reverse, (void *) &tmp_omega);
-    Math_Endian_Reverse_16((void *) &tmp_buffer->Current_Reverse, (void *) &tmp_current);
+    Basic_Math_Endian_Reverse_16((void *) &tmp_buffer->Encoder_Reverse, (void *) &tmp_encoder);
+    Basic_Math_Endian_Reverse_16((void *) &tmp_buffer->Omega_Reverse, (void *) &tmp_omega);
+    Basic_Math_Endian_Reverse_16((void *) &tmp_buffer->Current_Reverse, (void *) &tmp_current);
 
     // 计算圈数与总编码器值
     delta_encoder = tmp_encoder - Rx_Data.Pre_Encoder;
@@ -1046,7 +1046,7 @@ void Class_Motor_DJI_C620::TIM_Calculate_PeriodElapsedCallback()
     PID_Calculate();
 
     float tmp_value = Target_Current + Feedforward_Current;
-    Math_Constrain(&tmp_value, -Current_Max, Current_Max);
+    Basic_Math_Constrain(&tmp_value, -Current_Max, Current_Max);
     Out = tmp_value * Current_To_Out;
 
     // 计算功率估计值
@@ -1072,7 +1072,7 @@ void Class_Motor_DJI_C620::TIM_Power_Limit_After_Calculate_PeriodElapsedCallback
         Power_Limit_Control();
     }
 
-    Math_Constrain(&Target_Current, -Current_Max, Current_Max);
+    Basic_Math_Constrain(&Target_Current, -Current_Max, Current_Max);
     Out = Target_Current * Current_To_Out;
 
     Output();
@@ -1094,9 +1094,9 @@ void Class_Motor_DJI_C620::Data_Process()
     Struct_Motor_DJI_CAN_Rx_Data *tmp_buffer = (Struct_Motor_DJI_CAN_Rx_Data *) CAN_Manage_Object->Rx_Buffer;
 
     // 处理大小端
-    Math_Endian_Reverse_16((void *) &tmp_buffer->Encoder_Reverse, (void *) &tmp_encoder);
-    Math_Endian_Reverse_16((void *) &tmp_buffer->Omega_Reverse, (void *) &tmp_omega);
-    Math_Endian_Reverse_16((void *) &tmp_buffer->Current_Reverse, (void *) &tmp_current);
+    Basic_Math_Endian_Reverse_16((void *) &tmp_buffer->Encoder_Reverse, (void *) &tmp_encoder);
+    Basic_Math_Endian_Reverse_16((void *) &tmp_buffer->Omega_Reverse, (void *) &tmp_omega);
+    Basic_Math_Endian_Reverse_16((void *) &tmp_buffer->Current_Reverse, (void *) &tmp_current);
 
     // 计算圈数与总编码器值
     delta_encoder = tmp_encoder - Rx_Data.Pre_Encoder;
@@ -1219,7 +1219,7 @@ void Class_Motor_DJI_C620::Power_Limit_Control()
                 }
                 else
                 {
-                    if (Math_Abs(result_1) < Math_Abs(result_2))
+                    if (Basic_Math_Abs(result_1) < Basic_Math_Abs(result_2))
                     {
                         Target_Current = result_1;
                     }

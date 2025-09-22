@@ -280,7 +280,7 @@ void Class_Serialplot::Output()
 
         if (Checksum_8 != Serialplot_Checksum_8_DISABLE)
         {
-            tmp_buffer[1 + Data_Number * sizeof(uint8_t)] = Math_Sum_8(tmp_buffer + 1, Data_Number * sizeof(uint8_t));
+            tmp_buffer[1 + Data_Number * sizeof(uint8_t)] = Basic_Math_Sum_8(tmp_buffer + 1, Data_Number * sizeof(uint8_t));
         }
     }
     else if (Tx_Data_Type == Serialplot_Data_Type_UINT16 || Tx_Data_Type == Serialplot_Data_Type_INT16)
@@ -292,7 +292,7 @@ void Class_Serialplot::Output()
 
         if (Checksum_8 != Serialplot_Checksum_8_DISABLE)
         {
-            tmp_buffer[1 + Data_Number * sizeof(uint16_t)] = Math_Sum_8(tmp_buffer + 1, Data_Number * sizeof(uint16_t));
+            tmp_buffer[1 + Data_Number * sizeof(uint16_t)] = Basic_Math_Sum_8(tmp_buffer + 1, Data_Number * sizeof(uint16_t));
         }
     }
     else if (Tx_Data_Type == Serialplot_Data_Type_UINT32 || Tx_Data_Type == Serialplot_Data_Type_INT32 || Tx_Data_Type == Serialplot_Data_Type_FLOAT)
@@ -304,7 +304,7 @@ void Class_Serialplot::Output()
 
         if (Checksum_8 != Serialplot_Checksum_8_DISABLE)
         {
-            tmp_buffer[1 + Data_Number * sizeof(uint32_t)] = Math_Sum_8(tmp_buffer + 1, Data_Number * sizeof(uint32_t));
+            tmp_buffer[1 + Data_Number * sizeof(uint32_t)] = Basic_Math_Sum_8(tmp_buffer + 1, Data_Number * sizeof(uint32_t));
         }
     }
     else if (Tx_Data_Type == Serialplot_Data_Type_DOUBLE)
@@ -316,7 +316,7 @@ void Class_Serialplot::Output()
 
         if (Checksum_8 != Serialplot_Checksum_8_DISABLE)
         {
-            tmp_buffer[1 + Data_Number * sizeof(uint64_t)] = Math_Sum_8(tmp_buffer + 1, Data_Number * sizeof(uint64_t));
+            tmp_buffer[1 + Data_Number * sizeof(uint64_t)] = Basic_Math_Sum_8(tmp_buffer + 1, Data_Number * sizeof(uint64_t));
         }
     }
 }
@@ -534,7 +534,7 @@ void Class_Serialplot_USB::Output()
 
         if (Checksum_8 != Serialplot_Checksum_8_DISABLE)
         {
-            tmp_buffer[1 + Data_Number * sizeof(uint8_t)] = Math_Sum_8(tmp_buffer + 1, Data_Number * sizeof(uint8_t));
+            tmp_buffer[1 + Data_Number * sizeof(uint8_t)] = Basic_Math_Sum_8(tmp_buffer + 1, Data_Number * sizeof(uint8_t));
         }
     }
     else if (Tx_Data_Type == Serialplot_Data_Type_UINT16 || Tx_Data_Type == Serialplot_Data_Type_INT16)
@@ -546,7 +546,7 @@ void Class_Serialplot_USB::Output()
 
         if (Checksum_8 != Serialplot_Checksum_8_DISABLE)
         {
-            tmp_buffer[1 + Data_Number * sizeof(uint16_t)] = Math_Sum_8(tmp_buffer + 1, Data_Number * sizeof(uint16_t));
+            tmp_buffer[1 + Data_Number * sizeof(uint16_t)] = Basic_Math_Sum_8(tmp_buffer + 1, Data_Number * sizeof(uint16_t));
         }
     }
     else if (Tx_Data_Type == Serialplot_Data_Type_UINT32 || Tx_Data_Type == Serialplot_Data_Type_INT32 || Tx_Data_Type == Serialplot_Data_Type_FLOAT)
@@ -558,7 +558,7 @@ void Class_Serialplot_USB::Output()
 
         if (Checksum_8 != Serialplot_Checksum_8_DISABLE)
         {
-            tmp_buffer[1 + Data_Number * sizeof(uint32_t)] = Math_Sum_8(tmp_buffer + 1, Data_Number * sizeof(uint32_t));
+            tmp_buffer[1 + Data_Number * sizeof(uint32_t)] = Basic_Math_Sum_8(tmp_buffer + 1, Data_Number * sizeof(uint32_t));
         }
     }
     else if (Tx_Data_Type == Serialplot_Data_Type_DOUBLE)
@@ -570,7 +570,7 @@ void Class_Serialplot_USB::Output()
 
         if (Checksum_8 != Serialplot_Checksum_8_DISABLE)
         {
-            tmp_buffer[1 + Data_Number * sizeof(uint64_t)] = Math_Sum_8(tmp_buffer + 1, Data_Number * sizeof(uint64_t));
+            tmp_buffer[1 + Data_Number * sizeof(uint64_t)] = Basic_Math_Sum_8(tmp_buffer + 1, Data_Number * sizeof(uint64_t));
         }
     }
 }

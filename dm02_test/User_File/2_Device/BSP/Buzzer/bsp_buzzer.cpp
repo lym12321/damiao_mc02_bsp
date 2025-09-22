@@ -170,8 +170,8 @@ void Class_Buzzer::Init(const float &__Frequency, const float &__Loudness)
     htim = &htim12;
     TIM_Channel = TIM_CHANNEL_2;
 
-    Frequency = Math_Constrain(__Frequency, 0.0f, 20000.0f);
-    Loudness = Math_Constrain(__Loudness, 0.0f, 1.0f);
+    Frequency = Basic_Math_Constrain(__Frequency, 0.0f, 20000.0f);
+    Loudness = Basic_Math_Constrain(__Loudness, 0.0f, 1.0f);
 
     float arr = 1000000.0f / Frequency;
         __HAL_TIM_SetAutoreload(htim, arr);

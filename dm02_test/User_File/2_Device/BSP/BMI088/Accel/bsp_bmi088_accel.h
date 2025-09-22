@@ -123,7 +123,11 @@ protected:
     // 加热电阻标称电压
     float HEATER_NOMINAL_VOLTAGE = 25.2f;
     // 加热电阻预热功率, 单位与PID等同
-    float HEATER_PREHEAT_POWER = 2000.0f;
+    float HEATER_PREHEAT_POWER = 1000.0f;
+    // 触发预热基础温度
+    float HEATER_PREHEAT_BASE_TEMPERATURE = 45.0f;
+    // 加热电阻目标温度
+    float HEATER_TARGET_TEMPERATURE = 50.0f;
 
     // 内部变量
 

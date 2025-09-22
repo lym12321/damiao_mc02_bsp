@@ -135,7 +135,7 @@ void Class_Filter_Frequency<Filter_Frequency_Order>::Init(const float &__Value_C
     {
         for (int i = 0; i < Filter_Frequency_Order + 1; i++)
         {
-            System_Function[i] = omega_low / PI * Math_Sinc(((float) (i) - Filter_Frequency_Order / 2.0f) * omega_low);
+            System_Function[i] = omega_low / PI * Basic_Math_Sinc(((float) (i) - Filter_Frequency_Order / 2.0f) * omega_low);
         }
 
         break;
@@ -144,7 +144,7 @@ void Class_Filter_Frequency<Filter_Frequency_Order>::Init(const float &__Value_C
     {
         for (int i = 0; i < Filter_Frequency_Order + 1; i++)
         {
-            System_Function[i] = Math_Sinc(((float) (i) - Filter_Frequency_Order / 2.0f) * PI) - omega_high / PI * Math_Sinc(((float) (i) - Filter_Frequency_Order / 2.0f) * omega_high);
+            System_Function[i] = Basic_Math_Sinc(((float) (i) - Filter_Frequency_Order / 2.0f) * PI) - omega_high / PI * Basic_Math_Sinc(((float) (i) - Filter_Frequency_Order / 2.0f) * omega_high);
         }
 
         break;
@@ -153,7 +153,7 @@ void Class_Filter_Frequency<Filter_Frequency_Order>::Init(const float &__Value_C
     {
         for (int i = 0; i < Filter_Frequency_Order + 1; i++)
         {
-            System_Function[i] = omega_high / PI * Math_Sinc(((float) (i) - Filter_Frequency_Order / 2.0f) * omega_high) - omega_low / PI * Math_Sinc(((float) (i) - Filter_Frequency_Order / 2.0f) * omega_low);
+            System_Function[i] = omega_high / PI * Basic_Math_Sinc(((float) (i) - Filter_Frequency_Order / 2.0f) * omega_high) - omega_low / PI * Basic_Math_Sinc(((float) (i) - Filter_Frequency_Order / 2.0f) * omega_low);
         }
 
         break;
@@ -162,7 +162,7 @@ void Class_Filter_Frequency<Filter_Frequency_Order>::Init(const float &__Value_C
     {
         for (int i = 0; i < Filter_Frequency_Order + 1; i++)
         {
-            System_Function[i] = Math_Sinc(((float) (i) - Filter_Frequency_Order / 2.0f) * PI) + omega_low / PI * Math_Sinc(((float) (i) - Filter_Frequency_Order / 2.0f) * omega_low) - omega_high / PI * Math_Sinc(((float) (i) - Filter_Frequency_Order / 2.0f) * omega_high);
+            System_Function[i] = Basic_Math_Sinc(((float) (i) - Filter_Frequency_Order / 2.0f) * PI) + omega_low / PI * Basic_Math_Sinc(((float) (i) - Filter_Frequency_Order / 2.0f) * omega_low) - omega_high / PI * Basic_Math_Sinc(((float) (i) - Filter_Frequency_Order / 2.0f) * omega_high);
         }
 
         break;
@@ -221,7 +221,7 @@ inline void Class_Filter_Frequency<Filter_Frequency_Order>::Set_Now(const float 
     // 输入限幅, 全0为不限制
     if (Value_Constrain_Low != 0.0f || Value_Constrain_High != 0.0f)
     {
-        now_value = Math_Constrain(__Now, Value_Constrain_Low, Value_Constrain_High);
+        now_value = Basic_Math_Constrain(__Now, Value_Constrain_Low, Value_Constrain_High);
     }
 
     // 将当前值放入被卷积的信号中
