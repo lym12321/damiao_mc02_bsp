@@ -257,18 +257,10 @@ void Task1ms_Callback()
     filter_kalman.TIM_Predict_PeriodElapsedCallback();
     filter_kalman.TIM_Update_PeriodElapsedCallback();
 
-    float accel_x = BSP_BMI088.BMI088_Accel.Get_Raw_Accel_X();
-    float accel_y = BSP_BMI088.BMI088_Accel.Get_Raw_Accel_Y();
-    float accel_z = BSP_BMI088.BMI088_Accel.Get_Raw_Accel_Z();
-    float gyro_x = BSP_BMI088.BMI088_Gyro.Get_Raw_Gyro_X();
-    float gyro_y = BSP_BMI088.BMI088_Gyro.Get_Raw_Gyro_Y();
-    float gyro_z = BSP_BMI088.BMI088_Gyro.Get_Raw_Gyro_Z();
-    float q0 = BSP_BMI088.EKF_Quaternion.Vector_X[0][0];
-    float q1 = BSP_BMI088.EKF_Quaternion.Vector_X[1][0];
-    float q2 = BSP_BMI088.EKF_Quaternion.Vector_X[2][0];
-    float q3 = BSP_BMI088.EKF_Quaternion.Vector_X[3][0];
-    float accel = sqrtf(accel_x * accel_x + accel_y * accel_y + accel_z * accel_z);
-    float gyro = sqrtf(gyro_x * gyro_x + gyro_y * gyro_y + gyro_z * gyro_z);
+    float q0 = BSP_BMI088.Get_Quaternion()[0];
+    float q1 = BSP_BMI088.Get_Quaternion()[1];
+    float q2 = BSP_BMI088.Get_Quaternion()[2];
+    float q3 = BSP_BMI088.Get_Quaternion()[3];
     float yaw = BSP_BMI088.Get_Angle_Yaw() / BASIC_MATH_DEG_TO_RAD;
     float pitch = BSP_BMI088.Get_Angle_Pitch() / BASIC_MATH_DEG_TO_RAD;
     float roll = BSP_BMI088.Get_Angle_Roll() / BASIC_MATH_DEG_TO_RAD;
@@ -278,7 +270,6 @@ void Task1ms_Callback()
 
     // 串口绘图
     Vofa_USB.Set_Data(10, &yaw, &pitch, &roll, &q0, &q1, &q2, &q3, &temperature, &calculating_time, &loss);
-    // Serialplot_USB.Set_Data(6, &accel_x, &accel_y, &accel_z, &gyro_x, &gyro_y, &gyro_z);
     Vofa_USB.TIM_1ms_Write_PeriodElapsedCallback();
 
     TIM_1ms_CAN_PeriodElapsedCallback();

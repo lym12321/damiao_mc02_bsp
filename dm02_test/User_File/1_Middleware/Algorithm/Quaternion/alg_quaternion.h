@@ -226,11 +226,15 @@ public:
 
     using Class_Matrix_f32<4, 1>::Get_Modulus;
 
+    inline Class_Matrix_f32<3, 1> Get_Euler_Angle() const;
+
     using Class_Matrix_f32<4, 1>::Get_Normalization;
 
     inline Class_Matrix_f32<4, 4> Get_Self_Matrix() const;
 
-    inline Class_Matrix_f32<3, 1> Get_Euler_Angle() const;
+    inline Class_Matrix_f32<3, 3> Get_Rotation_Matrix() const;
+
+    inline Class_Matrix_f32<4, 1> Get_Rodrigues() const;
 
 protected:
     // 初始化相关常量
@@ -265,11 +269,11 @@ namespace Namespace_ALG_Quaternion
 
     Class_Quaternion_f32 From_Vector(const Class_Matrix_f32<3, 1> &Vector);
 
+    Class_Quaternion_f32 From_Euler_Angle(const Class_Matrix_f32<3, 1> &Euler_Angle);
+
     Class_Quaternion_f32 From_Rotation_Matrix(const Class_Matrix_f32<3, 3> &Rotation_Matrix);
 
     Class_Quaternion_f32 From_Axis_Angle(const Class_Matrix_f32<3, 1> &Axis, const float &Angle);
-
-    Class_Quaternion_f32 From_Euler_Angle(const Class_Matrix_f32<3, 1> &Euler_Angle);
 }
 
 /* Exported function declarations --------------------------------------------*/
@@ -331,6 +335,46 @@ inline Class_Quaternion_f32 Class_Quaternion_f32::Get_Inverse() const
 }
 
 /**
+ * @brief 获取四元数对应的欧拉角, Z-Y-X顺序
+ *
+ * @return Class_Matrix_f32<3, 1> 欧拉角, Yaw-Pitch-Roll顺序
+ * 注意, 这只是用矩阵形式存储, 不可参与矩阵计算
+ */
+inline Class_Matrix_f32<3, 1> Class_Quaternion_f32::Get_Euler_Angle() const
+{
+    Class_Matrix_f32<3, 1> result;
+    float modulus_square = Data[0] * Data[0] + Data[1] * Data[1] + Data[2] * Data[2] + Data[3] * Data[3];
+    if (modulus_square <= Matrix_Compare_Epsilon)
+    {
+        return (result);
+    }
+    float modulus = 1.0f / sqrtf(modulus_square);
+    float q0 = Data[0] * modulus;
+    float q1 = Data[1] * modulus;
+    float q2 = Data[2] * modulus;
+    float q3 = Data[3] * modulus;
+    result[0][0] = atan2f(2.0f * (q0 * q3 + q1 * q2), 1.0f - 2.0f * (q2 * q2 + q3 * q3));
+    float sin_pitch = 2.0f * (q0 * q2 - q3 * q1);
+    if (fabs(sin_pitch) >= 1.0f)
+    {
+        if (sin_pitch > 0.0f)
+        {
+            result[1][0] = PI / 2.0f;
+        }
+        else
+        {
+            result[1][0] = -PI / 2.0f;
+        }
+    }
+    else
+    {
+        result[1][0] = asinf(sin_pitch);
+    }
+    result[2][0] = atan2f(2.0f * (q0 * q1 + q2 * q3), 1.0f - 2.0f * (q1 * q1 + q2 * q2));
+    return (result);
+}
+
+/**
  * @brief 获取四元数的自乘矩阵
  *
  * @return Class_Matrix_f32<4, 4> 自乘矩阵
@@ -358,36 +402,84 @@ inline Class_Matrix_f32<4, 4> Class_Quaternion_f32::Get_Self_Matrix() const
 }
 
 /**
- * @brief 获取四元数对应的欧拉角, Z-Y-X顺序
+ * @brief 获取四元数对应的旋转矩阵
  *
- * @return Class_Matrix_f32<3, 1> 欧拉角, Yaw-Pitch-Roll顺序
+ * @return Class_Matrix_f32<3, 3> 旋转矩阵
+ */
+inline Class_Matrix_f32<3, 3> Class_Quaternion_f32::Get_Rotation_Matrix() const
+{
+    Class_Matrix_f32<3, 3> result;
+    float modulus_square = Data[0] * Data[0] + Data[1] * Data[1] + Data[2] * Data[2] + Data[3] + Data[3];
+    if (modulus_square <= Matrix_Compare_Epsilon)
+    {
+        return (Namespace_ALG_Matrix::Identity<3, 3>());
+    }
+    float modulus = 1.0f / sqrtf(modulus_square);
+    float q0 = Data[0] * modulus;
+    float q1 = Data[1] * modulus;
+    float q2 = Data[2] * modulus;
+    float q3 = Data[3] * modulus;
+    float q0q0 = q0 * q0;
+    float q0q1 = q0 * q1;
+    float q0q2 = q0 * q2;
+    float q0q3 = q0 * q3;
+    float q1q1 = q1 * q1;
+    float q1q2 = q1 * q2;
+    float q1q3 = q1 * q3;
+    float q2q2 = q2 * q2;
+    float q2q3 = q2 * q3;
+    float q3q3 = q3 * q3;
+    result[0][0] = 1.0f - 2.0f * (q2q2 + q3q3);
+    result[0][1] = 2.0f * (q1q2 - q0q3);
+    result[0][2] = 2.0f * (q1q3 + q0q2);
+    result[1][0] = 2.0f * (q1q2 + q0q3);
+    result[1][1] = 1.0f - 2.0f * (q1q1 + q3q3);
+    result[1][2] = 2.0f * (q2q3 - q0q1);
+    result[2][0] = 2.0f * (q1q3 - q0q2);
+    result[2][1] = 2.0f * (q2q3 + q0q1);
+    result[2][2] = 1.0f - 2.0f * (q1q1 + q2q2);
+    return (result);
+}
+
+/**
+ * @brief 获取四元数对应的轴角表示, Angle-Axis顺序, 轴与x轴正方向夹角为正
+ *
+ * @return Class_Matrix_f32<4, 1> 轴角表示, Angle-Axis顺序
  * 注意, 这只是用矩阵形式存储, 不可参与矩阵计算
  */
-inline Class_Matrix_f32<3, 1> Class_Quaternion_f32::Get_Euler_Angle() const
+inline Class_Matrix_f32<4, 1> Class_Quaternion_f32::Get_Rodrigues() const
 {
-    Class_Matrix_f32<3, 1> result;
-
-    result[0][0] = atan2f(2.0f * (Data[0] * Data[3] + Data[1] * Data[2]), 1.0f - 2.0f * (Data[2] * Data[2] + Data[3] * Data[3]));
-
-    float sin_pitch = 2.0f * (Data[0] * Data[2] - Data[3] * Data[1]);
-    if (fabs(sin_pitch) >= 1.0f)
+    Class_Matrix_f32<4, 1> result;
+    float modulus_square = Data[0] * Data[0] + Data[1] * Data[1] + Data[2] * Data[2] + Data[3] * Data[3];
+    if (modulus_square <= Matrix_Compare_Epsilon)
     {
-        if (sin_pitch > 0.0f)
-        {
-            result[1][0] = PI / 2.0f;
-        }
-        else
-        {
-            result[1][0] = -PI / 2.0f;
-        }
+        result[1][0] = 1.0f;
+        return (result);
+    }
+    float modulus = 1.0f / sqrtf(modulus_square);
+    float q0 = Data[0] * modulus;
+    float q1 = Data[1] * modulus;
+    float q2 = Data[2] * modulus;
+    float q3 = Data[3] * modulus;
+    result[0][0] = 2.0f * acosf(q0);
+    float sin_half_angle = sqrtf(1.0f - q0 * q0);
+    if (sin_half_angle <= Matrix_Compare_Epsilon)
+    {
+        result[1][0] = 1.0f;
+        result[2][0] = 0.0f;
+        result[3][0] = 0.0f;
     }
     else
     {
-        result[1][0] = asinf(sin_pitch);
+        float inv_sin_half_angle = 1.0f / sin_half_angle;
+        if (q1 < 0.0f)
+        {
+            inv_sin_half_angle = -inv_sin_half_angle;
+        }
+        result[1][0] = q1 * inv_sin_half_angle;
+        result[2][0] = q2 * inv_sin_half_angle;
+        result[3][0] = q3 * inv_sin_half_angle;
     }
-
-    result[2][0] = atan2f(2.0f * (Data[0] * Data[1] + Data[2] * Data[3]), 1.0f - 2.0f * (Data[1] * Data[1] + Data[2] * Data[2]));
-
     return (result);
 }
 

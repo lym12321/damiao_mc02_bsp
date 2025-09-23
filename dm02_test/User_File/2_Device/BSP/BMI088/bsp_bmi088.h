@@ -44,6 +44,14 @@ public:
 
     inline float Get_Angle_Roll() const;
 
+    inline Class_Matrix_f32<3, 3> Get_Rotation_Matrix() const;
+
+    inline float Get_Rodrigues_Angle() const;
+
+    inline Class_Matrix_f32<3, 1> Get_Rodrigues_Axis() const;
+
+    inline Class_Quaternion_f32 Get_Quaternion() const;
+
     inline float Get_Accel_Chi_Square_Loss() const;
 
     inline uint64_t Get_Calculating_Time() const;
@@ -117,8 +125,14 @@ protected:
     // 读变量
 
     // 欧拉角, Yaw-Pitch-Roll顺序
-    // 注意, 这只是用矩阵形式存储, 不可参与矩阵计算
-    Class_Matrix_f32<3, 1> Vector_Euler_Angle_YPR;
+    Class_Matrix_f32<3, 1> Vector_Euler_Angle;
+    // 旋转矩阵
+    Class_Matrix_f32<3, 3> Matrix_Rotation;
+    // 轴角式
+    Class_Matrix_f32<4, 1> Vector_Axis_Angle;
+    // 四元数
+    Class_Quaternion_f32 Quarternion;
+
     // 卡方检验值
     float Accel_Chi_Square_Loss = 0.0f;
     // 处理时间
@@ -160,7 +174,7 @@ extern Class_BMI088 BSP_BMI088;
  */
 inline float Class_BMI088::Get_Angle_Yaw() const
 {
-    return (Vector_Euler_Angle_YPR[0][0]);
+    return (Vector_Euler_Angle[0][0]);
 }
 
 /**
@@ -170,7 +184,7 @@ inline float Class_BMI088::Get_Angle_Yaw() const
  */
 inline float Class_BMI088::Get_Angle_Pitch() const
 {
-    return (Vector_Euler_Angle_YPR[1][0]);
+    return (Vector_Euler_Angle[1][0]);
 }
 
 /**
@@ -180,7 +194,47 @@ inline float Class_BMI088::Get_Angle_Pitch() const
  */
 inline float Class_BMI088::Get_Angle_Roll() const
 {
-    return (Vector_Euler_Angle_YPR[2][0]);
+    return (Vector_Euler_Angle[2][0]);
+}
+
+/**
+ * @brief 获取旋转矩阵
+ *
+ */
+inline Class_Matrix_f32<3, 3> Class_BMI088::Get_Rotation_Matrix() const
+{
+    return (Matrix_Rotation);
+}
+
+/**
+ * @brief 获取轴角式的角度
+ *
+ */
+inline float Class_BMI088::Get_Rodrigues_Angle() const
+{
+    return (Vector_Axis_Angle[0][0]);
+}
+
+/**
+ * @brief 获取轴角式的轴
+ *
+ */
+inline Class_Matrix_f32<3, 1> Class_BMI088::Get_Rodrigues_Axis() const
+{
+    Class_Matrix_f32<3, 1> result;
+    result[0][0] = Vector_Axis_Angle[1][0];
+    result[1][0] = Vector_Axis_Angle[2][0];
+    result[2][0] = Vector_Axis_Angle[3][0];
+    return (result);
+}
+
+/**
+ * @brief 获取四元数
+ *
+ */
+inline Class_Quaternion_f32 Class_BMI088::Get_Quaternion() const
+{
+    return (Quarternion);
 }
 
 /**

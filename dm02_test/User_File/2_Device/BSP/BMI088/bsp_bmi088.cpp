@@ -196,8 +196,11 @@ void Class_BMI088::TIM_125us_Calculate_PeriodElapsedCallback()
 
         EKF_Last_Timestamp = EKF_Now_Timestamp;
 
-        Class_Quaternion_f32 tmp(EKF_Quaternion.Vector_X);
-        Vector_Euler_Angle_YPR = tmp.Get_Euler_Angle();
+        Quarternion = EKF_Quaternion.Vector_X;
+
+        Vector_Euler_Angle = Quarternion.Get_Euler_Angle();
+        Matrix_Rotation = Quarternion.Get_Rotation_Matrix();
+        Vector_Axis_Angle = Quarternion.Get_Rodrigues();
 
         Calculating_Time = SYS_Timestamp.Get_Now_Microsecond() - EKF_Now_Timestamp;
 

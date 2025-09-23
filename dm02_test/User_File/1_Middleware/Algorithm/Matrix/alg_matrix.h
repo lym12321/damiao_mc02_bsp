@@ -304,9 +304,6 @@ public:
 
     inline Class_Matrix_f32<1, column> Get_Column(const int &Column_Index) const;
 
-    template<int tmp_row, int tmp_column>
-    inline Class_Matrix_f32<tmp_row, tmp_column> Get_Sub_Matrix(const int &Start_Row, const int &Start_Column) const;
-
     // 方阵特有
 
     template<int tmp_row = row, int tmp_column = column>
@@ -483,29 +480,6 @@ inline Class_Matrix_f32<1, column> Class_Matrix_f32<row, column>::Get_Column(con
     }
 
     return (Class_Matrix_f32<1, column>(result));
-}
-
-/**
- * @brief 获取矩阵的子矩阵
- *
- * @param Start_Row 起始行索引
- * @param Start_Column 起始列索引
- * @tparam sub_row 子矩阵行数
- * @tparam sub_column 子矩阵列数
- * @return Class_Matrix_f32<sub_row, sub_column> 子矩阵
- */
-template<int row, int column>
-template<int sub_row, int sub_column>
-inline Class_Matrix_f32<sub_row, sub_column> Class_Matrix_f32<row, column>::Get_Sub_Matrix(const int &Start_Row, const int &Start_Column) const
-{
-    Class_Matrix_f32<sub_row, sub_column> result;
-
-    for (int i = 0; i < sub_row; i++)
-    {
-        memcpy(&result.Matrix_Data[i * sub_column], &Data[(Start_Row + i) * column + Start_Column], sizeof(float) * sub_column);
-    }
-
-    return (result);
 }
 
 /**

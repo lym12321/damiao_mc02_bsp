@@ -168,6 +168,8 @@ public:
 
     inline Class_Matrix_f32<2, 2> Get_Self_Matrix() const;
 
+    inline Class_Matrix_f32<2, 2> Get_Rotation_Matrix() const;
+
 protected:
     // 初始化相关常量
 
@@ -276,6 +278,29 @@ inline Class_Matrix_f32<2, 2> Class_Complex_f32::Get_Self_Matrix() const
     result[0][1] = -Data[1];
     result[1][0] = Data[1];
     result[1][1] = Data[0];
+    return (result);
+}
+
+/**
+ * @brief 获取复数对应的旋转矩阵表示
+ *
+ * @return Class_Matrix_f32<2, 2> 2x2旋转矩阵
+ */
+inline Class_Matrix_f32<2, 2> Class_Complex_f32::Get_Rotation_Matrix() const
+{
+    Class_Matrix_f32<2, 2> result;
+    float modulus_square = Data[0] * Data[0] + Data[1] * Data[1];
+    if (modulus_square <= Matrix_Compare_Epsilon)
+    {
+        return (Namespace_ALG_Matrix::Identity<2, 2>());
+    }
+    float modulus = 1.0f / sqrtf(modulus_square);
+    float cos_theta = Data[0] * modulus;
+    float sin_theta = Data[1] * modulus;
+    result[0][0] = cos_theta;
+    result[0][1] = -sin_theta;
+    result[1][0] = sin_theta;
+    result[1][1] = cos_theta;
     return (result);
 }
 
