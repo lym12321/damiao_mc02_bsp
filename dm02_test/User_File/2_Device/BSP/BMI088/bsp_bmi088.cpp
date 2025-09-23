@@ -142,9 +142,9 @@ void Class_BMI088::TIM_125us_Calculate_PeriodElapsedCallback()
         Class_Matrix_f32<3, 3> matrix_q(array_q);
         // 测量噪声协方差矩阵
         float array_r[9] = {
-            0.446f, 0.0f, 0.0f,
-            0.0f, 0.476f, 0.0f,
-            0.0f, 0.0f, 0.537f
+            0.0446f, 0.0f, 0.0f,
+            0.0f, 0.0476f, 0.0f,
+            0.0f, 0.0f, 0.0537f
         };
         Class_Matrix_f32<3, 3> matrix_r(array_r);
 

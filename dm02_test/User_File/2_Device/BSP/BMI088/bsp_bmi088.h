@@ -70,7 +70,7 @@ protected:
     uint64_t TRANSFERING_TIMEOUT = 20;
 
     // 卡方检验残差阈值
-    float ACCEL_CHI_SQUARE_TEST_THRESHOLD = 6.0f;
+    float ACCEL_CHI_SQUARE_TEST_THRESHOLD = 0.2f;
 
     // 内部变量
 

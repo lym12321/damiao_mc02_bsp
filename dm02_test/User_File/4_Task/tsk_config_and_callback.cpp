@@ -277,7 +277,7 @@ void Task1ms_Callback()
     float temperature = BSP_BMI088.BMI088_Accel.Get_Now_Temperature();
 
     // 串口绘图
-    Vofa_USB.Set_Data(9, &yaw, &pitch, &roll, &q0, &q1, &q2, &q3, &temperature, &calculating_time);
+    Vofa_USB.Set_Data(10, &yaw, &pitch, &roll, &q0, &q1, &q2, &q3, &temperature, &calculating_time, &loss);
     // Serialplot_USB.Set_Data(6, &accel_x, &accel_y, &accel_z, &gyro_x, &gyro_y, &gyro_z);
     Vofa_USB.TIM_1ms_Write_PeriodElapsedCallback();
 
