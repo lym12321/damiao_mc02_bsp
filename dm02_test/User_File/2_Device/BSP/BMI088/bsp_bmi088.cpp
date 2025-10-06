@@ -121,15 +121,42 @@ void Class_BMI088::TIM_125us_Calculate_PeriodElapsedCallback()
     Vector_Original_Gyro[1][0] = BMI088_Gyro.Get_Raw_Gyro_Y();
     Vector_Original_Gyro[2][0] = BMI088_Gyro.Get_Raw_Gyro_Z();
 
-    // 防止NaN流入算法
-    if (Basic_Math_Is_Invalid_Float(Vector_Original_Accel[0][0]) || Basic_Math_Is_Invalid_Float(Vector_Original_Accel[1][0]) || Basic_Math_Is_Invalid_Float(Vector_Original_Accel[2][0]) || Basic_Math_Is_Invalid_Float(Vector_Original_Gyro[0][0]) || Basic_Math_Is_Invalid_Float(Vector_Original_Gyro[1][0]) || Basic_Math_Is_Invalid_Float(Vector_Original_Gyro[2][0]))
-    {
-        return;
-    }
-
     Vector_Normalized_Accel = Vector_Original_Accel.Get_Normalization();
 
-    if (!EKF_Init_Finished_Flag && Accel_Update_Flag)
+    // 防止NaN流入算法, 加速度计数据不合法直接丢弃, 陀螺仪数据不合法则使用上次数据
+
+    Accel_Valid_Flag = true;
+    if (Basic_Math_Is_Invalid_Float(Vector_Original_Accel[0][0]) || Basic_Math_Is_Invalid_Float(Vector_Original_Accel[1][0]) || Basic_Math_Is_Invalid_Float(Vector_Original_Accel[2][0]))
+    {
+        Accel_Valid_Flag = false;
+    }
+
+    Gyro_Valid_Flag = true;
+    if (Basic_Math_Is_Invalid_Float(Vector_Original_Gyro[0][0]) || Basic_Math_Is_Invalid_Float(Vector_Original_Gyro[1][0]) || Basic_Math_Is_Invalid_Float(Vector_Original_Gyro[2][0]))
+    {
+        Gyro_Valid_Flag = false;
+        Vector_Original_Gyro = Vector_Pre_Original_Gyro;
+    }
+    else
+    {
+        if (Basic_Math_Abs(Vector_Original_Gyro[0][0]) > GYRO_VALID_THRESHOLD)
+        {
+            Vector_Original_Gyro[0][0] = Vector_Pre_Original_Gyro[0][0];
+            Gyro_Valid_Flag = false;
+        }
+        if (Basic_Math_Abs(Vector_Original_Gyro[1][0]) > GYRO_VALID_THRESHOLD)
+        {
+            Vector_Original_Gyro[1][0] = Vector_Pre_Original_Gyro[1][0];
+            Gyro_Valid_Flag = false;
+        }
+        if (Basic_Math_Abs(Vector_Original_Gyro[2][0]) > GYRO_VALID_THRESHOLD)
+        {
+            Vector_Original_Gyro[2][0] = Vector_Pre_Original_Gyro[2][0];
+            Gyro_Valid_Flag = false;
+        }
+    }
+
+    if (!EKF_Init_Finished_Flag && Accel_Update_Flag && Accel_Valid_Flag)
     {
         // EKF相关变量与函数
 
@@ -173,21 +200,17 @@ void Class_BMI088::TIM_125us_Calculate_PeriodElapsedCallback()
         EKF_Quaternion.TIM_Predict_PeriodElapsedCallback();
 
         // EKF更新
-        if (Accel_Update_Flag)
+        if (Accel_Update_Flag && Accel_Valid_Flag)
         {
             Accel_Chi_Square_Calculate();
-            if (Accel_Chi_Square_Loss >= ACCEL_CHI_SQUARE_TEST_THRESHOLD)
-            {
-                // 卡方检验不通过, 不更新
-                Accel_Update_Flag = false;
-            }
-            else
+            if (Accel_Chi_Square_Loss <= ACCEL_CHI_SQUARE_TEST_THRESHOLD)
             {
                 // 卡方检验通过, 更新
                 EKF_Quaternion.Vector_Z = Vector_Normalized_Accel;
                 EKF_Quaternion.TIM_Update_PeriodElapsedCallback();
-                Accel_Update_Flag = false;
             }
+            // 加速度已利用过, 清除标志
+            Accel_Update_Flag = false;
         }
 
         // x归一化, 按理来说这也算模型的一部分, 应当放到系统函数F中, 且需要更新Jacobi矩阵
@@ -203,6 +226,7 @@ void Class_BMI088::TIM_125us_Calculate_PeriodElapsedCallback()
         Vector_Axis_Angle = Quarternion.Get_Rodrigues();
 
         Calculating_Time = SYS_Timestamp.Get_Now_Microsecond() - EKF_Now_Timestamp;
+        Vector_Pre_Original_Gyro = Vector_Original_Gyro;
 
         return;
     }

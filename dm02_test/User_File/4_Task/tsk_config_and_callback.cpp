@@ -257,19 +257,26 @@ void Task1ms_Callback()
     filter_kalman.TIM_Predict_PeriodElapsedCallback();
     filter_kalman.TIM_Update_PeriodElapsedCallback();
 
+    float yaw = BSP_BMI088.Get_Angle_Yaw() / BASIC_MATH_DEG_TO_RAD;
+    float pitch = BSP_BMI088.Get_Angle_Pitch() / BASIC_MATH_DEG_TO_RAD;
+    float roll = BSP_BMI088.Get_Angle_Roll() / BASIC_MATH_DEG_TO_RAD;
     float q0 = BSP_BMI088.Get_Quaternion()[0];
     float q1 = BSP_BMI088.Get_Quaternion()[1];
     float q2 = BSP_BMI088.Get_Quaternion()[2];
     float q3 = BSP_BMI088.Get_Quaternion()[3];
-    float yaw = BSP_BMI088.Get_Angle_Yaw() / BASIC_MATH_DEG_TO_RAD;
-    float pitch = BSP_BMI088.Get_Angle_Pitch() / BASIC_MATH_DEG_TO_RAD;
-    float roll = BSP_BMI088.Get_Angle_Roll() / BASIC_MATH_DEG_TO_RAD;
-    float loss = BSP_BMI088.Get_Accel_Chi_Square_Loss();
-    float calculating_time = BSP_BMI088.Get_Calculating_Time();
     float temperature = BSP_BMI088.BMI088_Accel.Get_Now_Temperature();
+    float calculating_time = BSP_BMI088.Get_Calculating_Time();
+    float loss = BSP_BMI088.Get_Accel_Chi_Square_Loss();
+    float origin_accel_x = BSP_BMI088.BMI088_Accel.Get_Raw_Accel_X();
+    float origin_accel_y = BSP_BMI088.BMI088_Accel.Get_Raw_Accel_Y();
+    float origin_accel_z = BSP_BMI088.BMI088_Accel.Get_Raw_Accel_Z();
+    float origin_gyro_x = BSP_BMI088.BMI088_Gyro.Get_Raw_Gyro_X();
+    float origin_gyro_y = BSP_BMI088.BMI088_Gyro.Get_Raw_Gyro_Y();
+    float origin_gyro_z = BSP_BMI088.BMI088_Gyro.Get_Raw_Gyro_Z();
+    float now_time = SYS_Timestamp.Get_Now_Microsecond() / 1000000.0f;
 
     // 串口绘图
-    Vofa_USB.Set_Data(10, &yaw, &pitch, &roll, &q0, &q1, &q2, &q3, &temperature, &calculating_time, &loss);
+    Vofa_USB.Set_Data(17, &yaw, &pitch, &roll, &q0, &q1, &q2, &q3, &temperature, &calculating_time, &loss, &origin_accel_x, &origin_accel_y, &origin_accel_z, &origin_gyro_x, &origin_gyro_y, &origin_gyro_z, &now_time);
     Vofa_USB.TIM_1ms_Write_PeriodElapsedCallback();
 
     TIM_1ms_CAN_PeriodElapsedCallback();

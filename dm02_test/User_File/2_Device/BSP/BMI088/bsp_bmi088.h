@@ -80,6 +80,9 @@ protected:
     // 卡方检验残差阈值
     float ACCEL_CHI_SQUARE_TEST_THRESHOLD = 0.2f;
 
+    // 角速度合法范围
+    float GYRO_VALID_THRESHOLD = 2000.0f * BASIC_MATH_DEG_TO_RAD;
+
     // 内部变量
 
     // EKF初始化状态完成标志
@@ -106,6 +109,9 @@ protected:
     uint64_t Accel_Update_Timestamp = 0;
     bool Gyro_Update_Flag = false;
     uint64_t Gyro_Update_Timestamp = 0;
+    // 数据合法标志
+    bool Accel_Valid_Flag = false;
+    bool Gyro_Valid_Flag = false;
 
     // EKF计算时间戳
     uint64_t EKF_Now_Timestamp = 0;
@@ -118,6 +124,8 @@ protected:
     Class_Matrix_f32<3, 1> Vector_Normalized_Accel;
     // 陀螺仪源数据
     Class_Matrix_f32<3, 1> Vector_Original_Gyro;
+    // 上一次陀螺仪源数据
+    Class_Matrix_f32<3, 1> Vector_Pre_Original_Gyro;
 
     // 时间差
     float D_T = 0.000125f;
