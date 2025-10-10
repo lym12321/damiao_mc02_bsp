@@ -124,13 +124,11 @@ void Class_BMI088::TIM_125us_Calculate_PeriodElapsedCallback()
     Vector_Normalized_Accel = Vector_Original_Accel.Get_Normalization();
 
     // 防止NaN流入算法, 加速度计数据不合法直接丢弃, 陀螺仪数据不合法则使用上次数据
-
     Accel_Valid_Flag = true;
     if (Basic_Math_Is_Invalid_Float(Vector_Original_Accel[0][0]) || Basic_Math_Is_Invalid_Float(Vector_Original_Accel[1][0]) || Basic_Math_Is_Invalid_Float(Vector_Original_Accel[2][0]))
     {
         Accel_Valid_Flag = false;
     }
-
     Gyro_Valid_Flag = true;
     if (Basic_Math_Is_Invalid_Float(Vector_Original_Gyro[0][0]) || Basic_Math_Is_Invalid_Float(Vector_Original_Gyro[1][0]) || Basic_Math_Is_Invalid_Float(Vector_Original_Gyro[2][0]))
     {
@@ -161,7 +159,7 @@ void Class_BMI088::TIM_125us_Calculate_PeriodElapsedCallback()
         // EKF相关变量与函数
 
         // 过程噪声协方差矩阵
-        float array_q[16] = {
+        float array_q[9] = {
             0.865f, 0.0f, 0.0f,
             0.0f, 0.975f, 0.0f,
             0.0f, 0.0f, 1.077f
@@ -174,10 +172,12 @@ void Class_BMI088::TIM_125us_Calculate_PeriodElapsedCallback()
             0.0f, 0.0f, 0.0537f
         };
         Class_Matrix_f32<3, 3> matrix_r(array_r);
+        // 初始状态协方差矩阵
+        Class_Matrix_f32<4, 4> matrix_p = Namespace_ALG_Matrix::Identity<4, 4>();
+        // 初始状态向量
+        Class_Matrix_f32<4, 1> vector_x = Namespace_ALG_Quaternion::Unit_Real();
 
-        EKF_Quaternion.Init(matrix_q, matrix_r, Namespace_ALG_Quaternion::Unit_Real());
-
-        EKF_Quaternion.Vector_Z = Vector_Normalized_Accel;
+        EKF_Quaternion.Init(matrix_q, matrix_r, matrix_p, vector_x);
 
         EKF_Quaternion.Config_Nonlinear_State_Model(EKF_Function_F, EKF_Function_Jacobian_F_X, EKF_Function_Jacobian_F_W);
         EKF_Quaternion.Config_Nonlinear_Measurement_Model(EKF_Function_H, EKF_Function_Jacobian_H_X, EKF_Function_Jacobian_H_V);

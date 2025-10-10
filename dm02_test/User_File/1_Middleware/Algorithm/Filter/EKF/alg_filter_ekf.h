@@ -76,7 +76,7 @@ public:
     // 测量向量
     Class_Matrix_f32<Measurement_Dimension, 1> Vector_Z;
 
-    void Init(const Class_Matrix_f32<Input_Dimension, Input_Dimension> &__Matrix_Q, const Class_Matrix_f32<Measurement_Dimension, Measurement_Dimension> &__Matrix_R, const Class_Matrix_f32<State_Dimension, 1> &__Vector_X = Namespace_ALG_Matrix::Zero<State_Dimension, 1>(), const Class_Matrix_f32<Input_Dimension, 1> &__Matrix_U = Namespace_ALG_Matrix::Zero<Input_Dimension, 1>());
+    void Init(const Class_Matrix_f32<Input_Dimension, Input_Dimension> &__Matrix_Q, const Class_Matrix_f32<Measurement_Dimension, Measurement_Dimension> &__Matrix_R, const Class_Matrix_f32<State_Dimension, State_Dimension> &__Matrix_P = Namespace_ALG_Matrix::Identity<State_Dimension, State_Dimension>(), const Class_Matrix_f32<State_Dimension, 1> &__Vector_X = Namespace_ALG_Matrix::Zero<State_Dimension, 1>(), const Class_Matrix_f32<Input_Dimension, 1> &__Matrix_U = Namespace_ALG_Matrix::Zero<Input_Dimension, 1>());
 
     inline void Config_Nonlinear_State_Model(Class_Matrix_f32<State_Dimension, 1> (*__Function_F) (const Class_Matrix_f32<State_Dimension, 1> &Vector_X, const Class_Matrix_f32<Input_Dimension, 1> &Vector_U, const float &D_T), Class_Matrix_f32<State_Dimension, State_Dimension> (*__Function_Jacobian_F_X) (const Class_Matrix_f32<State_Dimension, 1> &Vector_X, const Class_Matrix_f32<Input_Dimension, 1> &Vector_U, const float &D_T), Class_Matrix_f32<State_Dimension, Input_Dimension> (*__Function_Jacobian_F_W) (const Class_Matrix_f32<State_Dimension, 1> &Vector_X, const Class_Matrix_f32<Input_Dimension, 1> &Vector_U, const float &D_T));
 
@@ -95,6 +95,8 @@ protected:
 
     // 单位矩阵
     const Class_Matrix_f32<State_Dimension, State_Dimension> MATRIX_I_STATE = Namespace_ALG_Matrix::Identity<State_Dimension, State_Dimension>();
+    // 零矩阵
+    const Class_Matrix_f32<State_Dimension, State_Dimension> MATRIX_ZERO_STATE = Namespace_ALG_Matrix::Zero<State_Dimension, State_Dimension>();
 
     // 内部变量
 
@@ -126,12 +128,12 @@ protected:
  * @param __Matrix_U 初始输入向量
  */
 template<uint32_t State_Dimension, uint32_t Input_Dimension, uint32_t Measurement_Dimension>
-void Class_Filter_EKF<State_Dimension, Input_Dimension, Measurement_Dimension>::Init(const Class_Matrix_f32<Input_Dimension, Input_Dimension> &__Matrix_Q, const Class_Matrix_f32<Measurement_Dimension, Measurement_Dimension> &__Matrix_R, const Class_Matrix_f32<State_Dimension, 1> &__Vector_X, const Class_Matrix_f32<Input_Dimension, 1> &__Matrix_U)
+void Class_Filter_EKF<State_Dimension, Input_Dimension, Measurement_Dimension>::Init(const Class_Matrix_f32<Input_Dimension, Input_Dimension> &__Matrix_Q, const Class_Matrix_f32<Measurement_Dimension, Measurement_Dimension> &__Matrix_R, const Class_Matrix_f32<State_Dimension, State_Dimension> &__Matrix_P, const Class_Matrix_f32<State_Dimension, 1> &__Vector_X, const Class_Matrix_f32<Input_Dimension, 1> &__Matrix_U)
 {
     Matrix_Q = __Matrix_Q;
     Matrix_R = __Matrix_R;
 
-    Matrix_P = MATRIX_I_STATE;
+    Matrix_P = __Matrix_P;
     Vector_X = __Vector_X;
     Vector_U = __Matrix_U;
 }

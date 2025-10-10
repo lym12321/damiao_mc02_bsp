@@ -69,7 +69,7 @@ public:
     // 测量向量
     Class_Matrix_f32<Measurement_Dimension, 1> Vector_Z;
 
-    void Init(const Class_Matrix_f32<State_Dimension, State_Dimension> &__Matrix_A, const Class_Matrix_f32<State_Dimension, Input_Dimension> &__Matrix_B, const Class_Matrix_f32<Measurement_Dimension, State_Dimension> &__Matrix_H, const Class_Matrix_f32<State_Dimension, State_Dimension> &__Matrix_Q, const Class_Matrix_f32<Measurement_Dimension, Measurement_Dimension> &__Matrix_R, const Class_Matrix_f32<State_Dimension, 1> &__Vector_X = Namespace_ALG_Matrix::Zero<State_Dimension, 1>(), const Class_Matrix_f32<Input_Dimension, 1> &__Matrix_U = Namespace_ALG_Matrix::Zero<Input_Dimension, 1>());
+    void Init(const Class_Matrix_f32<State_Dimension, State_Dimension> &__Matrix_A, const Class_Matrix_f32<State_Dimension, Input_Dimension> &__Matrix_B, const Class_Matrix_f32<Measurement_Dimension, State_Dimension> &__Matrix_H, const Class_Matrix_f32<State_Dimension, State_Dimension> &__Matrix_Q, const Class_Matrix_f32<Measurement_Dimension, Measurement_Dimension> &__Matrix_R, const Class_Matrix_f32<State_Dimension, State_Dimension> &__Matrix_P = Namespace_ALG_Matrix::Identity<State_Dimension, State_Dimension>(), const Class_Matrix_f32<State_Dimension, 1> &__Vector_X = Namespace_ALG_Matrix::Zero<State_Dimension, 1>(), const Class_Matrix_f32<Input_Dimension, 1> &__Matrix_U = Namespace_ALG_Matrix::Zero<Input_Dimension, 1>());
 
     void TIM_Predict_PeriodElapsedCallback();
 
@@ -113,7 +113,7 @@ protected:
  * @param __Matrix_U 初始输入向量
  */
 template<uint32_t State_Dimension, uint32_t Input_Dimension, uint32_t Measurement_Dimension>
-void Class_Filter_Kalman<State_Dimension, Input_Dimension, Measurement_Dimension>::Init(const Class_Matrix_f32<State_Dimension, State_Dimension> &__Matrix_A, const Class_Matrix_f32<State_Dimension, Input_Dimension> &__Matrix_B, const Class_Matrix_f32<Measurement_Dimension, State_Dimension> &__Matrix_H, const Class_Matrix_f32<State_Dimension, State_Dimension> &__Matrix_Q, const Class_Matrix_f32<Measurement_Dimension, Measurement_Dimension> &__Matrix_R, const Class_Matrix_f32<State_Dimension, 1> &__Vector_X, const Class_Matrix_f32<Input_Dimension, 1> &__Matrix_U)
+void Class_Filter_Kalman<State_Dimension, Input_Dimension, Measurement_Dimension>::Init(const Class_Matrix_f32<State_Dimension, State_Dimension> &__Matrix_A, const Class_Matrix_f32<State_Dimension, Input_Dimension> &__Matrix_B, const Class_Matrix_f32<Measurement_Dimension, State_Dimension> &__Matrix_H, const Class_Matrix_f32<State_Dimension, State_Dimension> &__Matrix_Q, const Class_Matrix_f32<Measurement_Dimension, Measurement_Dimension> &__Matrix_R, const Class_Matrix_f32<State_Dimension, State_Dimension> &__Matrix_P, const Class_Matrix_f32<State_Dimension, 1> &__Vector_X, const Class_Matrix_f32<Input_Dimension, 1> &__Matrix_U)
 {
     Matrix_A = __Matrix_A;
     Matrix_B = __Matrix_B;
@@ -122,7 +122,7 @@ void Class_Filter_Kalman<State_Dimension, Input_Dimension, Measurement_Dimension
     Matrix_Q = __Matrix_Q;
     Matrix_R = __Matrix_R;
 
-    Matrix_P = MATRIX_I_STATE;
+    Matrix_P = __Matrix_P;
     Vector_X = __Vector_X;
     Vector_U = __Matrix_U;
 }
