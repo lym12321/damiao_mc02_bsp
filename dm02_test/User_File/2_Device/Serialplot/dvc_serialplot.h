@@ -94,8 +94,8 @@ protected:
     // 发送缓冲区
     uint8_t Tx_Buffer[UART_BUFFER_SIZE];
 
-    // 需要绘图的各个变量数据地址
-    const void *Data[25];
+    // 需要绘图的各个变量数据地址, 软件限制只有24个通道, 多了闪退
+    const void *Data[24];
     // 当前发送的数据长度, 等价于新数据偏移量
     uint8_t Data_Number = 0;
     // 当前接收的指令在指令字典中的编号
@@ -162,8 +162,8 @@ protected:
     // 发送缓冲区
     uint8_t Tx_Buffer[UART_BUFFER_SIZE];
 
-    // 需要绘图的各个变量数据地址
-    const void *Data[25];
+    // 需要绘图的各个变量数据地址, 软件限制只有24个通道, 多了闪退
+    const void *Data[24];
     // 当前发送的数据长度, 等价于新数据偏移量
     uint8_t Data_Number = 0;
     // 当前接收的指令在指令字典中的编号
