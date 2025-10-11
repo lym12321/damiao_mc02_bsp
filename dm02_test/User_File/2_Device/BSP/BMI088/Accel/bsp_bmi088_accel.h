@@ -44,7 +44,7 @@ enum Enum_BSP_BMI088_Accel_Range : uint8_t
 class Class_BMI088_Accel
 {
 public:
-    // PID
+    // 温控PID
     Class_PID PID_Temperature;
 
     void Init(const bool &__Heater_Enable = false);
@@ -57,9 +57,11 @@ public:
 
     inline float Get_Raw_Accel_Z() const;
 
-    inline void Set_Heater_Enable(const bool &__Heater_Enable);
+    inline float Get_Heater_Enable() const;
 
     inline void Set_Target_Temperature(const float &__Target_Temperature);
+
+    inline void Set_Heater_Enable(const bool &__Heater_Enable);
 
     void SPI_RxCpltCallback();
 
@@ -149,12 +151,13 @@ protected:
 
     // 写变量
 
-    // 加热电阻使能
-    bool Heater_Enable = false;
     // 目标温度
     float Target_Temperature = 0.0f;
 
     // 读写变量
+
+    // 加热电阻使能
+    bool Heater_Enable = false;
 
     // 内部函数
 
@@ -214,13 +217,13 @@ inline float Class_BMI088_Accel::Get_Raw_Accel_Z() const
 }
 
 /**
- * @brief 设置加热电阻使能
+ * @brief 获取加热电阻使能
  *
- * @param __Heater_Enable 加热电阻使能
+ * @return 加热电阻使能
  */
-inline void Class_BMI088_Accel::Set_Heater_Enable(const bool &__Heater_Enable)
+inline float Class_BMI088_Accel::Get_Heater_Enable() const
 {
-    Heater_Enable = __Heater_Enable;
+    return (Heater_Enable);
 }
 
 /**
@@ -231,6 +234,16 @@ inline void Class_BMI088_Accel::Set_Heater_Enable(const bool &__Heater_Enable)
 inline void Class_BMI088_Accel::Set_Target_Temperature(const float &__Target_Temperature)
 {
     Target_Temperature = __Target_Temperature;
+}
+
+/**
+ * @brief 设置加热电阻使能
+ *
+ * @param __Heater_Enable 加热电阻使能
+ */
+inline void Class_BMI088_Accel::Set_Heater_Enable(const bool &__Heater_Enable)
+{
+    Heater_Enable = __Heater_Enable;
 }
 
 #endif

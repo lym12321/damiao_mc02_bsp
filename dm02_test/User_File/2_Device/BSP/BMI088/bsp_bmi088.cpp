@@ -33,7 +33,7 @@ void Class_BMI088::Init()
 {
     SPI_Manage_Object = &SPI2_Manage_Object;
 
-    BMI088_Accel.Init(true);
+    BMI088_Accel.Init(false);
     BMI088_Gyro.Init();
 
     Init_Finished_Flag = true;
@@ -120,6 +120,12 @@ void Class_BMI088::TIM_125us_Calculate_PeriodElapsedCallback()
     Vector_Original_Gyro[0][0] = BMI088_Gyro.Get_Raw_Gyro_X();
     Vector_Original_Gyro[1][0] = BMI088_Gyro.Get_Raw_Gyro_Y();
     Vector_Original_Gyro[2][0] = BMI088_Gyro.Get_Raw_Gyro_Z();
+    if (BMI088_Accel.Get_Heater_Enable())
+    {
+        Vector_Original_Gyro[0][0] += GYRO_ZERO_OFFSET[0];
+        Vector_Original_Gyro[1][0] += GYRO_ZERO_OFFSET[1];
+        Vector_Original_Gyro[2][0] += GYRO_ZERO_OFFSET[2];
+    }
 
     Vector_Normalized_Accel = Vector_Original_Accel.Get_Normalization();
 

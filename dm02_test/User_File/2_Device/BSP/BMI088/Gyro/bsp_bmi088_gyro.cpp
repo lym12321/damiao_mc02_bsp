@@ -95,9 +95,9 @@ void Class_BMI088_Gyro::SPI_RxCallback()
     if (spi_init_address == offsetof(Struct_BMI088_Gyro_Register, RATE_X_RO))
     {
         // 读取加速度计数据完成
-        Raw_Gyro_X = (float) (Register.RATE_X_RO) / 32768.0f * (1 << (4 - BMI088_GYRO_RANGE)) * 125.0f * BASIC_MATH_DEG_TO_RAD + GYRO_X_ZERO_OFFSET;
-        Raw_Gyro_Y = (float) (Register.RATE_Y_RO) / 32768.0f * (1 << (4 - BMI088_GYRO_RANGE)) * 125.0f * BASIC_MATH_DEG_TO_RAD + GYRO_Y_ZERO_OFFSET;
-        Raw_Gyro_Z = (float) (Register.RATE_Z_RO) / 32768.0f * (1 << (4 - BMI088_GYRO_RANGE)) * 125.0f * BASIC_MATH_DEG_TO_RAD + GYRO_Z_ZERO_OFFSET;
+        Raw_Gyro_X = (float) (Register.RATE_X_RO) / 32768.0f * (1 << (4 - BMI088_GYRO_RANGE)) * 125.0f * BASIC_MATH_DEG_TO_RAD;
+        Raw_Gyro_Y = (float) (Register.RATE_Y_RO) / 32768.0f * (1 << (4 - BMI088_GYRO_RANGE)) * 125.0f * BASIC_MATH_DEG_TO_RAD;
+        Raw_Gyro_Z = (float) (Register.RATE_Z_RO) / 32768.0f * (1 << (4 - BMI088_GYRO_RANGE)) * 125.0f * BASIC_MATH_DEG_TO_RAD;
     }
 }
 

@@ -98,11 +98,6 @@ protected:
         },
     };
 
-    // 陀螺仪零漂
-    const float GYRO_X_ZERO_OFFSET = -0.0051174122;
-    const float GYRO_Y_ZERO_OFFSET = -0.0000833569;
-    const float GYRO_Z_ZERO_OFFSET = -0.0008265066;
-
     // 内部变量
 
     // 寄存器结构体

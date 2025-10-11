@@ -83,6 +83,9 @@ protected:
     // 角速度合法范围
     float GYRO_VALID_THRESHOLD = 2000.0f * BASIC_MATH_DEG_TO_RAD;
 
+    // 陀螺仪零偏
+    const float GYRO_ZERO_OFFSET[3] = {-0.0051174122f, -0.0000833569f, -0.0008265066f};
+
     // 内部变量
 
     // EKF初始化状态完成标志
