@@ -173,7 +173,7 @@ void Class_BMI088::TIM_125us_Calculate_PeriodElapsedCallback()
         // 初始状态协方差矩阵
         Class_Matrix_f32<4, 4> matrix_p = Namespace_ALG_Matrix::Identity<4, 4>();
         // 初始状态向量
-        Class_Matrix_f32<4, 1> vector_x = Namespace_ALG_Quaternion::Unit_Real();
+        Class_Matrix_f32<4, 1> vector_x = Namespace_ALG_Quaternion::From_Vector(Vector_Normalized_Accel);
 
         EKF_Quaternion.Init(matrix_q, matrix_r, matrix_p, vector_x);
 
@@ -182,7 +182,7 @@ void Class_BMI088::TIM_125us_Calculate_PeriodElapsedCallback()
 
         EKF_Init_Finished_Flag = true;
         Accel_Update_Flag = false;
-        EKF_Last_Timestamp = EKF_Now_Timestamp;
+        EKF_Pre_Timestamp = EKF_Now_Timestamp;
 
         return;
     }
@@ -190,7 +190,7 @@ void Class_BMI088::TIM_125us_Calculate_PeriodElapsedCallback()
     if (EKF_Init_Finished_Flag)
     {
         // 设置时间差
-        D_T = (EKF_Now_Timestamp - EKF_Last_Timestamp) / 1000000.0f;
+        D_T = (EKF_Now_Timestamp - EKF_Pre_Timestamp) / 1000000.0f;
         EKF_Quaternion.Set_D_T(D_T);
 
         // EKF预测
@@ -215,7 +215,8 @@ void Class_BMI088::TIM_125us_Calculate_PeriodElapsedCallback()
         // 然而实测发现是否更新对性能影响不算太大, 更新反而占用了计算时间
         EKF_Quaternion.Vector_X = EKF_Quaternion.Vector_X.Get_Normalization();
 
-        EKF_Last_Timestamp = EKF_Now_Timestamp;
+
+        // 数据输出
 
         Quarternion = EKF_Quaternion.Vector_X;
 
@@ -224,9 +225,9 @@ void Class_BMI088::TIM_125us_Calculate_PeriodElapsedCallback()
         Vector_Axis_Angle = Quarternion.Get_Rodrigues();
 
         Calculating_Time = SYS_Timestamp.Get_Now_Microsecond() - EKF_Now_Timestamp;
-        Vector_Pre_Original_Gyro = Vector_Original_Gyro;
 
-        return;
+        EKF_Pre_Timestamp = EKF_Now_Timestamp;
+        Vector_Pre_Original_Gyro = Vector_Original_Gyro;
     }
 }
 

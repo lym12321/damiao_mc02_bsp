@@ -245,8 +245,8 @@ void Class_Filter_EKF<State_Dimension, Input_Dimension, Measurement_Dimension>::
     Vector_X = Vector_X_Prior + Matrix_K * (Vector_Z - Function_H(Vector_X_Prior, D_T));
 
     // 更新误差协方差矩阵, 为获得更好的数值稳定性, 采用约瑟夫形式
-    Class_Matrix_f32 < State_Dimension, State_Dimension > temp = MATRIX_I_STATE - Matrix_K * matrix_h_x;
-    Matrix_P = temp * Matrix_P_Prior * temp.Get_Transpose() + Matrix_K * matrix_h_v * Matrix_R * matrix_h_v.Get_Transpose() * Matrix_K.Get_Transpose();
+    Class_Matrix_f32 < State_Dimension, State_Dimension > matrix_tmp = MATRIX_I_STATE - Matrix_K * matrix_h_x;
+    Matrix_P = matrix_tmp * Matrix_P_Prior * matrix_tmp.Get_Transpose() + Matrix_K * matrix_h_v * Matrix_R * matrix_h_v.Get_Transpose() * Matrix_K.Get_Transpose();
 }
 
 #endif

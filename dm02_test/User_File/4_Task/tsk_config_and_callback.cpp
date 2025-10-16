@@ -309,8 +309,7 @@ void Task1ms_Callback()
     float p33 = BSP_BMI088.EKF_Quaternion.Matrix_P[3][3];
 
     // 串口绘图
-    Vofa_USB.Set_Data(17, &yaw, &pitch, &roll, &q0, &q1, &q2, &q3, &temperature, &calculating_time, &loss, &origin_accel_x, &origin_accel_y, &origin_accel_z, &origin_gyro_x, &origin_gyro_y, &origin_gyro_z, &now_time);
-    // Vofa_USB.Set_Data(16, &p00, &p01, &p02, &p03, &p10, &p11, &p12, &p13, &p20, &p21, &p22, &p23, &p30, &p31, &p32, &p33);
+    Vofa_USB.Set_Data(21, &yaw, &pitch, &roll, &q0, &q1, &q2, &q3, &temperature, &calculating_time, &loss, &origin_accel_x, &origin_accel_y, &origin_accel_z, &origin_gyro_x, &origin_gyro_y, &origin_gyro_z, &now_time, &p00, &p11, &p22, &p33);
     Vofa_USB.TIM_1ms_Write_PeriodElapsedCallback();
 
     TIM_1ms_CAN_PeriodElapsedCallback();

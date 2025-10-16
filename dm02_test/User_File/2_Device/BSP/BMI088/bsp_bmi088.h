@@ -118,7 +118,7 @@ protected:
     // EKF计算时间戳
     uint64_t EKF_Now_Timestamp = 0;
     // 上次EKF计算时间戳
-    uint64_t EKF_Last_Timestamp = 0;
+    uint64_t EKF_Pre_Timestamp = 0;
 
     // 加速度计源数据
     Class_Matrix_f32<3, 1> Vector_Original_Accel;
