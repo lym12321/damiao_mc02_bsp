@@ -40,7 +40,7 @@ Struct_SPI_Manage_Object SPI6_Manage_Object = {nullptr};
  * @param hspi SPI编号
  * @param Callback_Function 处理回调函数
  */
-void SPI_Init(SPI_HandleTypeDef *hspi, SPI_Call_Back Callback_Function)
+void SPI_Init(SPI_HandleTypeDef *hspi, SPI_Callback Callback_Function)
 {
     if (hspi->Instance == SPI1)
     {
@@ -84,7 +84,7 @@ void SPI_Init(SPI_HandleTypeDef *hspi, SPI_Call_Back Callback_Function)
  * @param Tx_Length 长度
  * @return uint8_t 执行状态
  */
-uint8_t SPI_Send_Data(SPI_HandleTypeDef *hspi, GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin, GPIO_PinState Activate_Level, uint16_t Tx_Length)
+uint8_t SPI_Transmit_Data(SPI_HandleTypeDef *hspi, GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin, GPIO_PinState Activate_Level, uint16_t Tx_Length)
 {
     if (hspi->Instance == SPI1)
     {
@@ -192,7 +192,7 @@ uint8_t SPI_Send_Data(SPI_HandleTypeDef *hspi, GPIO_TypeDef *GPIOx, uint16_t GPI
  * @param Rx_Length 接收数据长度
  * @return uint8_t 执行状态
  */
-uint8_t SPI_Send_Receive_Data(SPI_HandleTypeDef *hspi, GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin, GPIO_PinState Activate_Level, uint16_t Tx_Length, uint16_t Rx_Length)
+uint8_t SPI_Transmit_Receive_Data(SPI_HandleTypeDef *hspi, GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin, GPIO_PinState Activate_Level, uint16_t Tx_Length, uint16_t Rx_Length)
 {
     if (hspi->Instance == SPI1)
     {

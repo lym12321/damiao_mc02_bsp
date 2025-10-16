@@ -212,7 +212,7 @@ float Basic_Math_Sinc(float x)
 int32_t Basic_Math_Float_To_Int(float x, float Float_1, float Float_2, int32_t Int_1, int32_t Int_2)
 {
     float tmp = (x - Float_1) / (Float_2 - Float_1);
-    auto out = (int32_t) (tmp * (float) (Int_2 - Int_1) + (float) (Int_1));
+    auto out = (int32_t)(tmp * (float) (Int_2 - Int_1) + (float) (Int_1));
     return (out);
 }
 
@@ -241,7 +241,7 @@ float Basic_Math_Int_To_Float(int32_t x, int32_t Int_1, int32_t Int_2, float Flo
  */
 bool Basic_Math_Is_Invalid_Float(float x)
 {
-    uint32_t exp = (*(uint32_t *)(&x) >> 23) & 0xff;
+    uint32_t exp = (*(uint32_t *) (&x) >> 23) & 0xff;
     return (exp == 0xff || exp == 0x00);
 }
 

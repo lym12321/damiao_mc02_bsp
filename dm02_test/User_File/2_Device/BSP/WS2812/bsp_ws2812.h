@@ -77,7 +77,6 @@ protected:
     // 读写变量
 
     // 内部函数
-
 };
 
 /* Exported variables --------------------------------------------------------*/
@@ -152,9 +151,9 @@ inline void Class_WS2812::Set_RGB(const uint8_t &__Red, const uint8_t &__Green, 
  */
 inline void Class_WS2812::Set_Color(const Struct_WS2812_Color &__Color, const float &__Brightness)
 {
-    Color.Red = (uint8_t) ((float) (__Color.Red) * __Brightness);
-    Color.Green = (uint8_t) ((float) (__Color.Green) * __Brightness);
-    Color.Blue = (uint8_t) ((float) (__Color.Blue) * __Brightness);
+    Color.Red = (uint8_t)((float) (__Color.Red) * __Brightness);
+    Color.Green = (uint8_t)((float) (__Color.Green) * __Brightness);
+    Color.Blue = (uint8_t)((float) (__Color.Blue) * __Brightness);
 }
 
 #endif

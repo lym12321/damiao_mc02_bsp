@@ -44,7 +44,7 @@ Struct_UART_Manage_Object UART10_Manage_Object = {nullptr};
  * @param Callback_Function 处理回调函数
  * @param Rx_Buffer_Length 接收缓冲区长度
  */
-void UART_Init(UART_HandleTypeDef *huart, UART_Call_Back Callback_Function)
+void UART_Init(UART_HandleTypeDef *huart, UART_Callback Callback_Function)
 {
     if (huart->Instance == USART1)
     {
@@ -195,7 +195,7 @@ void UART_Reinit(UART_HandleTypeDef *huart)
  * @param Length 长度
  * @return uint8_t 执行状态
  */
-uint8_t UART_Send_Data(UART_HandleTypeDef *huart, uint8_t *Data, uint16_t Length)
+uint8_t UART_Transmit_Data(UART_HandleTypeDef *huart, uint8_t *Data, uint16_t Length)
 {
     return (HAL_UART_Transmit_DMA(huart, Data, Length));
 }

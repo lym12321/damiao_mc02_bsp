@@ -77,7 +77,7 @@ void Class_WS2812::TIM_10ms_Write_PeriodElapsedCallback() const
         tmp_buffer[23 - i] = (Color.Blue & (1 << i)) ? LEVEL_1 : LEVEL_0;
     }
 
-    SPI_Send_Data(SPI_Manage_Object->SPI_Handler, nullptr, 0, GPIO_PIN_SET, 25);
+    SPI_Transmit_Data(SPI_Manage_Object->SPI_Handler, nullptr, 0, GPIO_PIN_SET, 25);
 }
 
 /************************ COPYRIGHT(C) USTC-ROBOWALKER **************************/

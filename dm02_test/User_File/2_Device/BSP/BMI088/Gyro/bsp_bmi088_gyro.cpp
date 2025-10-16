@@ -120,7 +120,7 @@ void Class_BMI088_Gyro::Read_Single_Register(const uint8_t &Register_Address) co
 {
     SPI_Manage_Object->Tx_Buffer[0] = Register_Address | BMI088_GYRO_READ_MASK;
 
-    SPI_Send_Receive_Data(SPI_Manage_Object->SPI_Handler, CS_GPIO_Port, CS_Pin, Activate_Pin_State, 1, 1);
+    SPI_Transmit_Receive_Data(SPI_Manage_Object->SPI_Handler, CS_GPIO_Port, CS_Pin, Activate_Pin_State, 1, 1);
 }
 
 /** * @brief 读取多个寄存器, 数据不会立即返回, 而是在SPI接收回调函数中处理
@@ -132,7 +132,7 @@ void Class_BMI088_Gyro::Read_Multi_Register(const uint8_t &Register_Address, con
 {
     SPI_Manage_Object->Tx_Buffer[0] = Register_Address | BMI088_GYRO_READ_MASK;
 
-    SPI_Send_Receive_Data(SPI_Manage_Object->SPI_Handler, CS_GPIO_Port, CS_Pin, Activate_Pin_State, 1, Rx_Length);
+    SPI_Transmit_Receive_Data(SPI_Manage_Object->SPI_Handler, CS_GPIO_Port, CS_Pin, Activate_Pin_State, 1, Rx_Length);
 }
 
 /**
@@ -146,7 +146,7 @@ void Class_BMI088_Gyro::Write_Single_Register(const uint8_t &Register_Address, c
     SPI_Manage_Object->Tx_Buffer[0] = Register_Address;
     SPI_Manage_Object->Tx_Buffer[1] = Tx_Data_Buffer[0];
 
-    SPI_Send_Data(SPI_Manage_Object->SPI_Handler, CS_GPIO_Port, CS_Pin, Activate_Pin_State, 2);
+    SPI_Transmit_Data(SPI_Manage_Object->SPI_Handler, CS_GPIO_Port, CS_Pin, Activate_Pin_State, 2);
 }
 
 /**
@@ -161,7 +161,7 @@ void Class_BMI088_Gyro::Write_Multi_Register(const uint8_t &Register_Address, co
     SPI_Manage_Object->Tx_Buffer[0] = Register_Address;
     memcpy(&SPI_Manage_Object->Tx_Buffer[1], Tx_Data_Buffer, Tx_Length);
 
-    SPI_Send_Data(SPI_Manage_Object->SPI_Handler, CS_GPIO_Port, CS_Pin, Activate_Pin_State, Tx_Length);
+    SPI_Transmit_Data(SPI_Manage_Object->SPI_Handler, CS_GPIO_Port, CS_Pin, Activate_Pin_State, Tx_Length);
 }
 
 /************************ COPYRIGHT(C) USTC-ROBOWALKER **************************/

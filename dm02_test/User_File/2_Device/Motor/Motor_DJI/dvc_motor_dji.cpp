@@ -607,7 +607,6 @@ void Class_Motor_DJI_GM6020::PID_Calculate()
     {
         if (Driver_Version == Motor_DJI_GM6020_Driver_Version_DEFAULT)
         {
-
         }
         else if (Driver_Version == Motor_DJI_GM6020_Driver_Version_2023)
         {
@@ -629,7 +628,6 @@ void Class_Motor_DJI_GM6020::PID_Calculate()
         }
         else if (Driver_Version == Motor_DJI_GM6020_Driver_Version_2023)
         {
-
         }
 
         break;

@@ -26,7 +26,7 @@
 /* Exported macros -----------------------------------------------------------*/
 
 // 缓冲区字节长度
-#define SPI_BUFFER_SIZE 256
+#define SPI_BUFFER_SIZE 512
 
 /* Exported types ------------------------------------------------------------*/
 
@@ -34,7 +34,7 @@
  * @brief SPI通信接收回调函数数据类型
  *
  */
-typedef void (*SPI_Call_Back)(uint8_t *Tx_Buffer, uint8_t *Rx_Buffer, uint16_t Tx_Length, uint16_t Rx_Length);
+typedef void (*SPI_Callback)(uint8_t *Tx_Buffer, uint8_t *Rx_Buffer, uint16_t Tx_Length, uint16_t Rx_Length);
 
 /**
  * @brief CAN通信处理结构体
@@ -43,7 +43,7 @@ typedef void (*SPI_Call_Back)(uint8_t *Tx_Buffer, uint8_t *Rx_Buffer, uint16_t T
 struct Struct_SPI_Manage_Object
 {
     SPI_HandleTypeDef *SPI_Handler;
-    SPI_Call_Back Callback_Function;
+    SPI_Callback Callback_Function;
 
     // 片选信号的GPIO与电平
     GPIO_TypeDef *Activate_GPIOx;
@@ -71,15 +71,13 @@ extern struct Struct_SPI_Manage_Object SPI4_Manage_Object;
 extern struct Struct_SPI_Manage_Object SPI5_Manage_Object;
 extern struct Struct_SPI_Manage_Object SPI6_Manage_Object;
 
-extern uint8_t SPI5_PF6_Tx_Data[];
-
 /* Exported function declarations ---------------------------------------------*/
 
-void SPI_Init(SPI_HandleTypeDef *hspi, SPI_Call_Back Callback_Function);
+void SPI_Init(SPI_HandleTypeDef *hspi, SPI_Callback Callback_Function);
 
-uint8_t SPI_Send_Data(SPI_HandleTypeDef *hspi, GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin, GPIO_PinState Activate_Level, uint16_t Tx_Length);
+uint8_t SPI_Transmit_Data(SPI_HandleTypeDef *hspi, GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin, GPIO_PinState Activate_Level, uint16_t Tx_Length);
 
-uint8_t SPI_Send_Receive_Data(SPI_HandleTypeDef *hspi, GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin, GPIO_PinState Activate_Level, uint16_t Tx_Length, uint16_t Rx_Length);
+uint8_t SPI_Transmit_Receive_Data(SPI_HandleTypeDef *hspi, GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin, GPIO_PinState Activate_Level, uint16_t Tx_Length, uint16_t Rx_Length);
 
 #endif
 

@@ -33,7 +33,7 @@ void Class_BMI088::Init()
 {
     SPI_Manage_Object = &SPI2_Manage_Object;
 
-    BMI088_Accel.Init(false);
+    BMI088_Accel.Init(true);
     BMI088_Gyro.Init();
 
     Init_Finished_Flag = true;
@@ -165,18 +165,10 @@ void Class_BMI088::TIM_125us_Calculate_PeriodElapsedCallback()
         // EKF相关变量与函数
 
         // 过程噪声协方差矩阵
-        float array_q[9] = {
-            0.865f, 0.0f, 0.0f,
-            0.0f, 0.975f, 0.0f,
-            0.0f, 0.0f, 1.077f
-        };
+        float array_q[9] = {0.865f, 0.0f, 0.0f, 0.0f, 0.975f, 0.0f, 0.0f, 0.0f, 1.077f};
         Class_Matrix_f32<3, 3> matrix_q(array_q);
         // 测量噪声协方差矩阵
-        float array_r[9] = {
-            0.0446f, 0.0f, 0.0f,
-            0.0f, 0.0476f, 0.0f,
-            0.0f, 0.0f, 0.0537f
-        };
+        float array_r[9] = {0.0446f, 0.0f, 0.0f, 0.0f, 0.0476f, 0.0f, 0.0f, 0.0f, 0.0537f};
         Class_Matrix_f32<3, 3> matrix_r(array_r);
         // 初始状态协方差矩阵
         Class_Matrix_f32<4, 4> matrix_p = Namespace_ALG_Matrix::Identity<4, 4>();

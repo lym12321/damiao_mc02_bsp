@@ -171,11 +171,9 @@ inline Type Class_Queue<Type, Max_Size>::Pop()
 
     if (Length == 0)
     {
-
     }
     else
     {
-
         Front = (Front + 1) % Max_Size;
         Length--;
     }

@@ -200,7 +200,6 @@ struct Struct_Motor_DM_Rx_Data_1_To_4
 class Class_Motor_DM_Normal
 {
 public:
-
     void Init(const FDCAN_HandleTypeDef *hcan, const uint8_t &__CAN_Rx_ID, const uint8_t &__CAN_Tx_ID, const Enum_Motor_DM_Control_Method &__Motor_DM_Control_Method = Motor_DM_Control_Method_NORMAL_MIT, const float &__Angle_Max = 12.5f, const float &__Omega_Max = 25.0f, const float &__Torque_Max = 10.0f, const float &__Current_Max = 10.261194f);
 
     inline float Get_Angle_Max();
@@ -337,7 +336,6 @@ protected:
 class Class_Motor_DM_1_To_4
 {
 public:
-
     // PID角度环控制
     Class_PID PID_Angle;
     // PID角速度环控制

@@ -159,12 +159,12 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* spiHandle)
     GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
     HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-    GPIO_InitStruct.Pin = BMI088__SPI_CLK_Pin;
+    GPIO_InitStruct.Pin = BMI088_CLK__SPI_CLK_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
-    HAL_GPIO_Init(BMI088__SPI_CLK_GPIO_Port, &GPIO_InitStruct);
+    HAL_GPIO_Init(BMI088_CLK__SPI_CLK_GPIO_Port, &GPIO_InitStruct);
 
     /* SPI2 DMA Init */
     /* SPI2_RX Init */
@@ -244,7 +244,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* spiHandle)
     PA5     ------> SPI6_SCK
     PA7     ------> SPI6_MOSI
     */
-    GPIO_InitStruct.Pin = GPIO_PIN_5|WS2812_RX_Pin;
+    GPIO_InitStruct.Pin = GPIO_PIN_5|WS2812_RX__SPI_MOSI_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
@@ -275,7 +275,7 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* spiHandle)
     */
     HAL_GPIO_DeInit(GPIOC, BMI088_RX__SPI_MOSI_Pin|BMI088_TX__SPI_MISO_Pin);
 
-    HAL_GPIO_DeInit(BMI088__SPI_CLK_GPIO_Port, BMI088__SPI_CLK_Pin);
+    HAL_GPIO_DeInit(BMI088_CLK__SPI_CLK_GPIO_Port, BMI088_CLK__SPI_CLK_Pin);
 
     /* SPI2 DMA DeInit */
     HAL_DMA_DeInit(spiHandle->hdmarx);
@@ -299,7 +299,7 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* spiHandle)
     PA5     ------> SPI6_SCK
     PA7     ------> SPI6_MOSI
     */
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_5|WS2812_RX_Pin);
+    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_5|WS2812_RX__SPI_MOSI_Pin);
 
   /* USER CODE BEGIN SPI6_MspDeInit 1 */
 

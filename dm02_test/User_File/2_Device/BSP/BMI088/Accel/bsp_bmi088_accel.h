@@ -97,29 +97,17 @@ protected:
     // 寄存器配置相关
     const uint8_t BMI088_GYRO_REGISTER_CONFIG[6][2] = {
         // 开启加速度计电源
-        {
-            offsetof(Struct_BMI088_Accel_Register, ACC_PWR_CTRL_RW), 0x04
-        },
+        {offsetof(Struct_BMI088_Accel_Register, ACC_PWR_CTRL_RW), 0x04},
         // 将加速度计从默认挂起状态0x03改为工作状态0x00
-        {
-            offsetof(Struct_BMI088_Accel_Register, ACC_PWR_CONF_RW), 0x00
-        },
+        {offsetof(Struct_BMI088_Accel_Register, ACC_PWR_CONF_RW), 0x00},
         // 加速度计无滤波器, 频率1600Hz
-        {
-            offsetof(Struct_BMI088_Accel_Register, ACC_CONF_RW), (0x0a << 4) | 0x0c
-        },
+        {offsetof(Struct_BMI088_Accel_Register, ACC_CONF_RW), (0x0a << 4) | 0x0c},
         // 加速度计量程
-        {
-            offsetof(Struct_BMI088_Accel_Register, ACC_RANGE_RW), BMI088_ACCEL_RANGE
-        },
+        {offsetof(Struct_BMI088_Accel_Register, ACC_RANGE_RW), BMI088_ACCEL_RANGE},
         // 中断1号引脚配置推挽输出模式
-        {
-            offsetof(Struct_BMI088_Accel_Register, INT1_IO_CTRL_RW), 0x01 << 3
-        },
+        {offsetof(Struct_BMI088_Accel_Register, INT1_IO_CTRL_RW), 0x01 << 3},
         // 配置为如果数据准备好就中断
-        {
-            offsetof(Struct_BMI088_Accel_Register, INT_MAP_DATA_RW), 0x01 << 2
-        },
+        {offsetof(Struct_BMI088_Accel_Register, INT_MAP_DATA_RW), 0x01 << 2},
     };
 
     // 加热电阻标称电压

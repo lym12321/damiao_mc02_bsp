@@ -286,7 +286,7 @@ void Class_Motor_DM_Normal::CAN_RxCpltCallback()
  */
 void Class_Motor_DM_Normal::CAN_Send_Clear_Error()
 {
-    CAN_Send_Data(CAN_Manage_Object->CAN_Handler, CAN_Tx_ID, DM_Motor_CAN_Message_Clear_Error, 8);
+    CAN_Transmit_Data(CAN_Manage_Object->CAN_Handler, CAN_Tx_ID, DM_Motor_CAN_Message_Clear_Error, 8);
 }
 
 /**
@@ -295,7 +295,7 @@ void Class_Motor_DM_Normal::CAN_Send_Clear_Error()
  */
 void Class_Motor_DM_Normal::CAN_Send_Enter()
 {
-    CAN_Send_Data(CAN_Manage_Object->CAN_Handler, CAN_Tx_ID, DM_Motor_CAN_Message_Enter, 8);
+    CAN_Transmit_Data(CAN_Manage_Object->CAN_Handler, CAN_Tx_ID, DM_Motor_CAN_Message_Enter, 8);
 }
 
 /**
@@ -304,7 +304,7 @@ void Class_Motor_DM_Normal::CAN_Send_Enter()
  */
 void Class_Motor_DM_Normal::CAN_Send_Exit()
 {
-    CAN_Send_Data(CAN_Manage_Object->CAN_Handler, CAN_Tx_ID, DM_Motor_CAN_Message_Exit, 8);
+    CAN_Transmit_Data(CAN_Manage_Object->CAN_Handler, CAN_Tx_ID, DM_Motor_CAN_Message_Exit, 8);
 }
 
 /**
@@ -313,7 +313,7 @@ void Class_Motor_DM_Normal::CAN_Send_Exit()
  */
 void Class_Motor_DM_Normal::CAN_Send_Save_Zero()
 {
-    CAN_Send_Data(CAN_Manage_Object->CAN_Handler, CAN_Tx_ID, DM_Motor_CAN_Message_Save_Zero, 8);
+    CAN_Transmit_Data(CAN_Manage_Object->CAN_Handler, CAN_Tx_ID, DM_Motor_CAN_Message_Save_Zero, 8);
 }
 
 /**
@@ -450,7 +450,7 @@ void Class_Motor_DM_Normal::Output()
         tmp_buffer->K_D_3_0_Control_Torque_11_8 = ((tmp_k_d & 0x0f) << 4) | (tmp_torque >> 8);
         tmp_buffer->Control_Torque_7_0 = tmp_torque & 0xff;
 
-        CAN_Send_Data(CAN_Manage_Object->CAN_Handler, CAN_Tx_ID, Tx_Data, 8);
+        CAN_Transmit_Data(CAN_Manage_Object->CAN_Handler, CAN_Tx_ID, Tx_Data, 8);
 
         break;
     }
@@ -461,7 +461,7 @@ void Class_Motor_DM_Normal::Output()
         tmp_buffer->Control_Angle = Control_Angle;
         tmp_buffer->Control_Omega = Control_Omega;
 
-        CAN_Send_Data(CAN_Manage_Object->CAN_Handler, CAN_Tx_ID, Tx_Data, 8);
+        CAN_Transmit_Data(CAN_Manage_Object->CAN_Handler, CAN_Tx_ID, Tx_Data, 8);
 
         break;
     }
@@ -471,7 +471,7 @@ void Class_Motor_DM_Normal::Output()
 
         tmp_buffer->Control_Omega = Control_Omega;
 
-        CAN_Send_Data(CAN_Manage_Object->CAN_Handler, CAN_Tx_ID, Tx_Data, 4);
+        CAN_Transmit_Data(CAN_Manage_Object->CAN_Handler, CAN_Tx_ID, Tx_Data, 4);
 
         break;
     }
@@ -480,10 +480,10 @@ void Class_Motor_DM_Normal::Output()
         Struct_Motor_DM_CAN_Tx_Data_Normal_EMIT *tmp_buffer = (Struct_Motor_DM_CAN_Tx_Data_Normal_EMIT *) Tx_Data;
 
         tmp_buffer->Control_Angle = Control_Angle;
-        tmp_buffer->Control_Omega = (uint16_t) (Control_Omega * 100.0f);
-        tmp_buffer->Control_Current = (uint16_t) (Control_Current / Current_Max * 10000.0f);
+        tmp_buffer->Control_Omega = (uint16_t)(Control_Omega * 100.0f);
+        tmp_buffer->Control_Current = (uint16_t)(Control_Current / Current_Max * 10000.0f);
 
-        CAN_Send_Data(CAN_Manage_Object->CAN_Handler, CAN_Tx_ID, Tx_Data, 8);
+        CAN_Transmit_Data(CAN_Manage_Object->CAN_Handler, CAN_Tx_ID, Tx_Data, 8);
 
         break;
     }
@@ -667,7 +667,7 @@ void Class_Motor_DM_1_To_4::PID_Calculate()
  */
 void Class_Motor_DM_1_To_4::Output()
 {
-    *(int16_t *) Tx_Data = (int16_t) (Out);
+    *(int16_t *) Tx_Data = (int16_t)(Out);
 }
 
 /************************ COPYRIGHT(C) USTC-ROBOWALKER **************************/

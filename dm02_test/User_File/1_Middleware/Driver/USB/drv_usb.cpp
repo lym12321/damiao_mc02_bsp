@@ -40,7 +40,7 @@ extern uint8_t UserRxBufferHS[APP_RX_DATA_SIZE];
  *
  * @param Callback_Function 处理回调函数
  */
-void USB_Init(USB_Call_Back Callback_Function)
+void USB_Init(USB_Callback Callback_Function)
 {
     USB0_Manage_Object.Callback_Function = Callback_Function;
 
@@ -53,7 +53,7 @@ void USB_Init(USB_Call_Back Callback_Function)
  * @param Data 被发送的数据指针
  * @param Length 长度
  */
-uint8_t USB_Send_Data(uint8_t *Data, uint16_t Length)
+uint8_t USB_Transmit_Data(uint8_t *Data, uint16_t Length)
 {
     return (CDC_Transmit_HS(Data, Length));
 }

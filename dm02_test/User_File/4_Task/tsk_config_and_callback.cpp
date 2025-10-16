@@ -17,6 +17,7 @@
 #include "2_Device/Motor/Motor_DJI/dvc_motor_dji.h"
 #include "2_Device/BSP/BMI088/bsp_bmi088.h"
 #include "2_Device/Vofa/dvc_vofa.h"
+#include "2_Device/BSP/W25Q64JV/bsp_w25q64jv.h"
 #include "2_Device/BSP/WS2812/bsp_ws2812.h"
 #include "2_Device/BSP/Buzzer/bsp_buzzer.h"
 #include "2_Device/BSP/Power/bsp_power.h"
@@ -33,9 +34,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 // 串口绘图
-char Vofa_Variable_Assignment_List[][VOFA_RX_VARIABLE_ASSIGNMENT_MAX_LENGTH] = {
-    "q00", "q11", "r00", "r11",
-};
+char Vofa_Variable_Assignment_List[][VOFA_RX_VARIABLE_ASSIGNMENT_MAX_LENGTH] = {"q00", "q11", "r00", "r11",};
 
 // LED灯
 uint8_t red = 0;
@@ -134,6 +133,24 @@ void CAN1_Callback(FDCAN_RxHeaderTypeDef &Header, uint8_t *Buffer)
 }
 
 /**
+ * @brief OSPI2轮询回调函数
+ *
+ */
+void OSPI2_Polling_Callback()
+{
+    BSP_W25Q64JV.OSPI_StatusMatchCallback();
+}
+
+/**
+ * @brief OSPI2接收回调函数
+ *
+ */
+void OSPI2_Rx_Callback(uint8_t *Buffer, uint16_t Length)
+{
+    BSP_W25Q64JV.OSPI_RxCallback();
+}
+
+/**
  * @brief 每3600s调用一次
  *
  */
@@ -148,7 +165,6 @@ void Task3600s_Callback()
  */
 void Task1s_Callback()
 {
-
 }
 
 /**
@@ -337,6 +353,8 @@ void Task_Init()
     CAN_Init(&hfdcan1, CAN1_Callback);
     // 电源的ADC
     ADC_Init(&hadc1, 1);
+    // flash的OSPI
+    OSPI_Init(&hospi2, nullptr, nullptr);
 
     // 定时器中断初始化
     HAL_TIM_Base_Start_IT(&htim4);
@@ -383,6 +401,8 @@ void Task_Init()
     P[1][0] = 0.0f;
     P[1][1] = 1.0f;
     filter_kalman.Init(A, B, H, Q, R, P);
+
+    BSP_W25Q64JV.Init();
 
     Namespace_SYS_Timestamp::Delay_Second(2);
 

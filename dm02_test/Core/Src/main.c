@@ -23,6 +23,8 @@
 #include "dma.h"
 #include "fdcan.h"
 #include "iwdg.h"
+#include "mdma.h"
+#include "octospi.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
@@ -105,6 +107,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_DMA_Init();
+  MX_MDMA_Init();
   MX_USB_DEVICE_Init();
   MX_ADC1_Init();
   MX_FDCAN1_Init();
@@ -128,6 +131,7 @@ int main(void)
   MX_TIM7_Init();
   MX_TIM8_Init();
   MX_CORDIC_Init();
+  MX_OCTOSPI2_Init();
   MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
 

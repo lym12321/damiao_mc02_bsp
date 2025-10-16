@@ -250,7 +250,6 @@ protected:
     // 读写变量
 
     // 内部函数
-
 };
 
 /* Exported variables --------------------------------------------------------*/
@@ -295,7 +294,7 @@ inline float Class_Quaternion_f32::Get_Real() const
  */
 inline Class_Matrix_f32<3, 1> Class_Quaternion_f32::Get_Imaginary() const
 {
-    return (Class_Matrix_f32<3, 1>(&Data[1]));
+    return (Class_Matrix_f32 < 3, 1 > (&Data[1]));
 }
 
 /**
@@ -342,7 +341,7 @@ inline Class_Quaternion_f32 Class_Quaternion_f32::Get_Inverse() const
  */
 inline Class_Matrix_f32<3, 1> Class_Quaternion_f32::Get_Euler_Angle() const
 {
-    Class_Matrix_f32<3, 1> result;
+    Class_Matrix_f32 < 3, 1 > result;
     float modulus_square = Data[0] * Data[0] + Data[1] * Data[1] + Data[2] * Data[2] + Data[3] * Data[3];
     if (modulus_square <= Matrix_Compare_Epsilon)
     {
@@ -381,7 +380,7 @@ inline Class_Matrix_f32<3, 1> Class_Quaternion_f32::Get_Euler_Angle() const
  */
 inline Class_Matrix_f32<4, 4> Class_Quaternion_f32::Get_Self_Matrix() const
 {
-    Class_Matrix_f32<4, 4> result;
+    Class_Matrix_f32 < 4, 4 > result;
     result[0][0] = Data[0];
     result[0][1] = -Data[1];
     result[0][2] = -Data[2];
@@ -408,7 +407,7 @@ inline Class_Matrix_f32<4, 4> Class_Quaternion_f32::Get_Self_Matrix() const
  */
 inline Class_Matrix_f32<3, 3> Class_Quaternion_f32::Get_Rotation_Matrix() const
 {
-    Class_Matrix_f32<3, 3> result;
+    Class_Matrix_f32 < 3, 3 > result;
     float modulus_square = Data[0] * Data[0] + Data[1] * Data[1] + Data[2] * Data[2] + Data[3] + Data[3];
     if (modulus_square <= Matrix_Compare_Epsilon)
     {
@@ -449,7 +448,7 @@ inline Class_Matrix_f32<3, 3> Class_Quaternion_f32::Get_Rotation_Matrix() const
  */
 inline Class_Matrix_f32<4, 1> Class_Quaternion_f32::Get_Rodrigues() const
 {
-    Class_Matrix_f32<4, 1> result;
+    Class_Matrix_f32 < 4, 1 > result;
     float modulus_square = Data[0] * Data[0] + Data[1] * Data[1] + Data[2] * Data[2] + Data[3] * Data[3];
     if (modulus_square <= Matrix_Compare_Epsilon)
     {

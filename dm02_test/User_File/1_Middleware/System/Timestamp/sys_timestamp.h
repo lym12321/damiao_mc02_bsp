@@ -33,7 +33,6 @@
 class Class_Timestamp
 {
 public:
-
     void Init(TIM_HandleTypeDef *htim);
 
     inline uint64_t Get_Current_Timestamp() const;
@@ -74,7 +73,6 @@ protected:
 class Class_Time
 {
 public:
-
     // 构造函数
     Class_Time()
     {
@@ -88,7 +86,7 @@ public:
 
     Class_Time(const int32_t &__Second, const int16_t &__Millisecond, const int16_t &__Microsecond)
     {
-        Microsecond = (int64_t) (__Second) * 1000000LL + (int64_t) (__Millisecond) * 1000LL + (int64_t) (__Microsecond);
+        Microsecond = (int64_t)(__Second) * 1000000LL + (int64_t)(__Millisecond) * 1000LL + (int64_t)(__Microsecond);
     }
 
     // 复制构造函数
@@ -135,17 +133,17 @@ public:
 
     inline Class_Time operator*(const float &value) const
     {
-        return (Class_Time((int64_t) ((float) (Microsecond) * value)));
+        return (Class_Time((int64_t)((float) (Microsecond) * value)));
     }
 
     inline friend Class_Time operator*(const float &value, const Class_Time &Time)
     {
-        return (Class_Time((int64_t) ((float) (Time.Get_Microsecond()) * value)));
+        return (Class_Time((int64_t)((float) (Time.Get_Microsecond()) * value)));
     }
 
     inline Class_Time operator/(const float &value) const
     {
-        return (Class_Time((int64_t) ((float) (Microsecond) / value)));
+        return (Class_Time((int64_t)((float) (Microsecond) / value)));
     }
 
     inline Class_Time &operator+=(const Class_Time &Time)
@@ -162,13 +160,13 @@ public:
 
     inline Class_Time &operator*=(const float &value)
     {
-        Microsecond = (int64_t) ((float) (Microsecond) * value);
+        Microsecond = (int64_t)((float) (Microsecond) * value);
         return (*this);
     }
 
     inline Class_Time &operator/=(const float &value)
     {
-        Microsecond = (int64_t) ((float) (Microsecond) / value);
+        Microsecond = (int64_t)((float) (Microsecond) / value);
         return (*this);
     }
 
@@ -225,7 +223,6 @@ protected:
     // 读写变量
 
     // 内部函数
-
 };
 
 /* Exported variables --------------------------------------------------------*/

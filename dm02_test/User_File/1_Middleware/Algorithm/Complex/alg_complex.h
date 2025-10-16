@@ -184,7 +184,6 @@ protected:
     // 读写变量
 
     // 内部函数
-
 };
 
 /* Exported variables --------------------------------------------------------*/
@@ -273,7 +272,7 @@ inline float Class_Complex_f32::Get_Angle() const
  */
 inline Class_Matrix_f32<2, 2> Class_Complex_f32::Get_Self_Matrix() const
 {
-    Class_Matrix_f32<2, 2> result;
+    Class_Matrix_f32 < 2, 2 > result;
     result[0][0] = Data[0];
     result[0][1] = -Data[1];
     result[1][0] = Data[1];
@@ -288,7 +287,7 @@ inline Class_Matrix_f32<2, 2> Class_Complex_f32::Get_Self_Matrix() const
  */
 inline Class_Matrix_f32<2, 2> Class_Complex_f32::Get_Rotation_Matrix() const
 {
-    Class_Matrix_f32<2, 2> result;
+    Class_Matrix_f32 < 2, 2 > result;
     float modulus_square = Data[0] * Data[0] + Data[1] * Data[1];
     if (modulus_square <= Matrix_Compare_Epsilon)
     {

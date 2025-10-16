@@ -43,7 +43,6 @@ enum Enum_BSP_BMI088_Gyro_Range : uint8_t
 class Class_BMI088_Gyro
 {
 public:
-
     void Init(bool __Heater_Enable = false);
 
     inline float Get_Raw_Gyro_X() const;
@@ -77,25 +76,15 @@ protected:
     // 寄存器配置相关
     const uint8_t BMI088_GYRO_REGISTER_CONFIG[5][2] = {
         // 设置陀螺仪量程
-        {
-            offsetof(Struct_BMI088_Gyro_Register, GYRO_RANGE_RW), BMI088_GYRO_RANGE
-        },
+        {offsetof(Struct_BMI088_Gyro_Register, GYRO_RANGE_RW), BMI088_GYRO_RANGE},
         // 设置陀螺仪反馈频率为2000Hz, 带宽为532Hz, 0x80是只读位, 永久为该值, 可忽略
-        {
-            offsetof(Struct_BMI088_Gyro_Register, GYRO_BANDWODTH_RW), 0x01 | 0x80
-        },
+        {offsetof(Struct_BMI088_Gyro_Register, GYRO_BANDWODTH_RW), 0x01 | 0x80},
         // 配置为中断输出模式
-        {
-            offsetof(Struct_BMI088_Gyro_Register, GYRO_INT_CTRL_RW), 0x01 << 7
-        },
+        {offsetof(Struct_BMI088_Gyro_Register, GYRO_INT_CTRL_RW), 0x01 << 7},
         // 中断1号引脚配置推挽输出模式, 实际上写0才是配置部分, 默认是全1
-        {
-            offsetof(Struct_BMI088_Gyro_Register, INT3_INT4_IO_CONF_RW), 0x0c
-        },
+        {offsetof(Struct_BMI088_Gyro_Register, INT3_INT4_IO_CONF_RW), 0x0c},
         // 配置为如果数据准备好就中断
-        {
-            offsetof(Struct_BMI088_Gyro_Register, INT3_INT4_IO_MAP_RW), 0x01
-        },
+        {offsetof(Struct_BMI088_Gyro_Register, INT3_INT4_IO_MAP_RW), 0x01},
     };
 
     // 内部变量

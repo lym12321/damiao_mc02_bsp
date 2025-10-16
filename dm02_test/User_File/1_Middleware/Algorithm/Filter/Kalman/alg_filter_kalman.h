@@ -161,7 +161,7 @@ void Class_Filter_Kalman<State_Dimension, Input_Dimension, Measurement_Dimension
     Vector_X = Vector_X_Prior + Matrix_K * (Vector_Z - Matrix_H * Vector_X_Prior);
 
     // 更新误差协方差矩阵, 为获得更好的数值稳定性, 采用约瑟夫形式
-    Class_Matrix_f32<State_Dimension, State_Dimension> matrix_tmp = MATRIX_I_STATE - Matrix_K * Matrix_H;
+    Class_Matrix_f32 < State_Dimension, State_Dimension > matrix_tmp = MATRIX_I_STATE - Matrix_K * Matrix_H;
     // Matrix_P = matrix_tmp * Matrix_P_Prior;
     Matrix_P = matrix_tmp * Matrix_P_Prior * matrix_tmp.Get_Transpose() + Matrix_K * Matrix_R * Matrix_K.Get_Transpose();
 }

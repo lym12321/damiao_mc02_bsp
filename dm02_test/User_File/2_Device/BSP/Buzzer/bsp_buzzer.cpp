@@ -174,10 +174,10 @@ void Class_Buzzer::Init(const float &__Frequency, const float &__Loudness)
     Loudness = Basic_Math_Constrain(__Loudness, 0.0f, 1.0f);
 
     float arr = 1000000.0f / Frequency;
-        __HAL_TIM_SetAutoreload(htim, arr);
+    __HAL_TIM_SetAutoreload(htim, arr);
 
     float ccr = arr * Loudness * 0.5f;
-        __HAL_TIM_SetCompare(htim, TIM_Channel, ccr);
+    __HAL_TIM_SetCompare(htim, TIM_Channel, ccr);
 
     HAL_TIM_PWM_Start(htim, TIM_Channel);
 }

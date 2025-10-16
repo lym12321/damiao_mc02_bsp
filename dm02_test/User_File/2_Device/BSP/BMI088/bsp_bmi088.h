@@ -30,7 +30,6 @@
 class Class_BMI088
 {
 public:
-
     Class_BMI088_Accel BMI088_Accel;
     Class_BMI088_Gyro BMI088_Gyro;
 
@@ -158,14 +157,19 @@ protected:
     // EKF的相关函数
     // 四元数状态转移函数
     static Class_Matrix_f32<4, 1> EKF_Function_F(const Class_Matrix_f32<4, 1> &Vector_X, const Class_Matrix_f32<3, 1> &Vector_U, const float &D_T);
+
     // 四元数状态转移函数对状态的雅可比矩阵
     static Class_Matrix_f32<4, 4> EKF_Function_Jacobian_F_X(const Class_Matrix_f32<4, 1> &Vector_X, const Class_Matrix_f32<3, 1> &Vector_U, const float &D_T);
+
     // 四元数状态转移函数对过程噪声的雅可比矩阵
     static Class_Matrix_f32<4, 3> EKF_Function_Jacobian_F_W(const Class_Matrix_f32<4, 1> &Vector_X, const Class_Matrix_f32<3, 1> &Vector_U, const float &D_T);
+
     // 四元数测量函数
     static Class_Matrix_f32<3, 1> EKF_Function_H(const Class_Matrix_f32<4, 1> &Vector_X, const float &D_T);
+
     // 四元数测量函数对状态的雅可比矩阵
     static Class_Matrix_f32<3, 4> EKF_Function_Jacobian_H_X(const Class_Matrix_f32<4, 1> &Vector_X, const float &D_T);
+
     // 四元数测量函数对测量噪声的雅可比矩阵
     static Class_Matrix_f32<3, 3> EKF_Function_Jacobian_H_V(const Class_Matrix_f32<4, 1> &Vector_X, const float &D_T);
 

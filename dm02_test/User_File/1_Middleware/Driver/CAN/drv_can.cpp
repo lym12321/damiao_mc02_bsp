@@ -109,7 +109,7 @@ void can_filter_mask_config(FDCAN_HandleTypeDef *hfdcan)
  * @param hfdcan CAN编号
  * @param Callback_Function 处理回调函数
  */
-void CAN_Init(FDCAN_HandleTypeDef *hfdcan, CAN_Call_Back Callback_Function)
+void CAN_Init(FDCAN_HandleTypeDef *hfdcan, CAN_Callback Callback_Function)
 {
     if (hfdcan->Instance == FDCAN1)
     {
@@ -141,7 +141,7 @@ void CAN_Init(FDCAN_HandleTypeDef *hfdcan, CAN_Call_Back Callback_Function)
  * @param Length 长度
  * @return uint8_t 执行状态
  */
-uint8_t CAN_Send_Data(FDCAN_HandleTypeDef *hfdcan, uint16_t ID, uint8_t *Data, uint16_t Length)
+uint8_t CAN_Transmit_Data(FDCAN_HandleTypeDef *hfdcan, uint16_t ID, uint8_t *Data, uint16_t Length)
 {
     FDCAN_TxHeaderTypeDef tx_header;
 
@@ -164,7 +164,6 @@ uint8_t CAN_Send_Data(FDCAN_HandleTypeDef *hfdcan, uint16_t ID, uint8_t *Data, u
  */
 void TIM_100us_CAN_PeriodElapsedCallback()
 {
-
 }
 
 /**
@@ -182,10 +181,10 @@ void TIM_1ms_CAN_PeriodElapsedCallback()
         mod2 = 0;
 
         // 发送实例
-        // CAN_Send_Data(&hfdcan2, 0x1fe, CAN2_0x1fe_Tx_Data, 8);
+        // CAN_Transmit_Data(&hfdcan2, 0x1fe, CAN2_0x1fe_Tx_Data, 8);
     }
 
-    CAN_Send_Data(&hfdcan1, 0x200, CAN1_0x200_Tx_Data, 8);
+    CAN_Transmit_Data(&hfdcan1, 0x200, CAN1_0x200_Tx_Data, 8);
 }
 
 /**

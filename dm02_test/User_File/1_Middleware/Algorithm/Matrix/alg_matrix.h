@@ -362,7 +362,6 @@ protected:
     // 读写变量
 
     // 内部函数
-
 };
 
 /* Exported variables --------------------------------------------------------*/
@@ -572,7 +571,6 @@ inline std::enable_if_t<tmp_row == tmp_column, Class_Matrix_f32<tmp_row, tmp_row
     }
 
     return (result);
-
 }
 
 /**

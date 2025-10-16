@@ -157,7 +157,7 @@ void Class_Serialplot::TIM_1ms_Write_PeriodElapsedCallback()
     }
     }
 
-    UART_Send_Data(UART_Manage_Object->UART_Handler, Tx_Buffer, data_length);
+    UART_Transmit_Data(UART_Manage_Object->UART_Handler, Tx_Buffer, data_length);
 }
 
 /**
@@ -411,7 +411,7 @@ void Class_Serialplot_USB::TIM_1ms_Write_PeriodElapsedCallback()
     }
     }
 
-    USB_Send_Data(Tx_Buffer, data_length);
+    USB_Transmit_Data(Tx_Buffer, data_length);
 }
 
 /**

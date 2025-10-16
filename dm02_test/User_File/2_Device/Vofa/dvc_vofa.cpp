@@ -93,7 +93,7 @@ void Class_Vofa::TIM_1ms_Write_PeriodElapsedCallback()
 {
     Output();
 
-    UART_Send_Data(UART_Manage_Object->UART_Handler, Tx_Buffer, Data_Number * sizeof(float) + sizeof(uint32_t));
+    UART_Transmit_Data(UART_Manage_Object->UART_Handler, Tx_Buffer, Data_Number * sizeof(float) + sizeof(uint32_t));
 }
 
 /**
@@ -246,7 +246,7 @@ void Class_Vofa_USB::TIM_1ms_Write_PeriodElapsedCallback()
 {
     Output();
 
-    USB_Send_Data(Tx_Buffer, Data_Number * sizeof(float) + sizeof(uint32_t));
+    USB_Transmit_Data(Tx_Buffer, Data_Number * sizeof(float) + sizeof(uint32_t));
 }
 
 /**
