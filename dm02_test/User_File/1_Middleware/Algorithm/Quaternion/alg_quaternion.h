@@ -408,7 +408,7 @@ inline Class_Matrix_f32<4, 4> Class_Quaternion_f32::Get_Self_Matrix() const
 inline Class_Matrix_f32<3, 3> Class_Quaternion_f32::Get_Rotation_Matrix() const
 {
     Class_Matrix_f32 < 3, 3 > result;
-    float modulus_square = Data[0] * Data[0] + Data[1] * Data[1] + Data[2] * Data[2] + Data[3] + Data[3];
+    float modulus_square = Data[0] * Data[0] + Data[1] * Data[1] + Data[2] * Data[2] + Data[3] * Data[3];
     if (modulus_square <= Matrix_Compare_Epsilon)
     {
         return (Namespace_ALG_Matrix::Identity<3, 3>());
